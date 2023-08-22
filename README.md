@@ -13,4 +13,4 @@ Web Application that facilitates the introduction to programming for young progr
 ### Frontend
 
 - React **18.2.0**
-- MUI **5.10.9**
+- MUI **5.14.5**
