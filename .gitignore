@@ -1,0 +1,5 @@
+# path
+/client/node_modules/
+
+# misc 
+.DS_Store
