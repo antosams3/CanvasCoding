@@ -11,22 +11,45 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Alert from '@mui/material/Alert';
+
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
-export default function LoginForm() {
-    const navigate = useNavigate();
+export default function LoginForm(props) {
+  const {login, message, setMessage} = props;
+
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+    props.setMessage('');
+    if (props.isloggedIn === true) {
+        navigate('/');
+    }
+    // eslint-disable-next-line
+}, [props.isloggedIn, navigate])
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    }); 
+    const form = event.currentTarget;
+
+    if(!form.checkValidity()){
+        event.stopPropagation();
+    }else{
+        const credentials = {username: email, password}
+        login(credentials);
+    }
+
+
   };
 
   return (
@@ -73,6 +96,7 @@ export default function LoginForm() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={ev => setEmail(ev.target.value.replace(/\s/g, ''))}
               />
               <TextField
                 margin="normal"
@@ -83,7 +107,11 @@ export default function LoginForm() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={ev => setPassword(ev.target.value)}
               />
+              {message &&
+                <Alert severity={message.type} onClose={() => setMessage('')}>{message.msg}</Alert>
+              }
               <Button
                 type="submit"
                 fullWidth

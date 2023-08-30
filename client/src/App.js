@@ -1,9 +1,10 @@
-import { React, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { React, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Navbar from './Components/Navbar';
 import LoginForm from './Components/Auth/LoginForm';
 import SignupForm from './Components/Auth/SignupForm';
 import Homepage from './Components/Homepage';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   return (
@@ -16,10 +17,23 @@ function App() {
 function Root() {
   const [loggedIn, setLoggedIn] = useState(false);        /* Boolean user login status (true,false) */
   const [loggedUser, setLoggedUser] = useState(false);    /* Contains logged user info */
+  const [runStatus, setRunStatus] = useState("paused");  /* runStatus in: compiling, paused, debugging */
   const [message, setMessage] = useState('');             /* Contains Welcome messages for login */
 
+  const navigate = useNavigate();
+
+
   const handleLogin = async (credentials) => {
-    
+    try {
+      //const user = await API.logIn(credentials);
+      //setLoggedUser(user);
+      setLoggedIn(true);
+      navigate('/');
+
+    } catch (err) {
+      const obj = JSON.parse(err);
+      setMessage({ msg: `${obj.error}!`, type: 'error' });
+    }
   }
 
   const handleSignUp = async (credentials) => {
@@ -29,13 +43,13 @@ function Root() {
   const handleLogout = async () => {
 
   }
-  
+
   return (
     <Routes>
-      <Route path='/' element={<Navbar handleLogout={handleLogout} ></Navbar>}>
-        {/* Outlets */}
-        <Route path='' element={<Homepage />} />
 
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} runStatus={runStatus} setRunStatus={setRunStatus} ></Navbar>}>
+        {/* Outlets */}
+        <Route path='' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage  />} />
 
       </Route>
 
