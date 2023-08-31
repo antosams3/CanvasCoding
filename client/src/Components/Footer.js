@@ -1,43 +1,38 @@
 import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import Grid  from '@mui/material/Grid';
+import LevelActions from './Level/LevelActions';
+import LevelSelector from './Level/LevelSelector';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Footer(props) {
-  return (
-    <ThemeProvider theme={defaultTheme}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-        }}
-      >
-        <CssBaseline />
-        <Box
-          component="footer"
-          sx={{
-            py: 3,
-            px: 2,
-            mt: 'auto',
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[200]
-                : theme.palette.grey[800],
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography variant="body1">
-              My sticky footer can be found here.
-            </Typography>
-          </Container>
-        </Box>
-      </Box>
-    </ThemeProvider>
-  );
+    const {handleClickOpenDialog} = props;
+
+    const level = { id: 7 };
+    return (
+        <ThemeProvider theme={defaultTheme}>
+            <Box
+                component="footer"
+                sx={{
+                    py: 1,
+                    px: 1,
+                    mt: 'auto',
+                    backgroundColor: (theme) =>
+                        theme.palette.primary.main,
+                }}
+            >
+                <Grid container>
+                    <Grid item xs={6}>
+                        <LevelActions handleClickOpenDialog={handleClickOpenDialog} />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <LevelSelector level={level} />
+                    </Grid>
+                </Grid>
+            </Box>
+        </ThemeProvider>
+    );
 }

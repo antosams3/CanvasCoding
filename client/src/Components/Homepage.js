@@ -1,19 +1,67 @@
+import * as React from 'react';
 import { Grid } from "@mui/material";
 import Footer from "./Footer";
+import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import CustomDialog from './CustomDialog';
 
 export default function Homepage(props) {
-    
-    return (<Grid container spacing={2}>
-        {/* Code and console */}
-        <Grid item xs={8}>
+    const { loggedIn } = props;
+    const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
+    const [type, setType] = React.useState(1);
+    const [title, setTitle] = React.useState("");
+    const [content, setContent] = React.useState("");
 
-        </Grid>
+    const handleClickOpenDialog = (type, title, content) => {
+        setType(type);
+        setTitle(title);
+        setContent(content);
+        setOpenDialog(true);
+    };
 
-        {/* Canvas */}
-        <Grid item xs={4}>
+    return (
+        <Box sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Grid container spacing={0.5}>
 
-        </Grid>
-        <Footer> </Footer>
-    </Grid>
+                {/* Dialog */}
+                <CustomDialog openDialog={openDialog} setOpenDialog={setOpenDialog} type={type} title={title} content={content}  ></CustomDialog>
+
+                {/* Code and console */}
+                <Grid item xs={7}>
+                    <Box>
+                        <Typography variant="body1" gutterBottom>
+                            body1. Code and console
+                        </Typography>
+                    </Box>
+
+                </Grid>
+
+                {/* Canvas */}
+                <Grid item xs={5}>
+
+                    <Box>
+                        <Typography variant="body1" gutterBottom>
+                            body1. Canvas
+                        </Typography>
+                    </Box>
+
+                </Grid>
+
+                {/* Footer */}
+                <Grid item xs={12}>
+                    <Box
+                        sx={{
+                            position: 'fixed',  // Posizione fissa per il footer
+                            bottom: 0,          // Posiziona il footer in fondo alla pagina
+                            width: '100%',      // Assicura che il footer abbia larghezza completa
+                            backgroundColor: theme =>
+                                theme.palette.primary.main
+                        }}
+                    >
+                        <Footer handleClickOpenDialog={handleClickOpenDialog} />
+                    </Box>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }

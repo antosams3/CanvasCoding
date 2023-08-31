@@ -49,7 +49,7 @@ function Root() {
 
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} runStatus={runStatus} setRunStatus={setRunStatus} ></Navbar>}>
         {/* Outlets */}
-        <Route path='' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage  />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} />} />
 
       </Route>
 
