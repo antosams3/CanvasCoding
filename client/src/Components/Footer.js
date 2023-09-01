@@ -29,7 +29,7 @@ export default function Footer(props) {
                         <LevelActions handleClickOpenDialog={handleClickOpenDialog} />
                     </Grid>
                     <Grid item xs={6}>
-                        <LevelSelector level={level} />
+                        <LevelSelector handleClickOpenDialog={handleClickOpenDialog} level={level} />
                     </Grid>
                 </Grid>
             </Box>
