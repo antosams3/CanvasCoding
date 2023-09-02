@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Typography from '@mui/material/Typography';
 import Box from "@mui/material/Box";
 import CustomDialog from './CustomDialog';
+import Canvas from './Canvas/Canvas';
 
 export default function Homepage(props) {
     const { loggedIn } = props;
@@ -36,13 +37,10 @@ export default function Homepage(props) {
 
                 </Grid>
 
-                {/* Canvas */}
-                <Grid item xs={5}>
-
-                    <Box>
-                        <Typography variant="body1" gutterBottom>
-                            body1. Canvas
-                        </Typography>
+                {/* Canvas, side and action menu */}
+                <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Canvas> </Canvas>
                     </Box>
 
                 </Grid>
