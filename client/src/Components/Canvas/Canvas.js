@@ -3,6 +3,9 @@ import * as dat from 'dat.gui';
 import React, { useRef, useEffect } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import stars from '../../Wallpaper/stars.jpg';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+
 
 export default function Canvas(props) {
   let first = true;                      // First render
@@ -15,9 +18,87 @@ export default function Canvas(props) {
   let renderer = new THREE.WebGLRenderer();
 
 
+  function createGeometry(type, size) {
+    switch (type) {
+      case 'BOX':
+        /* Crea un oggetto 3D (Box) */
+        return size ? new THREE.BoxGeometry(size[0], size[1], size[2]) : new THREE.BoxGeometry();
+
+      case 'SPHERE':
+        /* Crea un oggetto 3D (Sfera) */
+        return size ? new THREE.SphereGeometry(size[0], size[1], size[2]) : new THREE.SphereGeometry();
+
+
+      default: return;
+    }
+  }
+
+  function createObject(type, name, size, texture, color, position, scene) {
+
+    const geometry = createGeometry(type, size);
+    const material = new THREE.MeshBasicMaterial(color ? {
+      color
+    } : {
+      map: THREE.TextureLoader(texture)
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    const obj = new THREE.Object3D();
+
+    obj.add(mesh);
+
+    if (name) { obj.name = name }
+    if (position) { mesh.position.set(position[0], position[1], position[2]) }
+
+    /* Aggiungi l'oggetto alla scena */
+    scene.add(obj);
+
+    return { mesh, obj }
+
+  }
+
+
   const initThree = () => {
     renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
     const scene = new THREE.Scene();
+
+    /* Import Cat and Rabbit + Animazione */
+    let mixer; // Variabile globale per animazione 
+    const catUrl = new URL('./Assets/CatBase.glb', import.meta.url);
+    const rabbitUrl = new URL('./Assets/Rabbit.glb', import.meta.url);
+  
+    const assetLoader = new GLTFLoader();
+
+    assetLoader.load(catUrl.href, function (gltf) {
+      const model = gltf.scene;
+      model.position.set(6,1,0)
+      scene.add(model);
+      mixer = new THREE.AnimationMixer(model); // Animation player 
+      const clips = gltf.animations;
+
+      /* PLay animation given the name */
+      const clip = THREE.AnimationClip.findByName(clips, 'HeadTailAction');
+      const action = mixer.clipAction(clip);
+      action.play();
+
+    }, undefined, function (error) {
+      console.error(error);
+    })
+
+    assetLoader.load(rabbitUrl.href, function (gltf) {
+      const model = gltf.scene;
+      model.position.set(3,1,0)
+      scene.add(model);
+      mixer = new THREE.AnimationMixer(model); // Animation player 
+      const clips = gltf.animations;
+
+      /* PLay animation given the name */
+      const clip = THREE.AnimationClip.findByName(clips, 'SnoutTailEarsAction');
+      const action = mixer.clipAction(clip);
+      action.play();
+
+    }, undefined, function (error) {
+      console.error(error);
+    })
 
 
     /* Imposta il colore/immagine di sfondo */
@@ -66,23 +147,9 @@ export default function Canvas(props) {
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
-    /* Crea un oggetto 3D (Box) */
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const box = new THREE.Mesh(geometry, material);
-    box.name = 'myBox';
-
-    /* Aggiungi l'oggetto alla scena */
-    scene.add(box);
-
-    /* Crea un oggetto 3D (Sfera) */
-    const spheregeometry = new THREE.SphereGeometry(2, 50, 50);
-    const spherematerial = new THREE.MeshBasicMaterial({ color: 0xff0 });
-    const sphere = new THREE.Mesh(spheregeometry, spherematerial);
-    sphere.position.set(-5, 2, 0);
-
-    /* Aggiungi l'oggetto alla scena */
-    scene.add(sphere);
+    /* Creazione oggetti 3D */
+    const box = createObject('BOX', 'myBox', null, null, 0xff0000, [0, 0, 0], scene);
+    const sphere = createObject('SPHERE', 'mySphere', [2, 50, 50], null, 0xff0, [-5, 0, 0], scene);
 
     /* Aggiunta modificatore colore e velocità (dat.gui) */
     const options = {
@@ -95,17 +162,19 @@ export default function Canvas(props) {
       const gui = new dat.GUI();
 
       gui.addColor(options, 'sphereColor').onChange(function (e) {
-        sphere.material.color.set(e);
+        sphere.mesh.material.color.set(e);
       })
 
       gui.add(options, 'sphereWireframe').onChange(function (e) {
-        sphere.material.wireframe = e;
+        sphere.mesh.material.wireframe = e;
       })
 
       gui.add(options, 'sphereSpeed', 0, 0.1); // Define min value o and maxValue 0.1
     }
 
     first = false;
+
+    const clock = new THREE.Clock();
 
     let step = 0;
 
@@ -114,24 +183,27 @@ export default function Canvas(props) {
 
       // Rimbalzo dell'oggetto sphere
       step += options.sphereSpeed;
-      sphere.position.y = 10 * Math.abs(Math.sin(step)) + 2;
+      sphere.obj.position.y = 10 * Math.abs(Math.sin(step)) + 2;
 
       // Intercettamento movimento mouse
       rayCaster.setFromCamera(mousePosition, camera); // Definizione dei due limiti del raggio di intercezione
       const intersects = rayCaster.intersectObjects(scene.children); // Array contenente gli oggetti intercettati con mouse 
 
       intersects.forEach(obj => {
-        if (obj.object.id === sphere.id) {
+        if (obj.object.id === sphere.mesh.id) {
           obj.object.material.color.set(0xFF0000);
         }
-        if (obj.object.name === box.name) {
+        if (obj.object.id === box.mesh.id) {
           // Rotazione dell'oggetto box
-          box.rotation.x += 0.01;
-          box.rotation.y += 0.01;
+          box.mesh.rotation.x += 0.01;
+          box.mesh.rotation.y += 0.01;
         }
       });
 
-
+      // Animazione Cat
+      if (mixer) {
+        mixer.update(clock.getDelta());
+      }
 
       // Renderizza la scena
       renderer.render(scene, camera);
@@ -157,6 +229,7 @@ export default function Canvas(props) {
   };
 
   const handleResize = () => {
+    console.log("Resize");
     const { current } = canvasRef;
 
     if (current) {
@@ -164,7 +237,7 @@ export default function Canvas(props) {
 
       // Aggiorna la prospettiva della camera
       camera.aspect = clientWidth / clientHeight;
-      camera.updateProjectionMatrix();
+      camera.updateProjectionMatrix();      
 
       // Aggiorna le dimensioni del canvas
       renderer.setSize(clientWidth, clientHeight);
