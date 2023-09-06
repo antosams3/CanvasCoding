@@ -6,16 +6,75 @@ import stars from '../../Wallpaper/stars.jpg';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-
 export default function Canvas(props) {
-  let first = true;                      // First render
+  const {selectObj} = props;
+  
+  let first = true;  // First render
+
   /* Definizione istanza rayCaster (intercetta movimento mouse) */
   const mousePosition = new THREE.Vector2();
   const rayCaster = new THREE.Raycaster();
 
+  const plane = new THREE.Plane();
+  const planeNormal = new THREE.Vector3();
+  const intersectionPoint = new THREE.Vector3();
+  let scene = new THREE.Scene();
+
   const canvasRef = useRef();
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   let renderer = new THREE.WebGLRenderer();
+
+  const handleResize = () => {
+    const { current } = canvasRef;
+
+    if (current) {
+      const { clientWidth, clientHeight } = current;
+
+      // Aggiorna la prospettiva della camera
+      camera.aspect = clientWidth / clientHeight;
+      camera.updateProjectionMatrix();
+
+      // Aggiorna le dimensioni del canvas
+      renderer.setSize(clientWidth, clientHeight);
+    }
+  };
+
+  const handleClick = () => {
+    const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null, scene);
+    sphere.mesh.position.copy(intersectionPoint);
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    /* Configurazione Raycaster con coordinate del mouse relative al Canvas */
+    const canvas = renderer.domElement;
+    const rect = canvas.getBoundingClientRect();
+
+    window.addEventListener('mousemove', function (e) {
+      mousePosition.x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+      mousePosition.y = - ((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+
+      planeNormal.copy(camera.position).normalize();
+      plane.setFromNormalAndCoplanarPoint(planeNormal, scene.position);
+      rayCaster.setFromCamera(mousePosition, camera);
+      rayCaster.ray.intersectPlane(plane, intersectionPoint);
+
+    });
+
+    window.addEventListener('click', handleClick);
+
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    initThree();
+    handleResize();
+  }, []);
+
 
 
   function createGeometry(type, size) {
@@ -27,7 +86,6 @@ export default function Canvas(props) {
       case 'SPHERE':
         /* Crea un oggetto 3D (Sfera) */
         return size ? new THREE.SphereGeometry(size[0], size[1], size[2]) : new THREE.SphereGeometry();
-
 
       default: return;
     }
@@ -59,18 +117,21 @@ export default function Canvas(props) {
 
   const initThree = () => {
     renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
-    const scene = new THREE.Scene();
+
+    if (!first) {
+      scene = new THREE.Scene();
+    }
 
     /* Import Cat and Rabbit + Animazione */
     let mixer; // Variabile globale per animazione 
     const catUrl = new URL('./Assets/CatBase.glb', import.meta.url);
     const rabbitUrl = new URL('./Assets/Rabbit.glb', import.meta.url);
-  
+
     const assetLoader = new GLTFLoader();
 
     assetLoader.load(catUrl.href, function (gltf) {
       const model = gltf.scene;
-      model.position.set(6,1,0)
+      model.position.set(6, 1, 0)
       scene.add(model);
       mixer = new THREE.AnimationMixer(model); // Animation player 
       const clips = gltf.animations;
@@ -86,7 +147,7 @@ export default function Canvas(props) {
 
     assetLoader.load(rabbitUrl.href, function (gltf) {
       const model = gltf.scene;
-      model.position.set(3,1,0)
+      model.position.set(3, 1, 0)
       scene.add(model);
       mixer = new THREE.AnimationMixer(model); // Animation player 
       const clips = gltf.animations;
@@ -135,9 +196,12 @@ export default function Canvas(props) {
       color: 0xFFFFFF,
       side: THREE.DoubleSide  //Plane visibile anche rovescio
     })
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    scene.add(plane);
-    plane.rotation.x = -0.5 * Math.PI;
+    const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+    scene.add(planeMesh);
+
+    planeMesh.rotation.x = -0.5 * Math.PI; // Ruota il plane di 90 gradi
+
+
 
     /* Aggiunta griglia al plane */
     const gridHelper = new THREE.GridHelper(50);
@@ -227,46 +291,6 @@ export default function Canvas(props) {
 
 
   };
-
-  const handleResize = () => {
-    console.log("Resize");
-    const { current } = canvasRef;
-
-    if (current) {
-      const { clientWidth, clientHeight } = current;
-
-      // Aggiorna la prospettiva della camera
-      camera.aspect = clientWidth / clientHeight;
-      camera.updateProjectionMatrix();      
-
-      // Aggiorna le dimensioni del canvas
-      renderer.setSize(clientWidth, clientHeight);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    /* Configurazione Raycaster con coordinate del mouse relative al Canvas */
-    const canvas = renderer.domElement;
-    const rect = canvas.getBoundingClientRect();
-
-    window.addEventListener('mousemove', function (e) {
-      mousePosition.x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-      mousePosition.y = - ((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
-    });
-
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    initThree();
-    handleResize();
-  }, []);
-
 
   return (
     <div>
