@@ -7,7 +7,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { createObject } from '../../Utils/CanvasObjects.js';
 
 export default function Canvas(props) {
-  let { selectObj } = props;
+  let { selectObj, addMode } = props;
 
   let first = true;  // First render
 
@@ -41,7 +41,8 @@ export default function Canvas(props) {
   };
 
   const handleClick = () => {
-    const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null, scene);
+    const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null);
+    scene.add(sphere.obj);
     sphere.mesh.position.copy(intersectionPoint);
   }
 
@@ -78,14 +79,25 @@ export default function Canvas(props) {
 
 
   const initThree = () => {
-    renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
+    renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     if (!first) {
       scene = new THREE.Scene();
     }
 
+    const ambientLight = new THREE.AmbientLight();
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight();
+    pointLight.position.set(50, 50, 50)
+    scene.add(pointLight);
+
+
     /* Import Cat and Rabbit + Animazione */
-    let mixer; // Variabile globale per animazione 
+    let mixerCat; // Variabile globale per animazione 
+    let mixerRabbit; // Variabile globale per animazione 
     const catUrl = new URL('./Assets/CatBase.glb', import.meta.url);
     const rabbitUrl = new URL('./Assets/Rabbit.glb', import.meta.url);
 
@@ -95,12 +107,12 @@ export default function Canvas(props) {
       const model = gltf.scene;
       model.position.set(6, 1, 0)
       scene.add(model);
-      mixer = new THREE.AnimationMixer(model); // Animation player 
+      mixerCat = new THREE.AnimationMixer(model); // Animation player 
       const clips = gltf.animations;
 
       /* PLay animation given the name */
       const clip = THREE.AnimationClip.findByName(clips, 'HeadTailAction');
-      const action = mixer.clipAction(clip);
+      const action = mixerCat.clipAction(clip);
       action.play();
 
     }, undefined, function (error) {
@@ -111,12 +123,13 @@ export default function Canvas(props) {
       const model = gltf.scene;
       model.position.set(3, 1, 0)
       scene.add(model);
-      mixer = new THREE.AnimationMixer(model); // Animation player 
+      mixerRabbit = new THREE.AnimationMixer(model); // Animation player 
+
       const clips = gltf.animations;
 
       /* PLay animation given the name */
       const clip = THREE.AnimationClip.findByName(clips, 'SnoutTailEarsAction');
-      const action = mixer.clipAction(clip);
+      const action = mixerRabbit.clipAction(clip);
       action.play();
 
     }, undefined, function (error) {
@@ -174,8 +187,10 @@ export default function Canvas(props) {
     scene.add(axesHelper);
 
     /* Creazione oggetti 3D */
-    const box = createObject('BOX', 'myBox', null, null, 0xff0000, [0, 0, 0], scene);
-    const sphere = createObject('SPHERE', 'mySphere', [2, 50, 50], null, 0xff0, [-5, 0, 0], scene);
+    const box = createObject('BOX', 'myBox', null, null, 0xff0000, [0, 0, 0]);
+    scene.add(box.obj);
+    const sphere = createObject('SPHERE', 'mySphere', [2, 50, 50], null, 0xff0, [-5, 0, 0]);
+    scene.add(sphere.obj);
 
     /* Aggiunta modificatore colore e velocità (dat.gui) */
     const options = {
@@ -227,8 +242,13 @@ export default function Canvas(props) {
       });
 
       // Animazione Cat
-      if (mixer) {
-        mixer.update(clock.getDelta());
+      if (mixerCat) {
+        mixerCat.update(clock.getDelta());
+      }
+
+      // Animazione Cat
+      if (mixerRabbit) {
+        mixerRabbit.update(clock.getDelta());
       }
 
       // Renderizza la scena

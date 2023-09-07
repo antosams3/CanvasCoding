@@ -14,7 +14,7 @@ function createGeometry(type, size) {
     }
   }
 
-export function createObject(type, name, size, texture, color, position, scene) {
+export function createObject(type, name, size, texture, color, position) {
 
     const geometry = createGeometry(type, size);
     const material = new THREE.MeshBasicMaterial(color ? {
@@ -29,9 +29,6 @@ export function createObject(type, name, size, texture, color, position, scene) 
 
     if (name) { obj.name = name }
     if (position) { mesh.position.set(position[0], position[1], position[2]) }
-
-    /* Aggiungi l'oggetto alla scena */
-    scene.add(obj);
 
     return { mesh, obj }
 
