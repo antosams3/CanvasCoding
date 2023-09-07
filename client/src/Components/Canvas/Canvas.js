@@ -4,22 +4,23 @@ import React, { useRef, useEffect } from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import stars from '../../Wallpaper/stars.jpg';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
+import { createObject } from '../../Utils/CanvasObjects.js';
 
 export default function Canvas(props) {
-  const {selectObj} = props;
-  
+  let { selectObj } = props;
+
   let first = true;  // First render
 
   /* Definizione istanza rayCaster (intercetta movimento mouse) */
   const mousePosition = new THREE.Vector2();
   const rayCaster = new THREE.Raycaster();
 
+  /* Definizione parametri per aggiunta oggetti su onClick */
   const plane = new THREE.Plane();
   const planeNormal = new THREE.Vector3();
   const intersectionPoint = new THREE.Vector3();
-  let scene = new THREE.Scene();
 
+  let scene = new THREE.Scene();
   const canvasRef = useRef();
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
   let renderer = new THREE.WebGLRenderer();
@@ -74,45 +75,6 @@ export default function Canvas(props) {
     initThree();
     handleResize();
   }, []);
-
-
-
-  function createGeometry(type, size) {
-    switch (type) {
-      case 'BOX':
-        /* Crea un oggetto 3D (Box) */
-        return size ? new THREE.BoxGeometry(size[0], size[1], size[2]) : new THREE.BoxGeometry();
-
-      case 'SPHERE':
-        /* Crea un oggetto 3D (Sfera) */
-        return size ? new THREE.SphereGeometry(size[0], size[1], size[2]) : new THREE.SphereGeometry();
-
-      default: return;
-    }
-  }
-
-  function createObject(type, name, size, texture, color, position, scene) {
-
-    const geometry = createGeometry(type, size);
-    const material = new THREE.MeshBasicMaterial(color ? {
-      color
-    } : {
-      map: THREE.TextureLoader(texture)
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    const obj = new THREE.Object3D();
-
-    obj.add(mesh);
-
-    if (name) { obj.name = name }
-    if (position) { mesh.position.set(position[0], position[1], position[2]) }
-
-    /* Aggiungi l'oggetto alla scena */
-    scene.add(obj);
-
-    return { mesh, obj }
-
-  }
 
 
   const initThree = () => {
