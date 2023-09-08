@@ -41,9 +41,12 @@ export default function Canvas(props) {
   };
 
   const handleClick = () => {
-    const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null);
-    scene.add(sphere.obj);
-    sphere.mesh.position.copy(intersectionPoint);
+    if(addMode){
+      const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null);
+      scene.add(sphere.obj);
+      sphere.mesh.position.copy(intersectionPoint);
+    }
+
   }
 
   useEffect(() => {
@@ -69,8 +72,10 @@ export default function Canvas(props) {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('click', handleClick);
+
     };
-  }, []);
+  }, [selectObj, addMode]);
 
   useEffect(() => {
     initThree();
