@@ -28,7 +28,7 @@ export function CatModel(props) {
         if (modelRef.current) {
             modelRef.current.position.set(position[0], position[1], position[2]);
         }
-    }, []);
+    });
 
     useFrame((state, delta) => {
         if (mixerRef) {
@@ -90,11 +90,10 @@ export function DogModel(props) {
 
         // Aggiungi le animazioni al mixer
         const clips = gltf.animations;
-        const clip = THREE.AnimationClip.findByName(clips, 'SnoutTailEarsAction');
-        if (clip) {
+        clips.forEach(function(clip) {
             const action = mixerRef.current.clipAction(clip);
             action.play();
-        }
+        })
 
         // Aggiorna la posizione del modello
         if (modelRef.current) {
