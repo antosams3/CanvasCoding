@@ -6,6 +6,7 @@ import stars from '../../Wallpaper/stars.jpg';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { createObject } from '../../Utils/CanvasObjects.js';
 
+
 export default function Canvas(props) {
   let { selectObj, addMode } = props;
 
@@ -42,9 +43,9 @@ export default function Canvas(props) {
 
   const handleClick = () => {
     if(addMode){
-      const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null);
-      scene.add(sphere.obj);
-      sphere.mesh.position.copy(intersectionPoint);
+    const sphere = createObject('SPHERE', 'mySphere', [0.125, 30, 30], null, 0xff0, null);
+    scene.add(sphere.obj);
+    sphere.mesh.position.copy(intersectionPoint);
     }
 
   }
@@ -103,7 +104,7 @@ export default function Canvas(props) {
     /* Import Cat and Rabbit + Animazione */
     let mixerCat; // Variabile globale per animazione 
     let mixerRabbit; // Variabile globale per animazione 
-    const catUrl = new URL('./Assets/CatBase.glb', import.meta.url);
+    const catUrl = new URL('./Assets/Cat.glb', import.meta.url);
     const rabbitUrl = new URL('./Assets/Rabbit.glb', import.meta.url);
 
     const assetLoader = new GLTFLoader();

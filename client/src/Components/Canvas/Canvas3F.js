@@ -1,11 +1,14 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import * as React from 'react';
+import { Suspense } from "react";
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import stars from '../../Wallpaper/stars.jpg';
-import { usePlane, useGLTF, PerspectiveCamera, OrbitControls, useAnimations } from '@react-three/drei';
+import { DogModel, CatModel, RabbitModel } from "./Models/Animals";
+import { usePlane, useGLTF, PerspectiveCamera, OrbitControls, useAnimations, Html, useProgress } from '@react-three/drei';
+
 import { Vector2 } from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 
 function Box(props) {
@@ -88,16 +91,17 @@ function Sphere(props) {
 }
 
 function Scene(props) {
-    const { addMode, selectObj } = props;
+    const { addMode, selectObj, setSelectObj } = props;
     const canvasRef = React.useRef();
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
     const [intersectionPoint, setIntersectionPoint] = React.useState(new THREE.Vector3());
     const [objects, setObjects] = React.useState([]);
 
     const handleClick = () => {
-        if(addMode){
-            if(selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE' ){
-                setObjects([...objects, selectObj[0]])
+        if (addMode) {
+            if (selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE') {
+                setObjects([...objects, selectObj[0]]);
+                setSelectObj([]);
             }
         }
     }
@@ -121,15 +125,32 @@ function Scene(props) {
 
     return (
         <>
+            {/* Fixed objects */}
             <Box position={[-1.2, 0, 0]} addMode={addMode} />
             <Box position={[1.2, 0, 0]} addMode={addMode} />
             <Sphere position={[-2, 2, 0]} addMode={addMode} size={[2, 50, 50]} />
             <Sphere position={[8, 5, 0]} addMode={addMode} size={[1, 10, 10]} />
+
+            {/* Models (Rabbit, Cat) */}
+            <DogModel position={[3, 0, 0]} />
+            <CatModel position={[5, 0.2, 0]} />
+            <RabbitModel position={[7, 0, 0]} />
+
+            {/* User objects  */}
             {objects.map((obj) => <Sphere position={[1, 5, 0]} key={obj} addMode={addMode} size={[1, 10, 10]} />)}
 
 
         </>
     );
+}
+
+function Loader(props) {
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const { progress } = useProgress()
+    if (progress === 100) {
+        props.scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
+    }
+    return <Html center>{progress} % loaded</Html>
 }
 
 function Plane() {
@@ -143,24 +164,30 @@ function Plane() {
 }
 
 export default function Canvas3f(props) {
-    let { selectObj, addMode } = props;
+    let { selectObj, addMode, setSelectObj } = props;
 
-    const cubeTextureLoader = new THREE.CubeTextureLoader();
     const scene = new THREE.Scene();
-    scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
 
 
     return (
         <div style={{ minWidth: '300px', maxWidth: '500px', height: '500px' }}>
             <Canvas scene={scene}>
-                <OrbitControls />
-                <Plane />
-                <gridHelper args={[50, 50]}></gridHelper>
-                <ambientLight />
-                <pointLight position={[50, 50, 50]} />
-                <PerspectiveCamera position={[-10, 30, 30]} makeDefault />
+                <Suspense fallback={<Loader scene={scene} />}>
+                    {/* Mouse controls */}
+                    <OrbitControls />
 
-                <Scene addMode={addMode} selectObj={selectObj}></Scene>
+                    {/* Plane and grids */}
+                    <Plane />
+                    <gridHelper args={[50, 50]}></gridHelper>
+
+                    {/* Lights and camera */}
+                    <ambientLight />
+                    <pointLight position={[50, 50, 50]} />
+                    <PerspectiveCamera position={[-10, 30, 30]} makeDefault />
+
+                    {/* Scene  */}
+                    <Scene addMode={addMode} selectObj={selectObj} setSelectObj={setSelectObj} ></Scene>
+                </Suspense>
 
             </Canvas>
         </div>

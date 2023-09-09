@@ -14,7 +14,8 @@ export default function CanvasContainer(props) {
     return (<Grid container >
         <Grid item xs={10}>
             <Box sx={{ flexGrow: 1 }}>
-                <Canvas3f addMode={addMode} selectObj={selectObj}/>
+                
+                <Canvas3f addMode={addMode} selectObj={selectObj} setSelectObj={setSelectObj} />
             </Box>
         </Grid>
         <Grid item xs={2}>
