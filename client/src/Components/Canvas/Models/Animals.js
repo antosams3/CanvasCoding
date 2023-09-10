@@ -5,6 +5,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export function CatModel(props) {
     const { position } = props;
+    const [hovered, setHover] = React.useState(false);
+    const [active, setActive] = React.useState(false);
+
     const catUrl = new URL('../Assets/Cat.glb', import.meta.url);
     const gltf = useLoader(GLTFLoader, catUrl.href); // Carica il modello GLB
     const modelRef = React.useRef();
@@ -33,10 +36,14 @@ export function CatModel(props) {
     useFrame((state, delta) => {
         if (mixerRef) {
             mixerRef.current.update(delta);
-          }
+        }
     });
 
-    return <primitive object={gltf.scene} ref={modelRef} />;
+    return <primitive object={gltf.scene} scale={active ? 1.5 : 1} ref={modelRef}
+        onClick={(event) => setActive(!active)}
+        onPointerOver={(event) => setHover(true)}
+        onPointerOut={(event) => setHover(false)}
+        wireframe={hovered} />;
 }
 
 export function RabbitModel(props) {
@@ -69,7 +76,7 @@ export function RabbitModel(props) {
     useFrame((state, delta) => {
         if (mixerRef) {
             mixerRef.current.update(delta);
-          }
+        }
     });
 
     return <primitive object={gltf.scene} ref={modelRef} />;
@@ -90,7 +97,7 @@ export function DogModel(props) {
 
         // Aggiungi le animazioni al mixer
         const clips = gltf.animations;
-        clips.forEach(function(clip) {
+        clips.forEach(function (clip) {
             const action = mixerRef.current.clipAction(clip);
             action.play();
         })
@@ -104,7 +111,7 @@ export function DogModel(props) {
     useFrame((state, delta) => {
         if (mixerRef) {
             mixerRef.current.update(delta);
-          }
+        }
     });
 
     return <primitive object={gltf.scene} ref={modelRef} />;

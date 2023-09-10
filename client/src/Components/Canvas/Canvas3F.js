@@ -29,7 +29,7 @@ export default function Canvas3f(props) {
 
     return (
         <div style={{ minWidth: '300px', maxWidth: '500px', height: '500px' }}>
-            <Canvas scene={scene}>
+            <Canvas scene={scene}  onPointerMissed={() => console.log('missed')}>
                 <Suspense fallback={<Loader scene={scene} />}>
                     {/* Mouse controls */}
                     <OrbitControls />
