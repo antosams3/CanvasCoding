@@ -3,28 +3,31 @@ import * as THREE from 'three';
 import { useThree } from "@react-three/fiber";
 import { DogModel, CatModel, RabbitModel } from "../Models/Animals";
 import { Sphere, Box } from "../Objects/Objects";
+import { HighlightMesh } from "./Floor";
 
 
 export function Scene(props) {
     const { addMode, selectObj, setSelectObj } = props;
+
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
-    const plane = new THREE.Plane();
-    const planeNormal = new THREE.Vector3();
-    const [intersectionPoint, setIntersectionPoint] = React.useState(new THREE.Vector3());
-    //const intersectionPoint = new THREE.Vector3();
+    const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5,1,0.5));
     const [objects, setObjects] = React.useState([]);
+
+
+    let intersectionsArray;
     const rayCaster = new THREE.Raycaster();
 
-    const { camera, scene, gl } = useThree()
-
-    // viewport = canvas in 3d units (meters)
+    const { camera, scene, gl } = useThree();
 
 
     const handleClick = () => {
         if (addMode) {
 
             if (selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE') {
-                setObjects([...objects, selectObj[0]]);
+                const newobj = { id: objects.length + 1,
+                                 type: selectObj[0],
+                                 position: highlightPos }
+                setObjects([...objects, newobj]);
                 setSelectObj([]);
             }
         }
@@ -38,7 +41,7 @@ export function Scene(props) {
             // Rimozione event listeners quando il componente viene smontato.
             window.removeEventListener('click', handleClick);
         };
-    }, [addMode, selectObj]);
+    }, [highlightPos]);
 
     const handleMove = (e) => {
         /* Configurazione Raycaster con coordinate del mouse relative al Canvas */
@@ -48,11 +51,14 @@ export function Scene(props) {
         mousePosition.x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
         mousePosition.y = - ((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
 
-        planeNormal.copy(camera.position).normalize();
-        plane.setFromNormalAndCoplanarPoint(planeNormal, scene.position);
         rayCaster.setFromCamera(mousePosition, camera);
-        rayCaster.ray.intersectPlane(plane, intersectionPoint);
-
+        intersectionsArray = rayCaster.intersectObjects(scene.children);
+        
+        intersectionsArray.forEach((intersect) => {
+            if (intersect.object.name === 'ground') {
+                setHighlightPos(new THREE.Vector3().copy(intersect.point).floor().addScalar(0.5));
+            }
+        })
     }
 
     React.useEffect(() => {
@@ -68,6 +74,9 @@ export function Scene(props) {
 
     return (
         <>
+            {addMode? <HighlightMesh position={highlightPos} /> : '' }
+           
+
             {/* Fixed objects */}
             <Box position={[-1.2, 0, 0]} addMode={addMode} />
             <Box position={[1.2, 0, 0]} addMode={addMode} />
@@ -80,9 +89,9 @@ export function Scene(props) {
             <RabbitModel position={[7, 0, 0]} />
 
             {/* User objects  */}
-            {objects.map((obj) => obj === 'SPHERE' ?
-                <Sphere position={intersectionPoint} key={obj} addMode={addMode} size={[1, 10, 10]} /> :
-                <Box position={intersectionPoint} key={obj} addMode={addMode} />
+            {objects.map((obj) => obj.type === 'SPHERE' ?
+                <Sphere position={obj.position} key={obj.id} addMode={addMode} size={[1, 10, 10]} /> :
+                <Box position={obj.position} key={obj.id} addMode={addMode} />
             )}
 
         </>

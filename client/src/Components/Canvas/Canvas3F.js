@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import stars from '../../Wallpaper/stars.jpg';
 import { PerspectiveCamera, OrbitControls, Html, useProgress, PointerLockControls } from '@react-three/drei';
 import { Scene } from './UI/Scene';
-import { Floor, HighlightMesh } from "./UI/Floor";
+import { Floor } from "./UI/Floor";
 
 
 function Loader(props) {
@@ -36,7 +36,6 @@ export default function Canvas3f(props) {
                     
                     {/* Plane and grids */}
                     <Floor/>
-                    <HighlightMesh/>
                     {addMode ? <gridHelper args={[50, 50]}></gridHelper> : ''}
 
                     {/* Lights and camera */}
