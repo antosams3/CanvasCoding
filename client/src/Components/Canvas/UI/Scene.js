@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as THREE from 'three';
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { DogModel, CatModel, RabbitModel } from "../Models/Animals";
 import { Sphere, Box } from "../Objects/Objects";
 

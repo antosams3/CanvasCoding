@@ -3,9 +3,9 @@ import * as React from 'react';
 import { Suspense } from "react";
 import * as THREE from 'three';
 import stars from '../../Wallpaper/stars.jpg';
-import { PerspectiveCamera, OrbitControls, Html, useProgress } from '@react-three/drei';
+import { PerspectiveCamera, OrbitControls, Html, useProgress, PointerLockControls } from '@react-three/drei';
 import { Scene } from './UI/Scene';
-import { Floor } from "./UI/Floor";
+import { Floor, HighlightMesh } from "./UI/Floor";
 
 
 function Loader(props) {
@@ -22,22 +22,23 @@ function Loader(props) {
 
 
 export default function Canvas3f(props) {
-    let { selectObj, addMode, setSelectObj } = props;
+    let { selectObj, addMode, setSelectObj, FPView } = props;
 
     const scene = new THREE.Scene();
 
 
     return (
         <div style={{ minWidth: '300px', maxWidth: '500px', height: '500px' }}>
-            <Canvas scene={scene}  onPointerMissed={() => console.log('missed')}>
+            <Canvas scene={scene} >
                 <Suspense fallback={<Loader scene={scene} />}>
                     {/* Mouse controls */}
-                    <OrbitControls />
-
-                    {/* Plane and grids */}
-                    <Floor />
-                    {addMode? <gridHelper args={[50, 50]}></gridHelper>: ''}
+                    {FPView? <PointerLockControls /> : <OrbitControls />}
                     
+                    {/* Plane and grids */}
+                    <Floor/>
+                    <HighlightMesh/>
+                    {addMode ? <gridHelper args={[50, 50]}></gridHelper> : ''}
+
                     {/* Lights and camera */}
                     <ambientLight />
                     <pointLight position={[50, 50, 50]} />
