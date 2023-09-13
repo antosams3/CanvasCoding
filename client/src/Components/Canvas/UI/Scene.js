@@ -10,8 +10,9 @@ export function Scene(props) {
     const { addMode, selectObj, setSelectObj } = props;
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
-    const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5,1,0.5));
+    const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5));
     const [objects, setObjects] = React.useState([]);
+    const [overlap, setOverlap] = React.useState(false);
 
 
     let intersectionsArray;
@@ -24,11 +25,22 @@ export function Scene(props) {
         if (addMode) {
 
             if (selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE') {
-                const newobj = { id: objects.length + 1,
-                                 type: selectObj[0],
-                                 position: highlightPos }
-                setObjects([...objects, newobj]);
-                setSelectObj([]);
+
+                const find = objects.find(function (object) {
+                    return (object.position.x === highlightPos.x) && (object.position.z === highlightPos.z)
+                });
+
+                if (!find) {
+                    const newobj = {
+                        id: objects.length + 1,
+                        type: selectObj[0],
+                        position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)
+                    }
+                    setObjects([...objects, newobj]);
+                    setSelectObj([]);
+                    setOverlap(true);
+                }
+
             }
         }
     }
@@ -53,12 +65,28 @@ export function Scene(props) {
 
         rayCaster.setFromCamera(mousePosition, camera);
         intersectionsArray = rayCaster.intersectObjects(scene.children);
-        
+
         intersectionsArray.forEach((intersect) => {
             if (intersect.object.name === 'ground') {
-                setHighlightPos(new THREE.Vector3().copy(intersect.point).floor().addScalar(0.5));
+                const newpos = new THREE.Vector3().copy(intersect.point).floor().addScalar(0.5);
+                setHighlightPos(newpos);
+
+                const find = objects.find(function (object) {
+                    return (object.position.x === newpos.x) && (object.position.z === newpos.z)
+                });
+        
+                if(find){
+                    setOverlap(true);
+                }else{
+                    setOverlap(false);
+                }
+
             }
-        })
+
+            
+        });
+
+
     }
 
     React.useEffect(() => {
@@ -69,13 +97,12 @@ export function Scene(props) {
             window.removeEventListener('mousemove', handleMove);
         };
 
-    }, [addMode]);
+    }, [addMode,highlightPos]);
 
 
     return (
         <>
-            {addMode? <HighlightMesh position={highlightPos} /> : '' }
-           
+            {addMode ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
             <Box position={[-1.2, 0, 0]} addMode={addMode} />
