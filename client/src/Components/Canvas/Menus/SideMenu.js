@@ -5,15 +5,23 @@ import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function SideMenu(props) {
-    const { addMode, setAddMode, setSelectObj, selectObj, setFPView, FPView } = props;
+    const { addMode, setAddMode, setSelectObj, selectObj, setFPView, FPView, setDeleteMode } = props;
 
     return (<Stack spacing={1} direction="column">
         <FormControlLabel control={<Switch />} label="View" onClick={() => { setFPView(!FPView); }} />
         <FormControlLabel control={<Switch />} label="Add" onClick={() => { setAddMode(!addMode); setSelectObj([]); }} />
-        <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
-        <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button>
+
+        {addMode? 
+        <><Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
+        <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button></>
+        : Object.keys(selectObj).length? /* Check objects selection */
+        <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setDeleteMode(true); }} > Delete </Button>
+        : '' }
+        
+        
     </Stack>)
 
 }

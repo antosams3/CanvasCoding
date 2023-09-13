@@ -7,7 +7,7 @@ import { HighlightMesh } from "./Floor";
 
 
 export function Scene(props) {
-    const { addMode, selectObj, setSelectObj } = props;
+    const { addMode, selectObj, setSelectObj, deleteMode, setDeleteMode } = props;
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5));
@@ -20,6 +20,18 @@ export function Scene(props) {
 
     const { camera, scene, gl } = useThree();
 
+    React.useEffect(() => {
+        if (deleteMode) {
+            const index = objects.indexOf(selectObj);
+            if (index !== -1) {
+                const newObjects = [...objects];
+                newObjects.splice(index, 1); 
+                setObjects(newObjects);
+                setSelectObj([]);
+                setDeleteMode(false);
+            }
+        }
+    }, [deleteMode, objects, selectObj]);
 
     const handleClick = () => {
         if (addMode) {
@@ -108,10 +120,10 @@ export function Scene(props) {
             {addMode ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
-            <Box position={[-1.2, 0, 0]} addMode={addMode} />
-            <Box position={[1.2, 0, 0]} addMode={addMode} />
-            <Sphere position={[-2, 2, 0]} addMode={addMode} size={[2, 50, 50]} />
-            <Sphere position={[8, 5, 0]} addMode={addMode} size={[1, 10, 10]} />
+            <Box position={[-1.2, 0, 0]} addMode={addMode} object={-3} setSelectObj={setSelectObj} />
+            <Box position={[1.2, 0, 0]} addMode={addMode} object={-2} setSelectObj={setSelectObj} />
+            <Sphere position={[-2, 2, 0]} addMode={addMode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} />
+            <Sphere position={[8, 5, 0]} addMode={addMode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} />
 
             {/* Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />
@@ -120,8 +132,8 @@ export function Scene(props) {
 
             {/* User objects  */}
             {objects.map((obj) => obj.type === 'SPHERE' ?
-                <Sphere position={obj.position} key={obj.id} addMode={addMode} size={[1, 10, 10]} /> :
-                <Box position={obj.position} key={obj.id} addMode={addMode} setSelectObj={setSelectObj} />
+                <Sphere position={obj.position} key={obj.id} object={obj} addMode={addMode} setSelectObj={setSelectObj} size={[1, 10, 10]} /> :
+                <Box position={obj.position} key={obj.id} object={obj} addMode={addMode} setSelectObj={setSelectObj} />
             )}
 
         </>

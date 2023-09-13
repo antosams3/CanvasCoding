@@ -3,23 +3,33 @@ import * as React from 'react';
 import * as dat from 'dat.gui';
 
 export function Box(props) {
-    const { addMode } = props;     // This reference will give us direct access to the mesh
+    const { addMode, setSelectObj, object } = props;     // This reference will give us direct access to the mesh
     const meshRef = React.useRef()    // Set up state for the hovered and active state
 
     const [hovered, setHover] = React.useState(false);
     const [active, setActive] = React.useState(false);
 
+    const handleClick = () => {
+        if(!active){
+            setSelectObj(object);
+        }else{
+            setSelectObj([]);
+        }
+        setActive(!active);
+    }
+    
     // Subscribe this component to the render-loop, rotate the mesh every frame
     useFrame((state, delta) => {
         meshRef.current.rotation.x += delta;
         })
+    
 
     return (
         <mesh
             {...props}
             ref={meshRef}
             scale={active ? 1.5 : 1}
-            onClick={(event) => setActive(!active)}
+            onClick={() => handleClick()}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <boxGeometry args={[1, 1, 1]} />
@@ -29,7 +39,7 @@ export function Box(props) {
 }
 
 export function Sphere(props) {
-    const { size, addMode } = props;
+    const { size, addMode, setSelectObj, object } = props;
     const meshRef = React.useRef();
 
     const [hovered, setHover] = React.useState(false);
@@ -41,6 +51,15 @@ export function Sphere(props) {
         sphereWireframe: false,
         sphereSpeed: 0.01
     });
+
+    const handleClick = () => {
+        if(!active){
+            setSelectObj(object);
+        }else{
+            setSelectObj([]);
+        }
+        setActive(!active);
+    }
 
 
     React.useEffect(() => {
@@ -76,7 +95,7 @@ export function Sphere(props) {
             {...props}
             ref={meshRef}
             scale={active ? 1.5 : 1}
-            onClick={(event) => setActive(!active)}
+            onClick={() => handleClick()}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <sphereGeometry args={[size[0], size[1], size[2]]} />
