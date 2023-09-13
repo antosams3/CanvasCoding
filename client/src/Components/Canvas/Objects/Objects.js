@@ -55,6 +55,8 @@ export function Sphere(props) {
         })
 
         gui.add(options, 'sphereSpeed', 0, 0.1); // Define min value 0 and maxValue 0.1
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

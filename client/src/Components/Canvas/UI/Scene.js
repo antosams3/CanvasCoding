@@ -53,6 +53,7 @@ export function Scene(props) {
             // Rimozione event listeners quando il componente viene smontato.
             window.removeEventListener('click', handleClick);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [highlightPos]);
 
     const handleMove = (e) => {
@@ -60,8 +61,10 @@ export function Scene(props) {
         const canvas = gl.domElement;
         const rect = canvas.getBoundingClientRect();
 
-        mousePosition.x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-        mousePosition.y = - ((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+        const newmousep = mousePosition;
+        newmousep.x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+        newmousep.y = - ((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+        setMousePosition(newmousep);
 
         rayCaster.setFromCamera(mousePosition, camera);
         intersectionsArray = rayCaster.intersectObjects(scene.children);
@@ -74,16 +77,16 @@ export function Scene(props) {
                 const find = objects.find(function (object) {
                     return (object.position.x === newpos.x) && (object.position.z === newpos.z)
                 });
-        
-                if(find){
+
+                if (find) {
                     setOverlap(true);
-                }else{
+                } else {
                     setOverlap(false);
                 }
 
             }
 
-            
+
         });
 
 
@@ -96,8 +99,8 @@ export function Scene(props) {
         return () => {
             window.removeEventListener('mousemove', handleMove);
         };
-
-    }, [addMode,highlightPos]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addMode, highlightPos]);
 
 
     return (
@@ -118,7 +121,7 @@ export function Scene(props) {
             {/* User objects  */}
             {objects.map((obj) => obj.type === 'SPHERE' ?
                 <Sphere position={obj.position} key={obj.id} addMode={addMode} size={[1, 10, 10]} /> :
-                <Box position={obj.position} key={obj.id} addMode={addMode} />
+                <Box position={obj.position} key={obj.id} addMode={addMode} setSelectObj={setSelectObj} />
             )}
 
         </>

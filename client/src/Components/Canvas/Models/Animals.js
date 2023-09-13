@@ -31,6 +31,7 @@ export function CatModel(props) {
         if (modelRef.current) {
             modelRef.current.position.set(position[0], position[1], position[2]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     });
 
     useFrame((state, delta) => {
@@ -71,6 +72,7 @@ export function RabbitModel(props) {
         if (modelRef.current) {
             modelRef.current.position.set(position[0], position[1], position[2]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useFrame((state, delta) => {
@@ -106,6 +108,7 @@ export function DogModel(props) {
         if (modelRef.current) {
             modelRef.current.position.set(position[0], position[1], position[2]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useFrame((state, delta) => {

@@ -16,7 +16,7 @@ function App() {
 
 function Root() {
   const [loggedIn, setLoggedIn] = useState(false);        /* Boolean user login status (true,false) */
-  const [loggedUser, setLoggedUser] = useState(false);    /* Contains logged user info */
+  //const [loggedUser, setLoggedUser] = useState(false);    /* Contains logged user info */
   const [runStatus, setRunStatus] = useState("paused");  /* runStatus in: compiling, paused, debugging */
   const [message, setMessage] = useState('');             /* Contains Welcome messages for login */
 

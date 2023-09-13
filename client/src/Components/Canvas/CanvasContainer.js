@@ -1,6 +1,5 @@
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Canvas from './Canvas';
 import Canvas3f from './Canvas3F';
 
 import SideMenu from './Menus/SideMenu';
@@ -11,6 +10,7 @@ export default function CanvasContainer(props) {
     const [addMode, setAddMode] = React.useState(false);
     const [FPView, setFPView] = React.useState(false);
     const [selectObj, setSelectObj] = React.useState([]);
+    console.log(selectObj);
 
     return (<Grid container >
         <Grid item xs={10}>

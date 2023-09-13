@@ -7,7 +7,7 @@ import CustomDialog from './CustomDialog';
 import CanvasContainer from './Canvas/CanvasContainer';
 
 export default function Homepage(props) {
-    const { loggedIn } = props;
+    //const { loggedIn } = props;
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
