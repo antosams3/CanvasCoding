@@ -9,25 +9,30 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
 export default function SideMenu(props) {
-    const { addMode, setAddMode, setSelectObj, selectObj, setFPView, FPView, setDeleteMode, setMoveMode, moveMode } = props;
+    const { mode, setMode, setSelectObj, selectObj, setFPView, FPView } = props;
+
+    const handleAddClick = () => {
+        !mode ? setMode('ADD') : setMode(null);
+        setSelectObj([]);
+    }
 
     return (<Stack spacing={1} direction="column">
         <FormControlLabel control={<Switch />} label="View" onClick={() => { setFPView(!FPView); }} />
-        <FormControlLabel control={<Switch />} label="Add" onClick={() => { setAddMode(!addMode); setSelectObj([]); }} />
+        <FormControlLabel control={<Switch disabled={!Object.keys(selectObj).length ? false : true} onClick={() => { handleAddClick() }}/>} label="Add" />
 
-        {addMode? 
-        <>
-        <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
-        <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={addMode ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button>
-        </>
-        : Object.keys(selectObj).length? /* If object selected  */
-        <>
-        <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setDeleteMode(true); }} > Delete </Button>
-        <Button variant={moveMode? "outlined":"text"} startIcon={<PanToolIcon />} onClick={() => { setMoveMode(!moveMode); }} > Move </Button>
-        </>
-        : '' }
-        
-        
+        {mode === 'ADD' ?
+            <>
+                <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
+                <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button>
+            </>
+            : Object.keys(selectObj).length ? /* If object selected  */
+                <>
+                    <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setMode('DEL'); }} > Delete </Button>
+                    <Button variant={mode === 'MOVE' ? "outlined" : "text"} startIcon={<PanToolIcon />} onClick={() => { !mode ? setMode('MOVE') : setMode(null); }} > Move </Button>
+                </>
+                : ''}
+
+
     </Stack>)
 
 }

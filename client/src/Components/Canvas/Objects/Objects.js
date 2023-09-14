@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as dat from 'dat.gui';
 
 export function Box(props) {
-    const { addMode, setSelectObj, object } = props;     // This reference will give us direct access to the mesh
+    const { mode, setSelectObj, object } = props;     // This reference will give us direct access to the mesh
     const meshRef = React.useRef()    // Set up state for the hovered and active state
 
     const [hovered, setHover] = React.useState(false);
@@ -33,13 +33,13 @@ export function Box(props) {
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color={addMode ? 'hotpink' : 'orange'} wireframe={hovered} />
+            <meshStandardMaterial color={mode === 'ADD' ? 'hotpink' : 'orange'} wireframe={hovered} />
         </mesh>
     )
 }
 
 export function Sphere(props) {
-    const { size, addMode, setSelectObj, object } = props;
+    const { size, mode, setSelectObj, object } = props;
     const meshRef = React.useRef();
 
     const [hovered, setHover] = React.useState(false);
@@ -102,7 +102,7 @@ export function Sphere(props) {
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <sphereGeometry args={[size[0], size[1], size[2]]} />
-            <meshStandardMaterial color={addMode ? 'hotpink' : 'orange'} wireframe={hovered} />
+            <meshStandardMaterial color={mode === 'ADD' ? 'hotpink' : 'orange'} wireframe={hovered} />
         </mesh>
     )
 }

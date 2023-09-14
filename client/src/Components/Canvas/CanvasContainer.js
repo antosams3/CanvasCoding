@@ -7,21 +7,18 @@ import * as React from 'react';
 
 export default function CanvasContainer(props) {
 
-    const [addMode, setAddMode] = React.useState(false);
-    const [deleteMode, setDeleteMode] = React.useState(false);
-    const [moveMode, setMoveMode] = React.useState(false);
-
+    const [mode, setMode] = React.useState(null); // Mode in: null, 'ADD', 'DEL', 'MOVE'
     const [FPView, setFPView] = React.useState(false);
     const [selectObj, setSelectObj] = React.useState([]);
 
     return (<Grid container >
         <Grid item xs={10}>
             <Box sx={{ flexGrow: 1 }}>
-                <Canvas3f addMode={addMode} selectObj={selectObj} setSelectObj={setSelectObj} FPView={FPView} deleteMode={deleteMode} setDeleteMode={setDeleteMode} setMoveMode={setMoveMode} moveMode={moveMode} />
+                <Canvas3f mode={mode} setMode={setMode} selectObj={selectObj} setSelectObj={setSelectObj} FPView={FPView} />
             </Box>
         </Grid>
         <Grid item xs={2}>
-            <SideMenu addMode={addMode} setAddMode={setAddMode} setDeleteMode={setDeleteMode} setMoveMode={setMoveMode} setSelectObj={setSelectObj} selectObj={selectObj} setFPView={setFPView} FPView={FPView} moveMode={moveMode} /> 
+            <SideMenu mode={mode} setMode={setMode} setSelectObj={setSelectObj} selectObj={selectObj} setFPView={setFPView} FPView={FPView} /> 
         </Grid>
     </Grid>)
 }

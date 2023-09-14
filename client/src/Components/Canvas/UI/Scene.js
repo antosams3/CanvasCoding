@@ -7,7 +7,7 @@ import { HighlightMesh } from "./Floor";
 
 
 export function Scene(props) {
-    const { addMode, selectObj, setSelectObj, deleteMode, setDeleteMode, moveMode, setMoveMode } = props;
+    const { selectObj, setSelectObj, mode, setMode } = props;
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5));
@@ -21,7 +21,7 @@ export function Scene(props) {
     const { camera, scene, gl } = useThree();
 
     React.useEffect(() => {
-        if (deleteMode) {
+        if (mode === 'DEL') {
             /* Remove selected object from the array */
             const index = objects.indexOf(selectObj);
             if (index !== -1) {
@@ -29,19 +29,16 @@ export function Scene(props) {
                 newObjects.splice(index, 1);
                 setObjects(newObjects);
                 setSelectObj([]);
-                setDeleteMode(false);
+                setMode(null);
             }
-        }
-        if (moveMode) {
-            setMoveMode(false); //Deselect move mode when selectObject changes 
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [deleteMode, objects, selectObj]);
+    }, [mode, objects, selectObj]);
 
     const handleClick = () => {
 
-        if (addMode) {
+        if (mode === 'ADD') {
             /* Add new object to the scene */
             if (selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE') {
 
@@ -63,7 +60,7 @@ export function Scene(props) {
             }
         }
 
-        if (moveMode && !overlap) {
+        if (mode === 'MOVE' && !overlap) {
             /* Move existing object to a new position */
 
             const index = objects.indexOf(selectObj);
@@ -76,7 +73,7 @@ export function Scene(props) {
             newObjects.splice(index, 1, newObj); // Remove element in index position, replace with newObj
             setObjects(newObjects);
             setSelectObj([]);
-            setMoveMode(false);
+            setMode(null);
 
         }
     }
@@ -137,18 +134,18 @@ export function Scene(props) {
             window.removeEventListener('mousemove', handleMove);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addMode, highlightPos]);
+    }, [mode, highlightPos]);
 
 
     return (
         <>
-            {(addMode || moveMode) ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
+            {(mode === 'ADD' || mode === 'MOVE') ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
-            <Box position={[-1.2, 0, 0]} addMode={addMode} object={-3} setSelectObj={setSelectObj} />
-            <Box position={[1.2, 0, 0]} addMode={addMode} object={-2} setSelectObj={setSelectObj} />
-            <Sphere position={[-2, 2, 0]} addMode={addMode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} />
-            <Sphere position={[8, 5, 0]} addMode={addMode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} />
+            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} />
+            <Box position={[1.2, 0, 0]} mode={mode} object={-2} setSelectObj={setSelectObj} />
+            <Sphere position={[-2, 2, 0]} mode={mode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} />
+            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} />
 
             {/* Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />
@@ -157,8 +154,8 @@ export function Scene(props) {
 
             {/* User objects  */}
             {objects.map((obj) => obj.type === 'SPHERE' ?
-                <Sphere position={obj.position} key={obj.id} object={obj} addMode={addMode} setSelectObj={setSelectObj} size={[1, 10, 10]} /> :
-                <Box position={obj.position} key={obj.id} object={obj} addMode={addMode} setSelectObj={setSelectObj} />
+                <Sphere position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} size={[1, 10, 10]} /> :
+                <Box position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} />
             )}
 
         </>
