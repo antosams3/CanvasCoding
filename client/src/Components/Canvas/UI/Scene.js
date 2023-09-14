@@ -63,7 +63,7 @@ export function Scene(props) {
             }
         }
 
-        if (moveMode && Object.keys(selectObj).length) {
+        if (moveMode && !overlap) {
             /* Move existing object to a new position */
 
             const index = objects.indexOf(selectObj);
