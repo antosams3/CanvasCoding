@@ -10,19 +10,19 @@ export function Box(props) {
     const [active, setActive] = React.useState(false);
 
     const handleClick = () => {
-        if(!active){
+        if (!active) {
             setSelectObj(object);
-        }else{
+        } else {
             setSelectObj([]);
         }
         setActive(!active);
     }
-    
+
     // Subscribe this component to the render-loop, rotate the mesh every frame
     useFrame((state, delta) => {
         meshRef.current.rotation.x += delta;
-        })
-    
+    })
+
 
     return (
         <mesh
@@ -53,9 +53,9 @@ export function Sphere(props) {
     });
 
     const handleClick = () => {
-        if(!active){
+        if (!active) {
             setSelectObj(object);
-        }else{
+        } else {
             setSelectObj([]);
         }
         setActive(!active);
@@ -63,20 +63,23 @@ export function Sphere(props) {
 
 
     React.useEffect(() => {
-        const gui = new dat.GUI();
+        if (active) {
+            const gui = new dat.GUI();
 
-        gui.addColor(options, 'sphereColor').onChange(function (e) {
-            meshRef.current.material.color.set(e);
-        })
+            gui.addColor(options, 'sphereColor').onChange(function (e) {
+                meshRef.current.material.color.set(e);
+            })
 
-        gui.add(options, 'sphereWireframe').onChange(function (e) {
-            meshRef.current.material.wireframe = e;
-        })
+            gui.add(options, 'sphereWireframe').onChange(function (e) {
+                meshRef.current.material.wireframe = e;
+            })
 
-        gui.add(options, 'sphereSpeed', 0, 0.1); // Define min value 0 and maxValue 0.1
+            gui.add(options, 'sphereSpeed', 0, 0.1); // Define min value 0 and maxValue 0.1
+        }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [active]);
 
 
     useFrame(() => {

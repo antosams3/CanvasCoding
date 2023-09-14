@@ -7,7 +7,7 @@ import { HighlightMesh } from "./Floor";
 
 
 export function Scene(props) {
-    const { addMode, selectObj, setSelectObj, deleteMode, setDeleteMode } = props;
+    const { addMode, selectObj, setSelectObj, deleteMode, setDeleteMode, moveMode, setMoveMode } = props;
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5));
@@ -22,20 +22,27 @@ export function Scene(props) {
 
     React.useEffect(() => {
         if (deleteMode) {
+            /* Remove selected object from the array */
             const index = objects.indexOf(selectObj);
             if (index !== -1) {
                 const newObjects = [...objects];
-                newObjects.splice(index, 1); 
+                newObjects.splice(index, 1);
                 setObjects(newObjects);
                 setSelectObj([]);
                 setDeleteMode(false);
             }
         }
+        if (moveMode) {
+            setMoveMode(false); //Deselect move mode when selectObject changes 
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deleteMode, objects, selectObj]);
 
     const handleClick = () => {
-        if (addMode) {
 
+        if (addMode) {
+            /* Add new object to the scene */
             if (selectObj[0] === 'BOX' || selectObj[0] === 'SPHERE') {
 
                 const find = objects.find(function (object) {
@@ -55,16 +62,34 @@ export function Scene(props) {
 
             }
         }
+
+        if (moveMode && Object.keys(selectObj).length) {
+            /* Move existing object to a new position */
+
+            const index = objects.indexOf(selectObj);
+            let newObj = {
+                id: selectObj.id,
+                type: selectObj.type,
+                position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)
+            }
+            const newObjects = [...objects];
+            newObjects.splice(index, 1, newObj); // Remove element in index position, replace with newObj
+            setObjects(newObjects);
+            setSelectObj([]);
+            setMoveMode(false);
+
+        }
     }
 
     React.useEffect(() => {
-        // Event listeners
+        /* Click event listener */
         window.addEventListener('click', handleClick);
 
         return () => {
-            // Rimozione event listeners quando il componente viene smontato.
+            // Rimozione event listener quando il componente viene smontato.
             window.removeEventListener('click', handleClick);
         };
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [highlightPos]);
 
@@ -117,7 +142,7 @@ export function Scene(props) {
 
     return (
         <>
-            {addMode ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
+            {(addMode || moveMode) ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
             <Box position={[-1.2, 0, 0]} addMode={addMode} object={-3} setSelectObj={setSelectObj} />

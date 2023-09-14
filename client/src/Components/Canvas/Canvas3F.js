@@ -22,7 +22,7 @@ function Loader(props) {
 
 
 export default function Canvas3f(props) {
-    let { selectObj, addMode, setSelectObj, FPView, deleteMode, setDeleteMode } = props;
+    let { selectObj, addMode, setSelectObj, FPView, deleteMode, setDeleteMode, moveMode, setMoveMode } = props;
 
     const scene = new THREE.Scene();
 
@@ -36,7 +36,7 @@ export default function Canvas3f(props) {
                     
                     {/* Plane and grids */}
                     <Floor/>
-                    {addMode ? <gridHelper args={[50, 50]}></gridHelper> : ''}
+                    {(addMode || moveMode) ? <gridHelper args={[50, 50]}></gridHelper> : ''}
 
                     {/* Lights and camera */}
                     <ambientLight />
@@ -44,7 +44,7 @@ export default function Canvas3f(props) {
                     <PerspectiveCamera position={[-10, 30, 30]} makeDefault />
 
                     {/* Scene  */}
-                    <Scene addMode={addMode} selectObj={selectObj} setSelectObj={setSelectObj} deleteMode={deleteMode} setDeleteMode={setDeleteMode} ></Scene>
+                    <Scene addMode={addMode} selectObj={selectObj} setSelectObj={setSelectObj} deleteMode={deleteMode} setDeleteMode={setDeleteMode} setMoveMode={setMoveMode} moveMode={moveMode} ></Scene>
                 </Suspense>
 
             </Canvas>
