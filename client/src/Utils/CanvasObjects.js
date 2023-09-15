@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { RabbitModel } from "../Components/Canvas/Models/Animals.js";
 import { Sphere, Box } from "../Components/Canvas/Objects/Objects.js";
 
 function createGeometry(type, size) {
@@ -40,7 +39,6 @@ export function printObject(obj, setSelectObj, mode) {
   switch (obj.type) {
     case 'SPHERE': return <Sphere position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} size={[1, 10, 10]} />
     case 'BOX': return <Box position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} />
-    case 'RABBIT': return <RabbitModel key={obj.id} position={obj.position} />
     default: return <></>
   }
 

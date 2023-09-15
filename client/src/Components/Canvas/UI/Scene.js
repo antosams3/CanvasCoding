@@ -47,6 +47,7 @@ export function Scene(props) {
                     type: selectObj[0],
                     position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)
                 }
+                console.log(newobj)
                 setObjects([...objects, newobj]);                                           // Update objects array
                 setIndex(index + 1);                                                        // Update index
                 setSelectObj([]);                                                           // Deselect object 
@@ -62,6 +63,7 @@ export function Scene(props) {
                 type: selectObj.type,
                 position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)            // Update position coordinates
             }
+            console.log(newObj)
             const newObjects = [...objects];
             newObjects.splice(index, 1, newObj);                                            // Remove element in position index, replace with newObj
             setObjects(newObjects);                                                         // Update objects array
@@ -99,15 +101,18 @@ export function Scene(props) {
     }
 
     React.useEffect(() => {
-        /* Event listeners */
-        window.addEventListener('click', handleClick);
-        window.addEventListener('mousemove', handleMove);
+        
+        if (mode === 'ADD' || mode === 'MOVE') {
+            /* Event listeners */
+            window.addEventListener('click', handleClick);
+            window.addEventListener('mousemove', handleMove);
 
-        /* Event listeners removed when component is unmounted */
-        return () => {
-            window.removeEventListener('click', handleClick);
-            window.removeEventListener('mousemove', handleMove);
-        };
+            /* Event listeners removed when component is unmounted */
+            return () => {
+                window.removeEventListener('click', handleClick);
+                window.removeEventListener('mousemove', handleMove);
+            };
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mode, highlightPos]);
@@ -125,7 +130,7 @@ export function Scene(props) {
             {/* Fixed Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />
             <CatModel position={[5, 0.2, 0]} />
-            <RabbitModel position={[7, 0, 0]} />
+            <RabbitModel position={new THREE.Vector3(7,0,0)} />
 
 
             {/* User movable objects  */}

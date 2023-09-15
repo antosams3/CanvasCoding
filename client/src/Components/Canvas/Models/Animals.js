@@ -72,7 +72,7 @@ export function RabbitModel(props) {
 
         // Aggiorna la posizione del modello
         if (modelRef.current) {
-            modelRef.current.position.set(position[0], position[1], position[2]);
+            modelRef.current.position.set(position.x, 0, position.z);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -83,8 +83,7 @@ export function RabbitModel(props) {
         }
     });
 
-    return <primitive object={gltf.scene} scale={active ? 1.5 : 1} ref={modelRef}
-        onClick={(event) => setActive(!active)} />;
+    return <primitive object={gltf.scene} scale={active ? 1.5 : 1} onClick={() => setActive(!active)} ref={modelRef} />;
 }
 
 export function DogModel(props) {
@@ -120,5 +119,5 @@ export function DogModel(props) {
         }
     });
 
-    return <primitive object={gltf.scene} ref={modelRef} />;
+    return <primitive object={gltf.scene} scale={0.3} ref={modelRef} />;
 }

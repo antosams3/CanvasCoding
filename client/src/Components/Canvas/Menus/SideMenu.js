@@ -7,7 +7,6 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PanToolIcon from '@mui/icons-material/PanTool';
-import PetsIcon from '@mui/icons-material/Pets';
 
 export default function SideMenu(props) {
     const { mode, setMode, setSelectObj, selectObj, setFPView, FPView } = props;
@@ -19,13 +18,12 @@ export default function SideMenu(props) {
 
     return (<Stack spacing={1} direction="column">
         <FormControlLabel control={<Switch />} label="View" onClick={() => { setFPView(!FPView); }} />
-        <FormControlLabel control={<Switch disabled={!Object.keys(selectObj).length ? false : true} onClick={() => { handleAddClick() }}/>} label="Add" />
+        <FormControlLabel control={<Switch disabled={!Object.keys(selectObj).length ? false : true} onClick={() => { handleAddClick() }} />} label="Add" />
 
         {mode === 'ADD' ?
             <>
-                <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
-                <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button>
-                <Button variant={selectObj[0] === 'RABBIT' ? "outlined" : "text"} startIcon={<PetsIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['RABBIT']) }} > Rabbit </Button>
+                <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(selectObj).length ? setSelectObj(['BOX']) : setSelectObj([]) }} > Box </Button>
+                <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(selectObj).length ? setSelectObj(['SPHERE']) : setSelectObj([]) }} > Sphere </Button>
             </>
             : Object.keys(selectObj).length ? /* If object selected  */
                 <>
