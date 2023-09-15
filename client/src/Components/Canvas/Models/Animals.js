@@ -50,6 +50,8 @@ export function CatModel(props) {
 export function RabbitModel(props) {
     const { position } = props;
     const rabbitUrl = new URL('../Assets/Rabbit.glb', import.meta.url);
+    const [active, setActive] = React.useState(false);
+
     const gltf = useLoader(GLTFLoader, rabbitUrl.href); // Carica il modello GLB
     const modelRef = React.useRef();
     const mixerRef = React.useRef();
@@ -81,7 +83,8 @@ export function RabbitModel(props) {
         }
     });
 
-    return <primitive object={gltf.scene} ref={modelRef} />;
+    return <primitive object={gltf.scene} scale={active ? 1.5 : 1} ref={modelRef}
+        onClick={(event) => setActive(!active)} />;
 }
 
 export function DogModel(props) {

@@ -7,6 +7,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PanToolIcon from '@mui/icons-material/PanTool';
+import PetsIcon from '@mui/icons-material/Pets';
 
 export default function SideMenu(props) {
     const { mode, setMode, setSelectObj, selectObj, setFPView, FPView } = props;
@@ -24,6 +25,7 @@ export default function SideMenu(props) {
             <>
                 <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['BOX']) }} > Box </Button>
                 <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['SPHERE']) }} > Sphere </Button>
+                <Button variant={selectObj[0] === 'RABBIT' ? "outlined" : "text"} startIcon={<PetsIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { setSelectObj(['RABBIT']) }} > Rabbit </Button>
             </>
             : Object.keys(selectObj).length ? /* If object selected  */
                 <>

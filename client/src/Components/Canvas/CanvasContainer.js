@@ -18,7 +18,7 @@ export default function CanvasContainer(props) {
             </Box>
         </Grid>
         <Grid item xs={2}>
-            <SideMenu mode={mode} setMode={setMode} setSelectObj={setSelectObj} selectObj={selectObj} setFPView={setFPView} FPView={FPView} /> 
+            <SideMenu mode={mode} setMode={setMode} setSelectObj={setSelectObj} selectObj={selectObj} setFPView={setFPView} FPView={FPView} />
         </Grid>
     </Grid>)
 }
