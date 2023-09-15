@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as THREE from 'three';
 import { useThree } from "@react-three/fiber";
 import { DogModel, CatModel, RabbitModel } from "../Models/Animals";
-import { Sphere, Box } from "../Objects/Objects";
+import { Sphere, Box, Cone } from "../Objects/Objects";
 import { HighlightMesh } from "./Floor";
 import { printObject } from '../../../Utils/CanvasObjects';
-
+import { Manager } from '../useYuka';
 
 export function Scene(props) {
     const { selectObj, setSelectObj, mode, setMode } = props;                               // SelectObj -> active object, mode -> action from side menu 
@@ -101,7 +101,7 @@ export function Scene(props) {
     }
 
     React.useEffect(() => {
-        
+
         if (mode === 'ADD' || mode === 'MOVE') {
             /* Event listeners */
             window.addEventListener('click', handleClick);
@@ -130,11 +130,15 @@ export function Scene(props) {
             {/* Fixed Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />
             <CatModel position={[5, 0.2, 0]} />
-            <RabbitModel position={new THREE.Vector3(7,0,0)} />
+            <RabbitModel position={new THREE.Vector3(7, 0, 0)} />
 
 
             {/* User movable objects  */}
             {objects.map((obj) => printObject(obj, setSelectObj, mode))}
+
+            <Manager>
+                <Cone name="Cone"></Cone>
+            </Manager>
 
         </>
     );

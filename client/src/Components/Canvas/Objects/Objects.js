@@ -1,6 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import * as React from 'react';
 import * as dat from 'dat.gui';
+import { Vehicle } from 'yuka';
+import { useYuka } from "../useYuka";
 
 export function Box(props) {
     const { mode, setSelectObj, object } = props;     // This reference will give us direct access to the mesh
@@ -34,6 +36,19 @@ export function Box(props) {
             onPointerOut={(event) => setHover(false)}>
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial color={mode === 'ADD' ? 'hotpink' : 'orange'} wireframe={hovered} />
+        </mesh>
+    )
+}
+
+export function Cone(props) {
+    const [ref] = useYuka({ type: Vehicle, ...props });
+
+    return (
+        <mesh
+            {...props}
+            ref={ref}>
+            <coneGeometry args={[10, 10, 10]} />
+            <meshNormalMaterial color={'orange'} />
         </mesh>
     )
 }
