@@ -14,6 +14,13 @@ export function Manager({ children }) {
         path.add(new Vector3(-4, 0, 4));
         path.add(new Vector3(-6, 0, 0));
         path.add(new Vector3(-4, 0, -4));
+        path.loop = true;
+
+        // const position = [];
+        // path._waypoints.forEach((waypoint)=>{
+        //     position.push(waypoint.x, waypoint.y, waypoint.z)
+        // });
+
 
         vehicle.position.copy(path.current())
 
@@ -21,7 +28,9 @@ export function Manager({ children }) {
         followPathBehaviour.active = true;
         followPathBehaviour.path = path;
 
-        vehicle.steering.add(followPathBehaviour)
+        vehicle.steering.add(followPathBehaviour);
+        vehicle.maxSpeed = 3;
+
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

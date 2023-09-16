@@ -136,6 +136,7 @@ export function Scene(props) {
             {/* User movable objects  */}
             {objects.map((obj) => printObject(obj, setSelectObj, mode))}
 
+            {/* Yuka path following Steering Behaviour */}
             <Manager>
                 <Cone name="Cone"></Cone>
             </Manager>

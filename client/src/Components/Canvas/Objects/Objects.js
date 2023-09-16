@@ -47,7 +47,7 @@ export function Cone(props) {
         <mesh
             {...props}
             ref={ref}>
-            <coneGeometry args={[10, 10, 10]} />
+            <coneGeometry args={[0.5, 0.5, 8]} rotateX={Math.PI * 0.5}/>
             <meshNormalMaterial color={'orange'} />
         </mesh>
     )
