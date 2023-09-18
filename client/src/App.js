@@ -15,10 +15,10 @@ function App() {
 }
 
 function Root() {
-  const [loggedIn, setLoggedIn] = useState(false);        /* Boolean user login status (true,false) */
+  const [loggedIn, setLoggedIn] = useState(false);          /* Boolean user login status (true,false) */
   //const [loggedUser, setLoggedUser] = useState(false);    /* Contains logged user info */
-  const [runStatus, setRunStatus] = useState("paused");  /* runStatus in: compiling, paused, debugging */
-  const [message, setMessage] = useState('');             /* Contains Welcome messages for login */
+  const [runStatus, setRunStatus] = useState("paused");     /* runStatus in: compiling, paused, debugging */
+  const [message, setMessage] = useState('');               /* Contains Welcome messages for login */
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ function Root() {
 
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} runStatus={runStatus} setRunStatus={setRunStatus} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} runStatus={runStatus} setRunStatus={setRunStatus} />} />
 
       </Route>
 

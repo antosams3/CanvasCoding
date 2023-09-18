@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Grid } from "@mui/material";
 import Footer from "./Footer";
-import Typography from '@mui/material/Typography';
 import Box from "@mui/material/Box";
-import CustomDialog from './CustomDialog';
+import CustomDialog from '../Utils/CustomDialog';
 import CanvasContainer from './Canvas/CanvasContainer';
+import CodeContainer from './CodeAndConsole/CodeContainer';
 
 export default function Homepage(props) {
-    //const { loggedIn } = props;
+    const { runStatus, setRunStatus } = props;
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
@@ -29,12 +29,7 @@ export default function Homepage(props) {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <Box>
-                        <Typography variant="body1" gutterBottom>
-                            body1. Code and console
-                        </Typography>
-                    </Box>
-
+                    <CodeContainer setRunStatus={setRunStatus} runStatus={runStatus} />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
