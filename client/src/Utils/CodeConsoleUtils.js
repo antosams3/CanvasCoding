@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 
 export function getConsoleOutput(output) {
     let statusId = output?.status?.id;
-
+    console.log(statusId);
     if (statusId === 6) {  // Compilation error
         return (
             <Typography

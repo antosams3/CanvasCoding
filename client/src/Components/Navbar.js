@@ -12,14 +12,12 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import RunActions from './Run&Debug/RunActions';
 import { Outlet } from "react-router-dom";
 
 const pages = ['File', 'Menu', 'Edit', 'Help'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar(props) {
-    const { runStatus, handleCompile } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -136,7 +134,6 @@ function Navbar(props) {
                                 py: 2,
                                 px: 2,
                             }}>
-                                <RunActions runStatus={runStatus} handleCompile={handleCompile} ></RunActions>
                             </Box>
                         </Box>
 

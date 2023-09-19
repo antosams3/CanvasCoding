@@ -15,9 +15,13 @@ ace.config.set(
     "https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-noconflict/worker-javascript.js"
   );
 
+
 export default function CodeEditorWindow(props) {
     const { code, onChange } = props;
-    const [value, setValue] = React.useState(code || "");
+    const defaultCode = `public static void main (String[] args) {
+${code}
+}`;
+    const [value, setValue] = React.useState(defaultCode || "");
 
     const handleEditorChange = (value) => {
         setValue(value);

@@ -15,10 +15,9 @@ function compile(code, input) {
         })
             .then((response) => {
                 if (response.ok) {
-                    return response.json(); // Estrai il JSON dalla risposta
+                    return response.json(); 
                 } else {
-                    console.log(response);
-                    throw new Error('Errore nella risposta dell\'API');
+                    throw new Error('API internal error');
                 }
             })
             .then((data) => {
@@ -26,10 +25,9 @@ function compile(code, input) {
                 resolve(token);
             })
             .catch((err) => {
-                console.error(err);
-                let status = err.response ? err.response.status : 'Nessuna risposta disponibile';
+                let status = err.response ? err.response.status : 'API internal error';
                 if (status === 429) {
-                    console.log('Hai raggiunto il limite massimo delle richieste al giorno', status);
+                    console.log('Max number of requests p day reached', status);
                 }
                 reject({ error: err.toString() });
             });
@@ -49,7 +47,7 @@ function checkStatus(token) {
         fetch(`${process.env.REACT_APP_RAPID_API_URL}/${token}?base64_encoded=true&fields=*`, options)
             .then((response) => {
                 if (response.ok) {
-                    return response.json(); // Estrai il JSON dalla risposta
+                    return response.json(); 
                 } else {
                     console.log(response);
                     throw new Error('Errore nella risposta');
@@ -57,8 +55,7 @@ function checkStatus(token) {
             })
             .then((data) => {
                 let statusId = data.status?.id;
-                if (statusId === 1 || statusId === 2) {
-                    // Ancora in elaborazione, attendi 2 secondi e controlla di nuovo lo stato
+                if (statusId === 1 || statusId === 2) { // Compiler pending, wait 2 secs and try again
                     setTimeout(() => {
                         resolve(checkStatus(token));
                     }, 2000);

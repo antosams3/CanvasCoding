@@ -1,29 +1,27 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-//import BugReportIcon from '@mui/icons-material/BugReport';
-import Tooltip from '@mui/material/Tooltip';
-
+import { Fab, Tooltip, CircularProgress } from '@mui/material';
+import { blue } from '@mui/material/colors';
 
 export default function RunActions(props) {
-    const { runStatus, handleCompile } = props;      /* runStatus in: compiling, paused, debugging */
+    const { compiling, handleCompile } = props;      /* runStatus in: compiling, paused, debugging */
 
-    return (<>
-        <Tooltip title="Compile">
-            <span>
-                <Button variant="contained" aria-label="Compile" disabled={runStatus === "paused" ? false : true} onClick={() => { handleCompile(); }} ><PlayArrowIcon></PlayArrowIcon></Button>
-            </span>
-        </Tooltip>
-        <Tooltip title="Pause">
-            <span>
-                <Button variant="contained" aria-label="Pause" disabled={runStatus === "paused" ? true : false} onClick={() => { handleCompile(); }}><PauseIcon></PauseIcon></Button>
-            </span>
-        </Tooltip>
-        {/* <Tooltip title="Debug">
-            <span>
-                <Button variant="contained" aria-label="Debug" disabled={runStatus === "paused" ? false : true} onClick={() => { setRunStatus("debugging") }} ><BugReportIcon></BugReportIcon></Button>
-            </span>
-        </Tooltip> */}
-    </>)
+    return (
+        <Tooltip title={compiling? "Compiling": "Compile" }>
+            <Fab color="primary" aria-label="Compile" disabled={compiling} onClick={() => { handleCompile(); }} >
+                <PlayArrowIcon />
+            </Fab>
+            {compiling && (
+          <CircularProgress
+            size={68}
+            sx={{
+              position: 'absolute',
+              top: -6,
+              left: -6,
+              zIndex: 1,
+              color: blue[200]
+            }}
+          />
+        )}
+        </Tooltip>)
 }

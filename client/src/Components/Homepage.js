@@ -5,13 +5,17 @@ import Box from "@mui/material/Box";
 import CustomDialog from '../Utils/CustomDialog';
 import CanvasContainer from './Canvas/CanvasContainer';
 import CodeContainer from './CodeAndConsole/CodeContainer';
+import CompilerAPI from '../API/CompilerAPI';
 
 export default function Homepage(props) {
-    const {  code, setCode, output } = props;
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
     const [content, setContent] = React.useState("");
+    const [code, setCode] = React.useState('// code ');
+    const [output, setOutput] = React.useState(null);               /* Code compiling result */
+    const [compiling, setCompiling] = React.useState(false);
+
 
     const handleClickOpenDialog = (type, title, content) => {
         setType(type);
@@ -20,16 +24,30 @@ export default function Homepage(props) {
         setOpenDialog(true);
     };
 
+    const handleCompile = async () => {
+        setCompiling(true);
+        try {
+            const token = await CompilerAPI.compile(code, '');
+            const data = await CompilerAPI.checkStatus(token);
+            setOutput(data);
+        } catch (err) {
+            console.error("API Compiling error:", err);
+            setCompiling(false);
+        } finally {
+            setCompiling(false);
+        }
+    };
+
     return (
         <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-            <Grid container spacing={0.5}>
+            <Grid container >
 
                 {/* Dialog */}
                 <CustomDialog openDialog={openDialog} setOpenDialog={setOpenDialog} type={type} title={title} content={content}  ></CustomDialog>
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
