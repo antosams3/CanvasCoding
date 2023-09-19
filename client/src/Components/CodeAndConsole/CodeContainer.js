@@ -8,9 +8,10 @@ const defaultCode = `public static void main (String[] args) {
 }`;
 
 export default function CodeContainer(props) {
-    const { code, setCode } = props;
+    const { runStatus, setRunStatus } = props;
 
-
+    const [code, setCode] = React.useState(defaultCode);
+    const [output, setOutput] = React.useState(null);
 
     const onChange = (action, data) => {
         switch (action) {
