@@ -3,15 +3,9 @@ import * as React from 'react';
 import ConsoleWindow from "./ConsoleWindow";
 import { Box } from "@mui/material";
 
-const defaultCode = `public static void main (String[] args) {
-  /* code */
-}`;
 
 export default function CodeContainer(props) {
-    const { runStatus, setRunStatus } = props;
-
-    const [code, setCode] = React.useState(defaultCode);
-    const [output, setOutput] = React.useState(null);
+    const { code, setCode, output } = props;
 
     const onChange = (action, data) => {
         switch (action) {

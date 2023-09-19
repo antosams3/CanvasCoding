@@ -7,7 +7,7 @@ import CanvasContainer from './Canvas/CanvasContainer';
 import CodeContainer from './CodeAndConsole/CodeContainer';
 
 export default function Homepage(props) {
-    const { runStatus, setRunStatus } = props;
+    const {  code, setCode, output } = props;
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
@@ -29,7 +29,7 @@ export default function Homepage(props) {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer setRunStatus={setRunStatus} runStatus={runStatus} />
+                    <CodeContainer code={code} setCode={setCode} output={output} />
                 </Grid>
 
                 {/* Canvas, side and action menu */}

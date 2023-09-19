@@ -7,6 +7,10 @@ import Homepage from './Components/Homepage';
 import { useNavigate } from 'react-router-dom';
 import CompilerAPI from './API/CompilerAPI';
 
+const defaultCode = `public static void main (String[] args) {
+  /* code */
+}`;
+
 function App() {
   return (
     <Router>
@@ -20,6 +24,8 @@ function Root() {
   //const [loggedUser, setLoggedUser] = useState(false);    /* Contains logged user info */
   const [runStatus, setRunStatus] = useState("paused");     /* runStatus in: compiling, paused, debugging */
   const [message, setMessage] = useState('');               /* Contains Welcome messages for login */
+  const [code, setCode] = useState(defaultCode);
+  const [output, setOutput] = useState(null);
 
   const navigate = useNavigate();
 
@@ -45,31 +51,26 @@ function Root() {
 
   }
 
-  // const handleCompile = () => {
-  //   CompilerAPI.compile(code, '')
-  //     .then((token) => {
-  //       CompilerAPI.checkStatus(token)
-  //         .then((data) => {
-  //           setOutput(data);
-  //         })
-  //         .catch((err) => {
-  //           console.log("err", err);
-  //         })
-  //         .finally(() => setRunStatus("paused"))
-  //     })
-  //     .catch((err) => {
-  //       let status = err.response.status;
-  //       console.log("status", status);
-  //     })
-  //     .finally(() => setRunStatus("paused"))
-  // }
+  const handleCompile = async () => {
+    setRunStatus("compiling");
+
+    try {
+      const token = await CompilerAPI.compile(code, '');
+      const data = await CompilerAPI.checkStatus(token);
+      setOutput(data);
+    } catch (err) {
+      console.error("Errore durante la compilazione o il controllo dello stato:", err);
+    } finally {
+      setRunStatus("paused");
+    }
+  };
 
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} runStatus={runStatus} setRunStatus={setRunStatus} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} runStatus={runStatus} handleCompile={handleCompile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} runStatus={runStatus} setRunStatus={setRunStatus} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} code={code} setCode={setCode} output={output} />} />
 
       </Route>
 

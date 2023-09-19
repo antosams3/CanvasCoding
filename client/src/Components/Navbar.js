@@ -19,7 +19,7 @@ const pages = ['File', 'Menu', 'Edit', 'Help'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar(props) {
-    const { runStatus, setRunStatus } = props;
+    const { runStatus, handleCompile } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -136,7 +136,7 @@ function Navbar(props) {
                                 py: 2,
                                 px: 2,
                             }}>
-                                <RunActions runStatus={runStatus} setRunStatus={setRunStatus} ></RunActions>
+                                <RunActions runStatus={runStatus} handleCompile={handleCompile} ></RunActions>
                             </Box>
                         </Box>
 

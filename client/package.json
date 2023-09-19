@@ -15,6 +15,7 @@
     "@types/three": "^0.155.1",
     "ace-builds": "^1.26.0",
     "dat.gui": "^0.7.9",
+    "node-fetch": "^3.3.2",
     "outlet": "^0.1.5",
     "react": "^18.2.0",
     "react-ace": "^10.1.0",
@@ -50,6 +51,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "react-router-dom": "^6.15.0"
+    "react-router-dom": "^6.15.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   }
 }
