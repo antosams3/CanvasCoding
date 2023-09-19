@@ -5,6 +5,7 @@ import LoginForm from './Components/Auth/LoginForm';
 import SignupForm from './Components/Auth/SignupForm';
 import Homepage from './Components/Homepage';
 import { useNavigate } from 'react-router-dom';
+import CompilerAPI from './API/CompilerAPI';
 
 function App() {
   return (
@@ -43,6 +44,25 @@ function Root() {
   const handleLogout = async () => {
 
   }
+
+  // const handleCompile = () => {
+  //   CompilerAPI.compile(code, '')
+  //     .then((token) => {
+  //       CompilerAPI.checkStatus(token)
+  //         .then((data) => {
+  //           setOutput(data);
+  //         })
+  //         .catch((err) => {
+  //           console.log("err", err);
+  //         })
+  //         .finally(() => setRunStatus("paused"))
+  //     })
+  //     .catch((err) => {
+  //       let status = err.response.status;
+  //       console.log("status", status);
+  //     })
+  //     .finally(() => setRunStatus("paused"))
+  // }
 
   return (
     <Routes>
