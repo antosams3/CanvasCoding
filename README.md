@@ -14,5 +14,5 @@ Web Application that facilitates the introduction to programming for young progr
 
 - React **18.2.0**
 - MUI **5.14.5**
-- React Three Fiber
-- Three.js 
+- React Three Fiber **8.14.1**
+- Three.js **0.156.1**
