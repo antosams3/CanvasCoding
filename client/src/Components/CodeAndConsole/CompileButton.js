@@ -3,7 +3,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Fab, Tooltip, CircularProgress } from '@mui/material';
 import { blue } from '@mui/material/colors';
 
-export default function RunActions(props) {
+export default function CompileButton(props) {
     const { compiling, handleCompile } = props;      /* runStatus in: compiling, paused, debugging */
 
     return (

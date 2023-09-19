@@ -6,20 +6,26 @@ import { Sphere, Box, Cone } from "../Objects/Objects";
 import { HighlightMesh } from "./Floor";
 import { printObject } from '../../../Utils/CanvasObjects';
 import { Manager } from '../useYuka';
+import { Interpreter } from '../../../Utils/Interpreter';
 
 export function Scene(props) {
-    const { selectObj, setSelectObj, mode, setMode } = props;                               // SelectObj -> active object, mode -> action from side menu 
+    const { selectObj, setSelectObj, mode, setMode, setCode } = props;                               // SelectObj -> active object, mode -> action from side menu 
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());          // Mouse coordinates 
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5)); // Tile highlighted coordinates
-    const [objects, setObjects] = React.useState([]);                                       // Scene objects array 
     const [overlap, setOverlap] = React.useState(false);                                    // Tiles overlapping object 
     const [index, setIndex] = React.useState(1);                                            // Objects index inside array
+    const [objects, setObjects] = React.useState([]);                                       // Scene objects array 
+
 
     let intersectionsArray;                                                                 // Meshes intersected by mouse 
     const rayCaster = new THREE.Raycaster();                                                // Mouse intersections manager 
 
     const { camera, scene, gl } = useThree();                                               // References to: camera, scene, WebGLRenderer
+
+    React.useEffect(()=>{
+        setCode(Interpreter(objects));
+    },[objects])
 
     React.useEffect(() => {
         if (mode === 'DEL') {
@@ -47,7 +53,6 @@ export function Scene(props) {
                     type: selectObj[0],
                     position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)
                 }
-                console.log(newobj)
                 setObjects([...objects, newobj]);                                           // Update objects array
                 setIndex(index + 1);                                                        // Update index
                 setSelectObj([]);                                                           // Deselect object 

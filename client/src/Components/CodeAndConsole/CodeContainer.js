@@ -2,8 +2,7 @@ import CodeEditorWindow from "./CodeEditorWindow";
 import * as React from 'react';
 import ConsoleWindow from "./ConsoleWindow";
 import { Box } from "@mui/material";
-import RunActions from "../Run&Debug/RunActions";
-
+import CompileButton from "./CompileButton";
 
 export default function CodeContainer(props) {
     const { code, setCode, output, compiling, handleCompile  } = props;
@@ -24,7 +23,7 @@ export default function CodeContainer(props) {
         <Box style={{ position: 'relative' }}>
             <CodeEditorWindow code={code} onChange={onChange} />
             <div style={{ position: 'absolute', bottom: '2em', right: '2em' }}>
-                <RunActions compiling={compiling} handleCompile={handleCompile} ></RunActions>
+                <CompileButton compiling={compiling} handleCompile={handleCompile} ></CompileButton>
             </div>
         </Box>
         <Box margin={0.5}>

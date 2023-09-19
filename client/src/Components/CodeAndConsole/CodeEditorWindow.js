@@ -23,6 +23,10 @@ ${code}
 }`;
     const [value, setValue] = React.useState(defaultCode || "");
 
+    React.useEffect(()=>{
+        setValue(code);
+    },[code])
+
     const handleEditorChange = (value) => {
         setValue(value);
         onChange("code", value);

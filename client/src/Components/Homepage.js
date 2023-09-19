@@ -52,7 +52,7 @@ export default function Homepage(props) {
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer></CanvasContainer>
+                    <CanvasContainer setCode={setCode} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}
