@@ -28,66 +28,100 @@ ${classes}`;
     return code;
 }
 
-function objectToInstance(object) {
-    switch (object.type) {
-        case "BOX": return `Box b${object.id} = new Box(b${object.id}_position, b${object.id}_size);`;
-        case "SPHERE": return `Sphere b${object.id} = new Sphere(s${object.id}_position, s${object.id}_size);`;
-        default: return ''
-    }
-}
-
+/* Ex. double[] b1_position = {-2.5, 0.5, 12.5};  */
 function objectToVariables(object) {
     let vars = '';
-    switch (object.type) {
-        case "BOX":
-            for (const field in object) {
-                if (field === 'size' || field === 'position') {
-                    vars = vars + `double[] b${object.id}_${field} = {${toArray(object[field])}};\n`;
-                }
-            } return vars;
-        case "SPHERE":
-            for (const field in object) {
-                if (field === 'size' || field === 'position') {
-                    vars = vars + `double[] s${object.id}_${field} = {${toArray(object[field])}};\n`;
-                }
-            } return vars;
-        default: return '';
-    }
-
+    for (const field in object) {
+        if (field !== "id" && field !== "type") {
+            vars = vars + `double[] ${object.type[0].toLowerCase()}${object.id}_${field} = {${toArray(object[field])}};\n`;
+        }
+    } 
+    return vars;
 }
 
-function objectToClass(object) {
-    switch (object.type) {
-        case "BOX":
-            return `class Box{
-    /* Properties */
-    double position[] = new double[3];
-    double size[] = new double[3];
+/* Ex. Box b1 = new Box(b1_position, b1_size) */
+function objectToInstance(object) {
+    return `${capitalize(object.type)} ${object.type[0].toLowerCase()}${object.id} = new ${capitalize(object.type)}(${objectToInstanceParams(object, object.type)});`;
+}
 
-    /* Constructor */
-    public Box(double[] position, double[] size){
-        this.position = position;
-        this.size = size;
+/* Ex. b1_position, b1_size */
+function objectToInstanceParams(object, type) {
+    let params = '';
+    let cont = 0;
+    for (const field in object) {
+        if (field !== "id" && field !== "type") {
+            if (cont > 0) {
+                params = params + `, ${type[0].toLowerCase()}${object.id}_${field}`
+            } else {
+                params = params + `${type[0].toLowerCase()}${object.id}_${field}`
+            }
+            cont++;
         }
-    }`;
-        case "SPHERE":
-            return `class Sphere{
-    /* Properties */
-    double position[] = new double[3];
-    double size[] = new double[3];
+    }
+    return params;
+}
 
-    /* Constructor */
-    public Sphere(double[] position, double[] size){
-        this.position = position;
-        this.size = size;
+/* Class definition */
+function objectToClass(object) {
+    return `class ${capitalize(object.type)}{
+ /* Properties */
+${objectToProperties(object)}
+ /* Constructor */
+${objectToConstructor(object)} 
+}\n`
+}
+
+/* Ex. double position[] = new double[3];  */
+function objectToProperties(object) {
+    let vars = '';
+    for (const field in object) {
+        if (field !== "id" && field !== "type") {
+            vars = vars + `double[] ${field} = new double[3];\n`;
+        }
+    } 
+    return vars;
+}
+
+/* Ex. public class Box(...){ this... } */
+function objectToConstructor(object) {
+    return `public ${capitalize(object.type)}(${objectToConstructorParams(object)}) {
+${objectToConstructorParamsAssignment(object)} }`
+}
+
+/* Ex. double[] position, double[] size */
+function objectToConstructorParams(object) {
+    let params = '';
+    let cont = 0;
+    for (const field in object) {
+        if (field !== "id" && field !== "type") {
+            if (cont > 0) {
+                params = params + `, double[] ${field}`
+            } else {
+                params = params + `double[] ${field}`
+            }
+            cont++;
+        }
     }
-}`;
-        default: return ''
-    }
+    return params;
+}
+
+/* Ex. this.position = position; */
+function objectToConstructorParamsAssignment(object) {
+    let vars = '';
+    for (const field in object) {
+        if (field !== "id" && field !== "type") {
+            vars = vars + `this.${field} = ${field};\n`;
+        }
+    } 
+    return vars;
 }
 
 function toArray(vec) {
     return `${vec.x}, ${vec.y}, ${vec.z}`
+}
+
+function capitalize(type){
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(); 
 }
 
 function removeClassesDuplicates(array) {
