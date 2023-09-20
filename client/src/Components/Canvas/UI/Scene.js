@@ -23,9 +23,9 @@ export function Scene(props) {
 
     const { camera, scene, gl } = useThree();                                               // References to: camera, scene, WebGLRenderer
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         setCode(Interpreter(objects));
-    },[objects])
+    }, [objects])
 
     React.useEffect(() => {
         if (mode === 'DEL') {
@@ -51,7 +51,8 @@ export function Scene(props) {
                 const newobj = {
                     id: index,
                     type: selectObj[0],
-                    position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)
+                    position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),
+                    size: new THREE.Vector3(1, 1, 1)
                 }
                 setObjects([...objects, newobj]);                                           // Update objects array
                 setIndex(index + 1);                                                        // Update index
@@ -66,7 +67,8 @@ export function Scene(props) {
             let newObj = {
                 id: selectObj.id,
                 type: selectObj.type,
-                position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z)            // Update position coordinates
+                position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),           // Update position coordinates
+                size: selectObj.size
             }
             console.log(newObj)
             const newObjects = [...objects];

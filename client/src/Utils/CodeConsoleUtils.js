@@ -26,9 +26,9 @@ export function getConsoleOutput(output) {
                     fontWeight: 'normal',
                     color: 'green',
                 }}>
-                {atob(output.stdout) !== null
+                {(output.stdout) !== null
                     ? `${atob(output.stdout)}`
-                    : null}
+                    : "Code compiled successfully!"}
             </Typography>
 
         );

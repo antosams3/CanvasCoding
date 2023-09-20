@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import CompileButton from "./CompileButton";
 
 export default function CodeContainer(props) {
-    const { code, setCode, output, compiling, handleCompile  } = props;
+    const { code, setCode, output, compiling, handleCompile, loading  } = props;
 
     const onChange = (action, data) => {
         switch (action) {
@@ -21,7 +21,7 @@ export default function CodeContainer(props) {
 
     return (<>
         <Box style={{ position: 'relative' }}>
-            <CodeEditorWindow code={code} onChange={onChange} />
+            <CodeEditorWindow code={code} onChange={onChange} loading={loading} />
             <div style={{ position: 'absolute', bottom: '2em', right: '2em' }}>
                 <CompileButton compiling={compiling} handleCompile={handleCompile} ></CompileButton>
             </div>

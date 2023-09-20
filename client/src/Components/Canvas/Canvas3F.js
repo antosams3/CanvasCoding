@@ -9,10 +9,12 @@ import { Floor } from "./UI/Floor";
 
 
 function Loader(props) {
+    const {setLoading} = props;
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const { progress } = useProgress()
     if (progress === 100) {
         props.scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
+        setLoading(false);              // Code Editor loading = false
     }
     return (<Html center>
         <label htmlFor="progress-bar">Loading...</label>
@@ -22,7 +24,7 @@ function Loader(props) {
 
 
 export default function Canvas3f(props) {
-    let { selectObj, setSelectObj, FPView, mode, setMode, setCode } = props;
+    let { selectObj, setSelectObj, FPView, mode, setMode, setCode, setLoading } = props;
 
     const scene = new THREE.Scene();
 
@@ -30,7 +32,7 @@ export default function Canvas3f(props) {
     return (
         <div style={{ minWidth: '300px', maxWidth: '500px', height: '500px' }}>
             <Canvas scene={scene} >
-                <Suspense fallback={<Loader scene={scene} />}>
+                <Suspense fallback={<Loader scene={scene} setLoading={setLoading} />}>
                     {/* Mouse controls */}
                     {FPView ? <PointerLockControls /> : <OrbitControls />}
 

@@ -7,15 +7,15 @@ import CanvasContainer from './Canvas/CanvasContainer';
 import CodeContainer from './CodeAndConsole/CodeContainer';
 import CompilerAPI from '../API/CompilerAPI';
 
-export default function Homepage(props) {
+export default function Homepage() {
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
     const [content, setContent] = React.useState("");
-    const [code, setCode] = React.useState('// code ');
+    const [code, setCode] = React.useState("");
     const [output, setOutput] = React.useState(null);               /* Code compiling result */
     const [compiling, setCompiling] = React.useState(false);
-
+    const [loading, setLoading] = React.useState(true);
 
     const handleClickOpenDialog = (type, title, content) => {
         setType(type);
@@ -47,12 +47,12 @@ export default function Homepage(props) {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} setLoading={setLoading} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}

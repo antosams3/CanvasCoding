@@ -5,7 +5,7 @@ import { Vehicle } from 'yuka';
 import { useYuka } from "../useYuka";
 
 export function Box(props) {
-    const { mode, setSelectObj, object } = props;     // This reference will give us direct access to the mesh
+    const { mode, setSelectObj, object, size } = props;     // This reference will give us direct access to the mesh
     const meshRef = React.useRef()    // Set up state for the hovered and active state
 
     const [hovered, setHover] = React.useState(false);
@@ -34,7 +34,7 @@ export function Box(props) {
             onClick={() => handleClick()}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
-            <boxGeometry args={[1, 1, 1]} />
+            <boxGeometry args={size? [size[0], size[1], size[2]]: [1,1,1]} />
             <meshStandardMaterial color={mode === 'ADD' ? 'hotpink' : 'orange'} wireframe={hovered} />
         </mesh>
     )
@@ -120,7 +120,7 @@ export function Sphere(props) {
             onClick={() => handleClick()}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
-            <sphereGeometry args={[size[0], size[1], size[2]]} />
+            <sphereGeometry args={size? [size[0], size[1], size[2]]: [1,1,1]} />
             <meshStandardMaterial color={mode === 'ADD' ? 'hotpink' : 'orange'} wireframe={hovered} />
         </mesh>
     )
