@@ -37,8 +37,8 @@ export function createObject(type, name, size, texture, color, position) {
 
 export function printObject(obj, setSelectObj, mode) {
   switch (obj.type) {
-    case 'SPHERE': return <Sphere position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} size={[1, 10, 10]} />
-    case 'BOX': return <Box position={obj.position} key={obj.id} object={obj} mode={mode} setSelectObj={setSelectObj} />
+    case 'SPHERE': return <Sphere position={obj.position} key={obj.id} object={obj} color={obj.color} mode={mode} setSelectObj={setSelectObj} size={[1, 10, 10]} />
+    case 'BOX': return <Box position={obj.position} key={obj.id} object={obj} color={obj.color} mode={mode} setSelectObj={setSelectObj} />
     default: return <></>
   }
 

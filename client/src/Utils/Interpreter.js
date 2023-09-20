@@ -1,3 +1,5 @@
+import { variableType, variableDefinition } from "./TypeConversion";
+
 export function Interpreter(objects) {
     let instances = '';
     let variables = '';
@@ -22,7 +24,7 @@ export function Interpreter(objects) {
     ${instances}
     ${methods}
     }
-}
+}\n
 ${classes}`;
 
     return code;
@@ -33,7 +35,7 @@ function objectToVariables(object) {
     let vars = '';
     for (const field in object) {
         if (field !== "id" && field !== "type") {
-            vars = vars + `double[] ${object.type[0].toLowerCase()}${object.id}_${field} = {${toArray(object[field])}};\n`;
+            vars = vars + `${variableType[field]} ${object.type[0].toLowerCase()}${object.id}_${field} = ${getValue(field,object[field])};\n`;
         }
     } 
     return vars;
@@ -71,12 +73,12 @@ ${objectToConstructor(object)}
 }\n`
 }
 
-/* Ex. double position[] = new double[3];  */
+/* Ex. double[] position = new double[3];  */
 function objectToProperties(object) {
     let vars = '';
     for (const field in object) {
         if (field !== "id" && field !== "type") {
-            vars = vars + `double[] ${field} = new double[3];\n`;
+            vars = vars + `${variableType[field]} ${field} = new ${variableDefinition[field]};\n`;
         }
     } 
     return vars;
@@ -95,9 +97,9 @@ function objectToConstructorParams(object) {
     for (const field in object) {
         if (field !== "id" && field !== "type") {
             if (cont > 0) {
-                params = params + `, double[] ${field}`
+                params = params + `, ${variableType[field]} ${field}`
             } else {
-                params = params + `double[] ${field}`
+                params = params + `${variableType[field]} ${field}`
             }
             cont++;
         }
@@ -114,6 +116,15 @@ function objectToConstructorParamsAssignment(object) {
         }
     } 
     return vars;
+}
+
+function getValue(field, value){
+    switch(field){
+        case "size": return `{${toArray(value)}}`;
+        case "position": return `{${toArray(value)}}`;
+        case "color": return `"${value}"`;
+        default: return "null";
+    }
 }
 
 function toArray(vec) {

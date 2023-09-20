@@ -52,7 +52,8 @@ export function Scene(props) {
                     id: index,
                     type: selectObj[0],
                     position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),
-                    size: new THREE.Vector3(1, 1, 1)
+                    size: new THREE.Vector3(1, 1, 1),
+                    color: 'yellow'
                 }
                 setObjects([...objects, newobj]);                                           // Update objects array
                 setIndex(index + 1);                                                        // Update index
@@ -68,7 +69,8 @@ export function Scene(props) {
                 id: selectObj.id,
                 type: selectObj.type,
                 position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),           // Update position coordinates
-                size: selectObj.size
+                size: selectObj.size,
+                color: 'yellow'
             }
             console.log(newObj)
             const newObjects = [...objects];
@@ -129,10 +131,10 @@ export function Scene(props) {
             {(mode === 'ADD' || mode === 'MOVE') ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
-            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} />
-            <Box position={[1.2, 0, 0]} mode={mode} object={-2} setSelectObj={setSelectObj} />
-            <Sphere position={[-2, 2, 0]} mode={mode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} />
-            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} />
+            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} color={'orange'} />
+            <Box position={[1.2, 0, 0]} mode={mode} object={-2} setSelectObj={setSelectObj} color={'green'} />
+            <Sphere position={[-2, 2, 0]} mode={mode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} color={'blue'} />
+            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'}/>
 
             {/* Fixed Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />
