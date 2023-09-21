@@ -1,10 +1,10 @@
 import { variableType, variableDefinition } from "./TypeConversion";
 
 export function GUIInterpreter(objects) {
-    let instances = '';
-    let variables = '';
-    let methods = '';
-    let classes = '';
+    let instances = '';                 // Objects declaration
+    let variables = '';                 // Variables declaration
+    let methods = '';                   // Methods calls
+    let classes = '';                   // Classes definition
 
     variables = objects.map(element => {
         return objectToVariables(element)
@@ -35,9 +35,9 @@ function objectToVariables(object) {
     let vars = '';
     for (const field in object) {
         if (field !== "id" && field !== "type") {
-            vars = vars + `${variableType[field]} ${object.type[0].toLowerCase()}${object.id}_${field} = ${getValue(field,object[field])};\n`;
+            vars = vars + `${variableType[field]} ${object.type[0].toLowerCase()}${object.id}_${field} = ${getValue(field, object[field])};\n`;
         }
-    } 
+    }
     return vars;
 }
 
@@ -80,7 +80,7 @@ function objectToProperties(object) {
         if (field !== "id" && field !== "type") {
             vars = vars + `${variableType[field]} ${field} = new ${variableDefinition[field]};\n`;
         }
-    } 
+    }
     return vars;
 }
 
@@ -114,12 +114,12 @@ function objectToConstructorParamsAssignment(object) {
         if (field !== "id" && field !== "type") {
             vars = vars + `this.${field} = ${field};\n`;
         }
-    } 
+    }
     return vars;
 }
 
-function getValue(field, value){
-    switch(field){
+function getValue(field, value) {
+    switch (field) {
         case "size": return `{${toArray(value)}}`;
         case "position": return `{${toArray(value)}}`;
         case "color": return `"${value}"`;
@@ -131,8 +131,8 @@ function toArray(vec) {
     return `${vec.x}, ${vec.y}, ${vec.z}`
 }
 
-function capitalize(type){
-    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(); 
+function capitalize(type) {
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 }
 
 function removeClassesDuplicates(array) {
@@ -146,6 +146,50 @@ function removeClassesDuplicates(array) {
     })
 }
 
-export function CodeInterpreter(code){
+export function CodeInterpreter(javaCode) {
+    const objectArray = [];
+
+    // Find rows containing objects declaration
+    const objectDeclarations = javaCode.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/g);
+    const variableDeclarations = javaCode.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*((?!new\s+)[^;]+);/g);
+
+    console.log(variableDeclarations);
     
+    if(variableDeclarations){
+        variableDeclarations.forEach( declaration => {
+            const clear = declaration.match(/^(?!.*\bnew\b).*$/);
+            if(clear){
+                clear.forEach(variable =>{
+                    const split = variable.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*([^;]+);/);
+                    if(split){
+                        console.log(split)
+                    }
+                });
+            }
+
+        })
+    }
+
+    if (objectDeclarations) {
+        objectDeclarations.forEach(declaration => {
+            console.log(declaration)
+            const matches = declaration.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/);
+            if (matches) {
+                const objectName = matches[2];                                              //Ex. b1
+                const className = matches[3];                                               //Ex. Box
+                const params = matches[4].split(',').map(param => param.trim());            //Ex. b1_position, b1_size, b1_color
+
+                if (className === 'Box') {
+                    const position = params[0].split(',').map(parseFloat);
+                    const size = params[1].split(',').map(parseFloat);
+                    const color = params[2].replace(/"/g, '').trim();
+                    //const box = new Box(position, size, color);
+                    //objectArray.push({ name: objectName, object: box });
+                }
+            }
+        });
+    }
+
+    return objectArray;
+
 }

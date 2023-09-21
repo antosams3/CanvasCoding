@@ -8,9 +8,11 @@ export default function CompileButton(props) {
 
   return (<>
     <Tooltip title={compiling ? "Compiling" : "Compile"} disabled={compiling}>
-      <Fab color="primary" aria-label="Compile" disabled={compiling} onClick={() => { handleCompile(); }} >
-        <PlayArrowIcon />
-      </Fab>
+      <span>
+        <Fab color="primary" aria-label="Compile" disabled={compiling} onClick={() => { handleCompile(); }} >
+          <PlayArrowIcon />
+        </Fab>
+      </span>
     </Tooltip>
     {
       compiling && (
