@@ -1,5 +1,7 @@
 import * as React from 'react';
 import AceEditor from "react-ace";
+import { Range } from 'ace-builds';
+import { diffLines } from 'diff';
 import { CircularProgress, Box } from '@mui/material';
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-textmate";
@@ -19,15 +21,54 @@ ace.config.setModuleUrl(
 export default function CodeEditorWindow(props) {
     const { code, onChange, loading } = props;
 
-    const defaultCode = `public static void main (String[] args) {
-${code}
-}`;
+    const [changedLines, setChangedLines] = React.useState([]);             // Lines to highligh after diff
+    const [value, setValue] = React.useState(code);                         // Actual editor value 
 
-    const [value, setValue] = React.useState(defaultCode || "");
+    /* Evaluate diffs */
+    React.useEffect(() => {
+        const changes = diffLines(value, code);             //value -> old, code -> new
+        const newChangedLines = [];
+        let lineCounter = 0;
+
+        changes.forEach((change) => {
+            if (change.added) {
+                const start = lineCounter;
+                let end = lineCounter + change.count - 1;
+                if (end === start) {
+                    end++;
+                }
+                newChangedLines.push({ start, end });
+                lineCounter = end + 1;
+            } else if (!change.removed) {
+                lineCounter += change.count;
+            }
+        });
+        setChangedLines(newChangedLines);
+        setValue(code);
+
+    }, [code])
 
     React.useEffect(() => {
-        setValue(code);
-    }, [code])
+        if (!AceEditor) return;
+        const editor = ace.edit('editor'); // editor = id
+        removeMarkers(); // Remove existing markers
+
+        changedLines.forEach((change) => {
+            const newRange = new Range(change.start, 0, change.end, 0);
+            editor.getSession().addMarker(newRange, 'ace_selection', 'fullLine', false);
+        });
+
+    }, [changedLines])
+
+    const removeMarkers = () => {
+        const editor = ace.edit('editor'); // editor = id
+        const activeMarkers = editor.getSession().getMarkers(false);
+        for (const key in activeMarkers) {
+            if (activeMarkers[key].clazz === 'ace_selection') {
+                editor.getSession().removeMarker(key);
+            }
+        }
+    }
 
     const handleEditorChange = (value) => {
         setValue(value);
@@ -40,13 +81,14 @@ ${code}
                 placeholder=""
                 mode="java"
                 theme="textmate"
-                name="blah2"
+                name="editor"
                 width='100%'
                 onChange={handleEditorChange}
                 fontSize={14}
                 showPrintMargin={false}
                 showGutter={true}
                 highlightActiveLine={true}
+                onFocus={()=>{ removeMarkers();}}
                 value={value}
                 setOptions={{
                     enableBasicAutocompletion: true,
@@ -56,10 +98,10 @@ ${code}
                     tabSize: 2,
                 }} />
             </Box>
-            {loading? <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+            {loading ? <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
                 <CircularProgress />
-            </Box> : '' }
-            </>)
+            </Box> : ''}
+        </>)
     );
 
 
