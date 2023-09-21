@@ -1,6 +1,6 @@
 import { variableType, variableDefinition } from "./TypeConversion";
 
-export function Interpreter(objects) {
+export function GUIInterpreter(objects) {
     let instances = '';
     let variables = '';
     let methods = '';
@@ -146,3 +146,6 @@ function removeClassesDuplicates(array) {
     })
 }
 
+export function CodeInterpreter(code){
+    
+}

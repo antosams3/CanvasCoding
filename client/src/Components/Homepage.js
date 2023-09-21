@@ -6,13 +6,15 @@ import CustomDialog from '../Utils/CustomDialog';
 import CanvasContainer from './Canvas/CanvasContainer';
 import CodeContainer from './CodeAndConsole/CodeContainer';
 import CompilerAPI from '../API/CompilerAPI';
+import { GUIInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 
 export default function Homepage() {
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
     const [type, setType] = React.useState(1);
     const [title, setTitle] = React.useState("");
     const [content, setContent] = React.useState("");
-    const [code, setCode] = React.useState("");
+    const [code, setCode] = React.useState("");                                     
+    const [objects, setObjects] = React.useState([]);                               // Scene objects array 
     const [output, setOutput] = React.useState(null);               /* Code compiling result */
     const [compiling, setCompiling] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
@@ -23,6 +25,19 @@ export default function Homepage() {
         setContent(content);
         setOpenDialog(true);
     };
+
+    React.useEffect(() => {
+        if(!compiling){
+            setCode(GUIInterpreter(objects));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [objects])
+
+    React.useEffect(() => {
+        if(compiling){
+            CodeInterpreter(code);
+        }
+    }, [compiling, code]);
 
     const handleCompile = async () => {
         setCompiling(true);
@@ -52,7 +67,7 @@ export default function Homepage() {
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} setLoading={setLoading} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} setLoading={setLoading} objects={objects} setObjects={setObjects} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}

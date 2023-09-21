@@ -46,17 +46,20 @@ export default function CodeEditorWindow(props) {
         setChangedLines(newChangedLines);
         setValue(code);
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [code])
 
     React.useEffect(() => {
-        if (!AceEditor) return;
-        const editor = ace.edit('editor'); // editor = id
-        removeMarkers(); // Remove existing markers
+        if (!loading) {
+            if (!AceEditor) return;
+            const editor = ace.edit('editor'); // editor = id
+            removeMarkers(); // Remove existing markers
 
-        changedLines.forEach((change) => {
-            const newRange = new Range(change.start, 0, change.end, 0);
-            editor.getSession().addMarker(newRange, 'ace_selection', 'fullLine', false);
-        });
+            changedLines.forEach((change) => {
+                const newRange = new Range(change.start, 0, change.end, 0);
+                editor.getSession().addMarker(newRange, 'ace_selection', 'fullLine', false);
+            });
+        }
 
     }, [changedLines])
 
@@ -88,7 +91,7 @@ export default function CodeEditorWindow(props) {
                 showPrintMargin={false}
                 showGutter={true}
                 highlightActiveLine={true}
-                onFocus={()=>{ removeMarkers();}}
+                onFocus={() => { removeMarkers(); }}
                 value={value}
                 setOptions={{
                     enableBasicAutocompletion: true,
