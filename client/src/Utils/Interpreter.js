@@ -1,6 +1,9 @@
 import { variableType, variableDefinition } from "./TypeConversion";
+import * as THREE from 'three';
 
-export function GUIInterpreter(objects) {
+/* Canvas Interpreter */
+export function CanvasInterpreter(objects) {
+    console.log(objects);
     let instances = '';                 // Objects declaration
     let variables = '';                 // Variables declaration
     let methods = '';                   // Methods calls
@@ -146,50 +149,78 @@ function removeClassesDuplicates(array) {
     })
 }
 
+/* Code interpreter  */
 export function CodeInterpreter(javaCode) {
-    const objectArray = [];
 
-    // Find rows containing objects declaration
-    const objectDeclarations = javaCode.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/g);
-    const variableDeclarations = javaCode.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*((?!new\s+)[^;]+);/g);
+    const objectDeclarations = javaCode.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/g);              // RegEx -> (word) 1..Nspace (word) 1..space = 1..Nspace "new" 1..Nspace (word)(word removing())
+    const variableDeclarations = javaCode.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*((?!new\s+)[^;]+);/g);        // RegEx -> (word with parentesis) 1..Nspace (word) 0..Nspace = 0..Nspace (word without "new" and with any carhacter, excluding;)
 
-    console.log(variableDeclarations);
-    
+    const variables = variablesFromDeclaration(variableDeclarations);                                       // Exports variables from code
+    const objectsArray = objectsFromDeclaration(objectDeclarations, variables);                             // Exports objects declaration from code
+    console.log(objectsArray);
+    return objectsArray;
+
+}
+
+function variablesFromDeclaration(variableDeclarations){
+    let variables = [];
     if(variableDeclarations){
         variableDeclarations.forEach( declaration => {
-            const clear = declaration.match(/^(?!.*\bnew\b).*$/);
+            const clear = declaration.match(/^(?!.*\bnew\b).*$/);                                           // RegEx -> remove instances containing "new"
             if(clear){
                 clear.forEach(variable =>{
                     const split = variable.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*([^;]+);/);
                     if(split){
-                        console.log(split)
+                        variables.push({
+                            name: split[2],
+                            //objectId: split[2].match(/^[^_]+/)[0],                                          // RegEx -> remove anything after _ (included) Ex. b1_position -> b1
+                            type: split[1],
+                            value: valueFromVariable(split[1],split[3])                                     // Casts values 
+                        })
                     }
                 });
             }
-
         })
     }
+    return variables;
+}
+
+function valueFromVariable(type,value){
+    switch(type){
+        case "String": return value.replace(/"/g, '');
+        case "double[]": 
+            const split = value.replace(/{/g, '').replace(/}/g, '').replace(/\s/g, '').split(',');
+            if(split){
+                return new THREE.Vector3(split[0], split[1], split[2]);
+            }else{
+                return value.replace(/{/g, '[').replace(/}/g, ']');
+            }
+        case "char": return value.replace(/'/g, '');
+        default : return value;
+    }
+}
+
+function objectsFromDeclaration(objectDeclarations, variables){
+    let objectArray = []
 
     if (objectDeclarations) {
         objectDeclarations.forEach(declaration => {
-            console.log(declaration)
-            const matches = declaration.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/);
-            if (matches) {
-                const objectName = matches[2];                                              //Ex. b1
-                const className = matches[3];                                               //Ex. Box
-                const params = matches[4].split(',').map(param => param.trim());            //Ex. b1_position, b1_size, b1_color
-
-                if (className === 'Box') {
-                    const position = params[0].split(',').map(parseFloat);
-                    const size = params[1].split(',').map(parseFloat);
-                    const color = params[2].replace(/"/g, '').trim();
-                    //const box = new Box(position, size, color);
-                    //objectArray.push({ name: objectName, object: box });
+            const matches = declaration.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/);               // RegEx -> (word) 1..Nspace (word) 1..space = 1..Nspace "new" 1..Nspace (word)(word removing())
+            if (matches) {                                                                                  // Ex. Matches = ['Box b1 = new Box(b1_position, b1_size, b1_color);', 'Box', 'b1', 'Box', 'b1_position, b1_size, b1_color']
+                let newObj = {
+                    id: matches[2].replace(/\D/g, ''),                                                      // Remove digits from id (Ex. b1->1)
+                    type: matches[3].toUpperCase(),                                                         // Object type (Ex. Box -> BOX)
                 }
+
+                matches[4].split(',').forEach( param => {                                                       // Split 'b1_position, b1_size, b1_color' into array of 3 elements                                               
+                    const key = param.trim().match(/_(.+)/)[1];
+                    const value = variables.find( value => value.name === param.trim()).value
+                    newObj[key] = value
+                })
+                                
+                objectArray.push(newObj)
             }
         });
     }
-
     return objectArray;
-
 }

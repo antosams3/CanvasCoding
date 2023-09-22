@@ -6,21 +6,19 @@ import { Sphere, Box, Cone } from "../Objects/Objects";
 import { HighlightMesh } from "./Floor";
 import { printObject } from '../../../Utils/CanvasObjects';
 import { Manager } from '../useYuka';
+import { defaultValues } from '../../../Utils/defaults';
+
+let intersectionsArray;                                                                     // Meshes intersected by mouse 
+const rayCaster = new THREE.Raycaster();                                                    // Mouse intersections manager 
 
 export function Scene(props) {
-    const { selectObj, setSelectObj, mode, setMode, objects, setObjects } = props;                               // SelectObj -> active object, mode -> action from side menu 
+    const { selectObj, setSelectObj, mode, setMode, objects, setObjects } = props;          // SelectObj -> active object, mode -> action from side menu 
+    const { camera, scene, gl } = useThree();                                               // References to: camera, scene, WebGLRenderer
 
     const [mousePosition, setMousePosition] = React.useState(new THREE.Vector2());          // Mouse coordinates 
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5)); // Tile highlighted coordinates
     const [overlap, setOverlap] = React.useState(false);                                    // Tiles overlapping object 
     const [index, setIndex] = React.useState(1);                                            // Objects index inside array
-
-
-    let intersectionsArray;                                                                 // Meshes intersected by mouse 
-    const rayCaster = new THREE.Raycaster();                                                // Mouse intersections manager 
-
-    const { camera, scene, gl } = useThree();                                               // References to: camera, scene, WebGLRenderer
-
 
     React.useEffect(() => {
         if (mode === 'DEL') {
@@ -43,11 +41,12 @@ export function Scene(props) {
         if (mode === 'ADD') {
             /* Add new object to the scene */
             if (Object.keys(selectObj).length && !overlap) {                                // Checks if object is selected and tile's not overlapped
+                const newSize = defaultValues[`${selectObj[0]}_size`];
                 const newobj = {
                     id: index,
                     type: selectObj[0],
                     position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),
-                    size: new THREE.Vector3(1, 1, 1),
+                    size: new THREE.Vector3(newSize[0], newSize[1], newSize[2]),
                     color: 'yellow'
                 }
                 setObjects([...objects, newobj]);                                           // Update objects array
@@ -67,7 +66,6 @@ export function Scene(props) {
                 size: selectObj.size,
                 color: 'yellow'
             }
-            console.log(newObj)
             const newObjects = [...objects];
             newObjects.splice(index, 1, newObj);                                            // Remove element in position index, replace with newObj
             setObjects(newObjects);                                                         // Update objects array
@@ -126,10 +124,10 @@ export function Scene(props) {
             {(mode === 'ADD' || mode === 'MOVE') ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
-            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} color={'orange'} />
+            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} size={[2, 2, 2]} color={'orange'} />
             <Box position={[1.2, 0, 0]} mode={mode} object={-2} setSelectObj={setSelectObj} color={'green'} />
             <Sphere position={[-2, 2, 0]} mode={mode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} color={'blue'} />
-            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'}/>
+            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'} />
 
             {/* Fixed Models (Rabbit, Cat) */}
             <DogModel position={[3, 0, 0]} />

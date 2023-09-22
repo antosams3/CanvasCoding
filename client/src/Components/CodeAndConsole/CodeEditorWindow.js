@@ -60,7 +60,7 @@ export default function CodeEditorWindow(props) {
                 editor.getSession().addMarker(newRange, 'ace_selection', 'fullLine', false);
             });
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changedLines])
 
     const removeMarkers = () => {
