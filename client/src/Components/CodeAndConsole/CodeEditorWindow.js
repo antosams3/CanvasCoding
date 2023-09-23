@@ -19,9 +19,10 @@ ace.config.setModuleUrl(
 
 
 export default function CodeEditorWindow(props) {
-    const { code, onChange, loading } = props;
+    const { code, onChange, loading, selectObj } = props;
 
     const [changedLines, setChangedLines] = React.useState([]);             // Lines to highligh after diff
+    //const [highlightLine, setHighlightLine] = React.useState([]);
     const [value, setValue] = React.useState(code);                         // Actual editor value 
 
     /* Evaluate diffs */
@@ -62,6 +63,12 @@ export default function CodeEditorWindow(props) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changedLines])
+
+    React.useEffect(() => {
+        if(Object.keys(selectObj).length > 1){
+            console.log(selectObj);
+        }
+    }, [selectObj])
 
     const removeMarkers = () => {
         const editor = ace.edit('editor'); // editor = id

@@ -38,7 +38,7 @@ export function Scene(props) {
 
     const handleClick = () => {
 
-        if (mode === 'ADD') {
+        if (mode === 'ADD' && Object.keys(selectObj).length === 1) {                        // Checks if selectObj === ['BOX'] or ['SPHERE'] and not the selected object itself
             /* Add new object to the scene */
             if (Object.keys(selectObj).length && !overlap) {                                // Checks if object is selected and tile's not overlapped
                 const newSize = defaultValues[`${selectObj[0]}_size`];

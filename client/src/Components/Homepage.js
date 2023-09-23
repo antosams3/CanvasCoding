@@ -64,7 +64,7 @@ export default function Homepage() {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj}  />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
