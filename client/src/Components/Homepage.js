@@ -10,14 +10,16 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 
 export default function Homepage() {
     const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
-    const [type, setType] = React.useState(1);
-    const [title, setTitle] = React.useState("");
-    const [content, setContent] = React.useState("");
-    const [code, setCode] = React.useState("");                                     
-    const [objects, setObjects] = React.useState([]);                               // Scene objects array 
-    const [output, setOutput] = React.useState(null);                               /* Code compiling result */
-    const [compiling, setCompiling] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
+    const [type, setType] = React.useState(1);                                      // Dialog type
+    const [title, setTitle] = React.useState("");                                   // Dialog title 
+    const [content, setContent] = React.useState("");                               // Dialog content 
+
+    const [code, setCode] = React.useState("");                                     // Code                                          
+    const [objects, setObjects] = React.useState([]);                               // Canvas objects 
+    const [selectObj, setSelectObj] = React.useState([]);                           // Selected object in canvas
+    const [output, setOutput] = React.useState(null);                               // Code console
+    const [compiling, setCompiling] = React.useState(false);                        // Compiling state 
+    const [loading, setLoading] = React.useState(true);                             // Initial loading state 
 
     const handleClickOpenDialog = (type, title, content) => {
         setType(type);
@@ -67,7 +69,7 @@ export default function Homepage() {
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} setLoading={setLoading} objects={objects} setObjects={setObjects} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} setLoading={setLoading} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}

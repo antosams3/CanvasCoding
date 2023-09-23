@@ -1,16 +1,23 @@
 import { variableType, variableDefinition } from "./TypeConversion";
 import * as THREE from 'three';
+import { PropertyRequiredError } from "./Errors";
+import { Variable, validateVariable } from "./Classes";
 
 /* Canvas Interpreter */
 export function CanvasInterpreter(objects) {
-    console.log(objects);
     let instances = '';                 // Objects declaration
     let variables = '';                 // Variables declaration
     let methods = '';                   // Methods calls
     let classes = '';                   // Classes definition
 
     variables = objects.map(element => {
-        return objectToVariables(element)
+        try{
+            validateObject(element);                        // Check objects structure 
+            return objectToVariables(element)
+        }catch (err){
+            alert("Invalid data: " + err.message);         // Invalid data: No property: name
+            return '';
+        }
     }).join('\n')
 
     instances = objects.map(element => {
@@ -31,6 +38,19 @@ export function CanvasInterpreter(objects) {
 ${classes}`;
 
     return code;
+}
+
+/* Object structure checker */
+function validateObject(object){
+    if(!object.id){
+        throw new PropertyRequiredError("id")
+    }
+    if(!object.type){
+        throw new PropertyRequiredError("type")
+    }
+    if(!object.position){
+        throw new PropertyRequiredError("position")
+    }
 }
 
 /* Ex. double[] b1_position = {-2.5, 0.5, 12.5};  */
@@ -56,9 +76,9 @@ function objectToInstanceParams(object, type) {
     for (const field in object) {
         if (field !== "id" && field !== "type") {
             if (cont > 0) {
-                params = params + `, ${type[0].toLowerCase()}${object.id}_${field}`
+                params = params + `, ${type[0].toLowerCase()}${object.id}_${field}`     // More params
             } else {
-                params = params + `${type[0].toLowerCase()}${object.id}_${field}`
+                params = params + `${type[0].toLowerCase()}${object.id}_${field}`       // Only one param
             }
             cont++;
         }
@@ -157,11 +177,12 @@ export function CodeInterpreter(javaCode) {
 
     const variables = variablesFromDeclaration(variableDeclarations);                                       // Exports variables from code
     const objectsArray = objectsFromDeclaration(objectDeclarations, variables);                             // Exports objects declaration from code
-    console.log(objectsArray);
+
     return objectsArray;
 
 }
 
+/* Extract variables and values from declaration */
 function variablesFromDeclaration(variableDeclarations){
     let variables = [];
     if(variableDeclarations){
@@ -169,14 +190,16 @@ function variablesFromDeclaration(variableDeclarations){
             const clear = declaration.match(/^(?!.*\bnew\b).*$/);                                           // RegEx -> remove instances containing "new"
             if(clear){
                 clear.forEach(variable =>{
-                    const split = variable.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*([^;]+);/);
+                    const split = variable.match(/(\w+(?:\[\])?)\s+(\w+)\s*=\s*([^;]+);/);                  // RegEx-> split variable declaration in parts (type, name, value)
                     if(split){
-                        variables.push({
-                            name: split[2],
-                            //objectId: split[2].match(/^[^_]+/)[0],                                          // RegEx -> remove anything after _ (included) Ex. b1_position -> b1
-                            type: split[1],
-                            value: valueFromVariable(split[1],split[3])                                     // Casts values 
-                        })
+                        try{
+                            validateVariable(split);
+                            const newvar = new Variable(split[2], split[1], valueFromVariable(split[1],split[3]))
+                            variables.push(newvar);
+                        }catch(err){
+                            alert("Invalid data: " + err.message);         // Invalid data: No property: name
+                        }
+                        
                     }
                 });
             }
@@ -207,18 +230,25 @@ function objectsFromDeclaration(objectDeclarations, variables){
         objectDeclarations.forEach(declaration => {
             const matches = declaration.match(/(\w+)\s+(\w+)\s+=\s+new\s+(\w+)\(([^)]+)\);/);               // RegEx -> (word) 1..Nspace (word) 1..space = 1..Nspace "new" 1..Nspace (word)(word removing())
             if (matches) {                                                                                  // Ex. Matches = ['Box b1 = new Box(b1_position, b1_size, b1_color);', 'Box', 'b1', 'Box', 'b1_position, b1_size, b1_color']
-                let newObj = {
-                    id: matches[2].replace(/\D/g, ''),                                                      // Remove digits from id (Ex. b1->1)
-                    type: matches[3].toUpperCase(),                                                         // Object type (Ex. Box -> BOX)
+                try{
+                    let newObj = {
+                        id: matches[2].replace(/\D/g, ''),                                                  // Remove digits from id (Ex. b1->1)
+                        type: matches[3].toUpperCase()                                                      // Object type (Ex. Box -> BOX)
+                    }
+                    
+                    if(matches[4]){
+                        matches[4].split(',').forEach( param => {                                           // Split 'b1_position, b1_size, b1_color' into array of 3 elements                                               
+                            const key = param.trim().match(/_(.+)/)[1];
+                            const value = variables.find( value => value.name === param.trim()).value
+                            newObj[key] = value
+                        })
+                    }
+
+                    objectArray.push(newObj)
+                }catch(err){
+                    alert("Invalid data: " + err.message);                                                  // Invalid data
                 }
 
-                matches[4].split(',').forEach( param => {                                                       // Split 'b1_position, b1_size, b1_color' into array of 3 elements                                               
-                    const key = param.trim().match(/_(.+)/)[1];
-                    const value = variables.find( value => value.name === param.trim()).value
-                    newObj[key] = value
-                })
-                                
-                objectArray.push(newObj)
             }
         });
     }

@@ -6,10 +6,9 @@ import SideMenu from './Menus/SideMenu';
 import * as React from 'react';
 
 export default function CanvasContainer(props) {
-    const {setLoading, objects, setObjects} = props;
+    const {setLoading, objects, setObjects, selectObj, setSelectObj} = props;
     const [mode, setMode] = React.useState(null); // Mode in: null, 'ADD', 'DEL', 'MOVE'
     const [FPView, setFPView] = React.useState(false);
-    const [selectObj, setSelectObj] = React.useState([]);
 
     return (<Grid container >
         <Grid item xs={10}>
