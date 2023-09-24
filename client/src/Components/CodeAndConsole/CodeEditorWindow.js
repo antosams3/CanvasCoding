@@ -21,7 +21,7 @@ ace.config.setModuleUrl(
 
 
 export default function CodeEditorWindow(props) {
-    const { code, onChange, loading, selectObj } = props;
+    const { code, onChange, loading, selectObj, annotations } = props;
 
     const [changedLines, setChangedLines] = React.useState([]);             // Lines to highlight after diff
     const [highlightLines, setHighlightLines] = React.useState([]);         // Lines to highlight after selecting object in canvas 
@@ -33,6 +33,12 @@ export default function CodeEditorWindow(props) {
             editorRef.current = ace.edit('editor');
         }
     }, []);
+
+    React.useEffect(() => {
+        const session = editorRef.current.getSession();
+        session.setAnnotations(annotations)
+
+    }, [annotations])
 
     /* Evaluate diffs when code changes */
     React.useEffect(() => {

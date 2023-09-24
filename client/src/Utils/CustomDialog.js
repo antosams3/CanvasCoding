@@ -33,14 +33,14 @@ export default function CustomDialog(props) {
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description">
 
-            <DialogTitle>{dialog.title}</DialogTitle>
+            <DialogTitle>{dialog?.title}</DialogTitle>
 
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                    {dialog.content}
+                    {dialog?.content}
                 </DialogContentText>
             </DialogContent>
-            {dialog.type === 1 ? <DialogActions>
+            {dialog?.type === 1 ? <DialogActions>
                 <Button onClick={handleClose}>Abort</Button>
                 <Button onClick={handleClose}>Ok</Button>
             </DialogActions> :

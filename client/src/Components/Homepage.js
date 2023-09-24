@@ -7,16 +7,17 @@ import CanvasContainer from './Canvas/CanvasContainer';
 import CodeContainer from './CodeAndConsole/CodeContainer';
 import CompilerAPI from '../API/CompilerAPI';
 import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
+import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage() {
     const [dialog, setDialog] = React.useState({});                                 // Dialog content
-
     const [code, setCode] = React.useState("");                                     // Code                                          
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState([]);                           // Selected object in canvas {id: ... type: ..} or just type for new objects
     const [output, setOutput] = React.useState(null);                               // Code console
     const [compiling, setCompiling] = React.useState(false);                        // Compiling state 
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 
+    const [annotations, setAnnotations] = React.useState([]);                       // Warnings and errors generated after compile 
 
     const handleClickDialog = (type, title, content) => {
         setDialog({
@@ -44,6 +45,7 @@ export default function Homepage() {
             setCompiling(true);
             const token = await CompilerAPI.compile(code, '');
             const data = await CompilerAPI.checkStatus(token);
+            setAnnotations(evaluateAnnotations(data));                                      // Extract error, warnings and info from compiler result    
             setOutput(data);
         } catch (err) {
             console.error("API Compiling error:", err);
@@ -62,7 +64,7 @@ export default function Homepage() {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj}  />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj} annotations={annotations}  />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
