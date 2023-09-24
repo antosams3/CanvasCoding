@@ -9,21 +9,23 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
 export default function SideMenu(props) {
-    const { mode, setMode, setSelectObj, selectObj, setFPView, FPView } = props;
+    const { mode, setMode, setAddType, addType, setFPView, FPView, selectObj } = props;
 
     const handleAddClick = () => {
         !mode ? setMode('ADD') : setMode(null);
-        setSelectObj([]);
+        if(Object.keys(addType).length > 0){
+            setAddType([]);
+        }
     }
 
     return (<Stack spacing={1} direction="column">
         <FormControlLabel control={<Switch />} label="View" onClick={() => { setFPView(!FPView); }} />
-        <FormControlLabel control={<Switch disabled={!Object.keys(selectObj).length ? false : true} onClick={() => { handleAddClick() }} />} label="Add" />
+        <FormControlLabel control={<Switch disabled={!Object.keys(addType).length ? false : true} onClick={() => { handleAddClick() }} />} label="Add" />
 
         {mode === 'ADD' ?
             <>
-                <Button variant={selectObj[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(selectObj).length ? setSelectObj(['BOX']) : setSelectObj([]) }} > Box </Button>
-                <Button variant={selectObj[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(selectObj).length ? setSelectObj(['SPHERE']) : setSelectObj([]) }} > Sphere </Button>
+                <Button variant={addType[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['BOX']) : setAddType([]) }} > Box </Button>
+                <Button variant={addType[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['SPHERE']) : setAddType([]) }} > Sphere </Button>
             </>
             : Object.keys(selectObj).length ? /* If object selected  */
                 <>

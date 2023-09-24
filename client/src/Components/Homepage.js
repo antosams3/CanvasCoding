@@ -49,6 +49,7 @@ export default function Homepage() {
             setOutput(data);
         } catch (err) {
             console.error("API Compiling error:", err);
+            setOutput(err);
             setCompiling(false);
         } finally {
             setCompiling(false);

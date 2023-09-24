@@ -24,7 +24,7 @@ function Loader(props) {
 
 
 export default function Canvas3f(props) {
-    let { selectObj, setSelectObj, FPView, mode, setMode, setLoading , objects, setObjects} = props;
+    let { selectObj, setSelectObj, FPView, mode, setMode, setLoading , objects, setObjects, setAddType, addType} = props;
 
     const scene = new THREE.Scene();
 
@@ -46,7 +46,7 @@ export default function Canvas3f(props) {
                     <PerspectiveCamera position={[-10, 30, 30]} makeDefault />
 
                     {/* Scene  */}
-                    <Scene mode={mode} setMode={setMode} selectObj={selectObj} setSelectObj={setSelectObj} objects={objects} setObjects={setObjects} ></Scene>
+                    <Scene mode={mode} setMode={setMode} selectObj={selectObj} setSelectObj={setSelectObj} setAddType={setAddType} addType={addType} objects={objects} setObjects={setObjects} ></Scene>
                 </Suspense>
 
             </Canvas>
