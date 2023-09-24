@@ -12,29 +12,35 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function CustomDialog(props) {
-    const { setOpenDialog, openDialog, type, title, content } = props;      /* type in 1 (question), 2 (info) */
+    const { dialog } = props;                                
+    const [open, setOpen] = React.useState(false);
 
+    React.useEffect(()=>{
+        if(Object.keys(dialog).length){
+            setOpen(true);
+        }
+    },[dialog])
 
     const handleClose = () => {
-        setOpenDialog(false);
+        setOpen(false);
     };
 
     return (<>
         <Dialog
-            open={openDialog}
+            open={open}
             TransitionComponent={Transition}
             keepMounted
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description">
 
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle>{dialog.title}</DialogTitle>
 
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                    {content}
+                    {dialog.content}
                 </DialogContentText>
             </DialogContent>
-            {type === 1 ? <DialogActions>
+            {dialog.type === 1 ? <DialogActions>
                 <Button onClick={handleClose}>Abort</Button>
                 <Button onClick={handleClose}>Ok</Button>
             </DialogActions> :

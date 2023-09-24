@@ -9,10 +9,7 @@ import CompilerAPI from '../API/CompilerAPI';
 import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 
 export default function Homepage() {
-    const [openDialog, setOpenDialog] = React.useState(false);                      // Dialog
-    const [type, setType] = React.useState(1);                                      // Dialog type
-    const [title, setTitle] = React.useState("");                                   // Dialog title 
-    const [content, setContent] = React.useState("");                               // Dialog content 
+    const [dialog, setDialog] = React.useState({});                                 // Dialog content
 
     const [code, setCode] = React.useState("");                                     // Code                                          
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
@@ -21,11 +18,12 @@ export default function Homepage() {
     const [compiling, setCompiling] = React.useState(false);                        // Compiling state 
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 
 
-    const handleClickOpenDialog = (type, title, content) => {
-        setType(type);
-        setTitle(title);
-        setContent(content);
-        setOpenDialog(true);
+    const handleClickDialog = (type, title, content) => {
+        setDialog({
+            type: type,                                                             // Type in: 1 (question), 2 (info)
+            title: title,
+            content: content
+        })
     };
 
     React.useEffect(() => {
@@ -42,8 +40,8 @@ export default function Homepage() {
     }, [compiling, code]);
 
     const handleCompile = async () => {
-        setCompiling(true);
         try {
+            setCompiling(true);
             const token = await CompilerAPI.compile(code, '');
             const data = await CompilerAPI.checkStatus(token);
             setOutput(data);
@@ -60,7 +58,7 @@ export default function Homepage() {
             <Grid container >
 
                 {/* Dialog */}
-                <CustomDialog openDialog={openDialog} setOpenDialog={setOpenDialog} type={type} title={title} content={content}  ></CustomDialog>
+                <CustomDialog dialog={dialog} ></CustomDialog>
 
                 {/* Code and console */}
                 <Grid item xs={7}>
@@ -83,7 +81,7 @@ export default function Homepage() {
                                 theme.palette.primary.main
                         }}
                     >
-                        <Footer handleClickOpenDialog={handleClickOpenDialog} />
+                        <Footer handleClickDialog={handleClickDialog} />
                     </Box>
                 </Grid>
             </Grid>

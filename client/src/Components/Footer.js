@@ -9,7 +9,7 @@ import LevelSelector from './Level/LevelSelector';
 const defaultTheme = createTheme();
 
 export default function Footer(props) {
-    const {handleClickOpenDialog} = props;
+    const {handleClickDialog} = props;
 
     const level = { id: 7 };
     return (
@@ -26,10 +26,10 @@ export default function Footer(props) {
             >
                 <Grid container>
                     <Grid item xs={6}>
-                        <LevelActions handleClickOpenDialog={handleClickOpenDialog} />
+                        <LevelActions handleClickDialog={handleClickDialog} />
                     </Grid>
                     <Grid item xs={6}>
-                        <LevelSelector handleClickOpenDialog={handleClickOpenDialog} level={level} />
+                        <LevelSelector handleClickDialog={handleClickDialog} level={level} />
                     </Grid>
                 </Grid>
             </Box>

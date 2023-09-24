@@ -6,10 +6,10 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
 export default function LevelSelector(props) {
-    const { level, handleClickOpenDialog } = props;
+    const { level, handleClickDialog } = props;
     return (
         <Stack direction="row" spacing={1}>
-            <Tooltip title="Previous level" onClick={() => { handleClickOpenDialog(1, "Warning", "By selecting the previous level, you will lose all the unsaved progress. Are you sure?") }}>
+            <Tooltip title="Previous level" onClick={() => { handleClickDialog(1, "Warning", "By selecting the previous level, you will lose all the unsaved progress. Are you sure?") }}>
                 <IconButton aria-label="prev">
                     <ArrowBackIcon />
                 </IconButton>
