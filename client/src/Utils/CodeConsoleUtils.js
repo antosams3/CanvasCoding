@@ -61,3 +61,38 @@ export function getConsoleOutput(output) {
         );
     }
 };
+
+/* Returns array containing lines to highligh (start, end) */
+export function getChangedLines(changes){
+    let lineCounter = 0;
+    const newChangedLines = [];
+
+    changes.forEach((change) => {
+        if (change.added) {
+            const start = lineCounter;
+            let end = lineCounter + change.count - 1;
+            if (end === start) {
+                end++;
+            }
+            newChangedLines.push({ start, end });
+            lineCounter = end + 1;
+        } else if (!change.removed) {
+            lineCounter += change.count;
+        }
+    });
+
+    return newChangedLines;
+} 
+
+export function findObject(object, code){
+    const lines = code.split('\n');
+    const highlightedLines = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes(object)) {
+        highlightedLines.push(i);
+      }
+    }
+  
+    return highlightedLines;
+}

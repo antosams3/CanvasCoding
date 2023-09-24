@@ -65,7 +65,7 @@ function objectToVariables(object) {
 }
 
 /* Ex. Box b1 = new Box(b1_position, b1_size) */
-function objectToInstance(object) {
+export function objectToInstance(object) {
     return `${capitalize(object.type)} ${object.type[0].toLowerCase()}${object.id} = new ${capitalize(object.type)}(${objectToInstanceParams(object, object.type)});`;
 }
 
