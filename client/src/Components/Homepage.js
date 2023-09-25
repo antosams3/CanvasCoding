@@ -13,7 +13,7 @@ export default function Homepage() {
     const [dialog, setDialog] = React.useState({});                                 // Dialog content
     const [code, setCode] = React.useState("");                                     // Code                                          
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
-    const [selectObj, setSelectObj] = React.useState([]);                           // Selected object in canvas {id: ... type: ..} or just type for new objects
+    const [selectObj, setSelectObj] = React.useState([]);                           // Selected object in canvas Ex. {id: ... type: ..} or {}
     const [output, setOutput] = React.useState(null);                               // Code console
     const [compiling, setCompiling] = React.useState(false);                        // Compiling state 
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 

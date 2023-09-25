@@ -21,15 +21,15 @@ export function Scene(props) {
     const [index, setIndex] = React.useState(1);                                            // Objects index inside array
 
     React.useEffect(() => {
-        if (mode === 'DEL') {
+        if (mode === 'DEL' && Object.keys(selectObj).length) {                              // Checks if delete mode and object is selected 
             /* Remove selectObj (active object) from objects array */
             const index = objects.indexOf(selectObj);
             if (index !== -1) {
                 const newObjects = [...objects];
                 newObjects.splice(index, 1);
-                setObjects(newObjects);
                 setSelectObj([]);
                 setMode(null);
+                setObjects(newObjects);
             }
         }
 
@@ -38,28 +38,27 @@ export function Scene(props) {
 
     const handleClick = () => {
 
-        if (mode === 'ADD' && Object.keys(addType).length === 1) {                        // Checks if addType === ['BOX'] or ['SPHERE'] 
+        if (mode === 'ADD' && Object.keys(addType).length && !overlap) {                    // Checks if ADD mode and addType === ['ObjectType'] and tile's not overlapped
             /* Add new object to the scene */
-            if (Object.keys(addType).length && !overlap) {                                // Checks if object is selected and tile's not overlapped
-                const newSize = defaultValues[`${addType[0]}_size`];
-                const newobj = {
-                    id: index,
-                    type: addType[0],
-                    position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),
-                    size: new THREE.Vector3(newSize[0], newSize[1], newSize[2]),
-                    color: 'yellow'
-                }
-                setObjects([...objects, newobj]);                                           // Update objects array
-                setIndex(index + 1);                                                        // Update index
-                setAddType([]);                                                             // Deselect object type 
-                setOverlap(true);                                                           // Position busy -> tile overlapped
+            const newSize = defaultValues[`${addType[0]}_size`];                            // Get default values for the givenType
+            const newobj = {
+                id: index,
+                type: addType[0],
+                position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),
+                size: new THREE.Vector3(newSize[0], newSize[1], newSize[2]),
+                color: 'yellow'
             }
+            setObjects([...objects, newobj]);                                               // Update objects array
+            setIndex(index + 1);                                                            // Update index
+            setAddType([]);                                                                 // Deselect object type 
+            setOverlap(true);                                                               // Position busy -> tile overlapped
+
         }
 
-        if (mode === 'MOVE' && !overlap) {
+        if (mode === 'MOVE' && Object.keys(selectObj).length && !overlap) {                 // Checks if MOVE mode and selectedObj and tile's not overlapped
             /* Move existing object to a new position */
             const index = objects.indexOf(selectObj);                                       // Search for the selected object inside the array
-            let newObj = {
+            const newObj = {
                 id: selectObj.id,
                 type: selectObj.type,
                 position: new THREE.Vector3(highlightPos.x, 0.5, highlightPos.z),           // Update position coordinates

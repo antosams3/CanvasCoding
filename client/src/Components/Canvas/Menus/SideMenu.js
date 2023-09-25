@@ -10,28 +10,56 @@ import PanToolIcon from '@mui/icons-material/PanTool';
 
 export default function SideMenu(props) {
     const { mode, setMode, setAddType, addType, setFPView, FPView, selectObj } = props;
+    const [addSwitchValue, setAddSwitchValue] = React.useState(false);
 
-    const handleAddClick = () => {
-        !mode ? setMode('ADD') : setMode(null);
-        if(Object.keys(addType).length > 0){
+    React.useEffect(() => {
+        if (addSwitchValue) {
+            if (mode === null || Object.keys(selectObj).length) {
+                setAddSwitchValue(false);
+            }
+        }
+    }, [mode, addSwitchValue, selectObj])
+
+    const handleAddSwitchChange = () => {
+        if (addSwitchValue === true) {
+            setMode(null);
             setAddType([]);
+            setAddSwitchValue(false);
+        } else {
+            setMode('ADD');
+            setAddSwitchValue(true);
         }
     }
 
     return (<Stack spacing={1} direction="column">
-        <FormControlLabel control={<Switch />} label="View" onClick={() => { setFPView(!FPView); }} />
-        <FormControlLabel control={<Switch disabled={!Object.keys(addType).length ? false : true} onClick={() => { handleAddClick() }} />} label="Add" />
+        {/* View Mode selector */}
+        <FormControlLabel
+            control={
+                <Switch
+                    onClick={() => { setFPView(!FPView); }} />}
+            label="View" />
 
-        {mode === 'ADD' ?
+        {/* Add mode selector */}
+        <FormControlLabel
+            control={
+                <Switch
+                    disabled={Object.keys(selectObj).length ? true : false}
+                    checked={addSwitchValue}
+                    onChange={handleAddSwitchChange}
+                />}
+            label="Add" />
+
+        {Object.keys(selectObj).length ? /* If object selected  */
             <>
-                <Button variant={addType[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['BOX']) : setAddType([]) }} > Box </Button>
-                <Button variant={addType[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['SPHERE']) : setAddType([]) }} > Sphere </Button>
+                <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setMode('DEL'); }} > Delete </Button>
+                <Button variant={mode === 'MOVE' ? "outlined" : "text"} startIcon={<PanToolIcon />} onClick={() => { mode === 'MOVE'? setMode(null) : setMode('MOVE') }} > Move </Button>
             </>
-            : Object.keys(selectObj).length ? /* If object selected  */
+            : mode === 'ADD' ?
                 <>
-                    <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setMode('DEL'); }} > Delete </Button>
-                    <Button variant={mode === 'MOVE' ? "outlined" : "text"} startIcon={<PanToolIcon />} onClick={() => { !mode ? setMode('MOVE') : setMode(null); }} > Move </Button>
+                    <Button variant={addType[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['BOX']) : setAddType([]) }} > Box </Button>
+                    <Button variant={addType[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['SPHERE']) : setAddType([]) }} > Sphere </Button>
                 </>
+
                 : ''}
 
 
