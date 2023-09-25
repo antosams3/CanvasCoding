@@ -14,7 +14,7 @@ export default function SideMenu(props) {
 
     React.useEffect(() => {
         if (addSwitchValue) {
-            if (mode === null || Object.keys(selectObj).length) {
+            if (!mode || selectObj ) {                                  // Mode === null or selectObj !== null
                 setAddSwitchValue(false);
             }
         }
@@ -23,7 +23,7 @@ export default function SideMenu(props) {
     const handleAddSwitchChange = () => {
         if (addSwitchValue === true) {
             setMode(null);
-            setAddType([]);
+            setAddType(null);
             setAddSwitchValue(false);
         } else {
             setMode('ADD');
@@ -43,21 +43,21 @@ export default function SideMenu(props) {
         <FormControlLabel
             control={
                 <Switch
-                    disabled={Object.keys(selectObj).length ? true : false}
+                    disabled={selectObj? true : false}
                     checked={addSwitchValue}
                     onChange={handleAddSwitchChange}
                 />}
             label="Add" />
 
-        {Object.keys(selectObj).length ? /* If object selected  */
+        {selectObj ? /* If object selected (selectObj !== null)  */
             <>
                 <Button variant={"text"} startIcon={<DeleteIcon />} onClick={() => { setMode('DEL'); }} > Delete </Button>
                 <Button variant={mode === 'MOVE' ? "outlined" : "text"} startIcon={<PanToolIcon />} onClick={() => { mode === 'MOVE'? setMode(null) : setMode('MOVE') }} > Move </Button>
             </>
             : mode === 'ADD' ?
                 <>
-                    <Button variant={addType[0] === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['BOX']) : setAddType([]) }} > Box </Button>
-                    <Button variant={addType[0] === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { !Object.keys(addType).length ? setAddType(['SPHERE']) : setAddType([]) }} > Sphere </Button>
+                    <Button variant={addType === 'BOX' ? "outlined" : "text"} startIcon={<ViewInArIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { addType === 'BOX' ? setAddType(null) : setAddType('BOX') }} > Box </Button>
+                    <Button variant={addType === 'SPHERE' ? "outlined" : "text"} startIcon={<PanoramaFishEyeIcon />} disabled={mode === 'ADD' ? false : true} onClick={() => { addType === 'SPHERE' ? setAddType(null) : setAddType('SPHERE') }} > Sphere </Button>
                 </>
 
                 : ''}

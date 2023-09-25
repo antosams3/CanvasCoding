@@ -15,7 +15,7 @@ export function Box(props) {
         if (!active) {
             setSelectObj(object);
         } else {
-            setSelectObj([]);
+            setSelectObj(null);
         }
         setActive(!active);
     }
@@ -71,7 +71,7 @@ export function Sphere(props) {
         if (!active) {
             setSelectObj(object);
         } else {
-            setSelectObj([]);
+            setSelectObj(null);
         }
         setActive(!active);
     }
