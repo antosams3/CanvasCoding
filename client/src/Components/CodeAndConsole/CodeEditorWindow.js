@@ -65,7 +65,7 @@ export default function CodeEditorWindow(props) {
     /* Find code when selectObj changes */
     React.useEffect(() => {
         removeMarkers();
-        if (selectObj) {                            // Checks if selectedObj is not just type (side menu)
+        if (selectObj) {                                                    // Checks if selectedObj is not null 
             const objectInstance = objectToInstance(selectObj);             // Casts the selectedObject into the String representing it
             setHighlightLines(findObject(objectInstance, code));            // Returns an array containing the rows to highligh, or an empty array instead
         }

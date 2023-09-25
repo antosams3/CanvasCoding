@@ -14,14 +14,23 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet } from "react-router-dom";
 
-const pages = ['File', 'Menu', 'Edit', 'Help'];
+const pages = ['File', 'View', 'Options', 'Help'];
+const subpages = {
+    File: ['New', 'Save', 'Undo', 'Redo', 'Import code', 'Export code'],
+    View: ['Font size', 'Color scheme', 'Show console', 'Show side menu', 'Show action menu', 'Show compile errors'],
+    Options: ['Autorun', 'Highlight code from changes', 'Canvas refresh'],
+    Help: ['Guide', 'Examples'],
+  };
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 
 function Navbar(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [selectedPage, setSelectedPage] = React.useState(null);
 
-    const handleOpenNavMenu = (event) => {
+    const handleOpenNavMenu = (event, page) => {
+        setSelectedPage(page);
         setAnchorElNav(event.currentTarget);
     };
 
@@ -124,12 +133,34 @@ function Navbar(props) {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    onClick={handleCloseNavMenu}
+                                    onClick={(event) => handleOpenNavMenu(event, page)}
                                     sx={{ my: 2, color: 'white', display: 'block' }}
                                 >
                                     {page}
                                 </Button>
                             ))}
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                            >
+                                {subpages[selectedPage]?.map((setting) => (
+                                    <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                                        <Typography textAlign="center">{setting}</Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
                             <Box sx={{
                                 py: 2,
                                 px: 2,
