@@ -129,7 +129,6 @@ export function Scene(props) {
             <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'} />
 
             {/* Fixed Models (Rabbit, Cat) */}
-            <DogModel position={[3, 0, 0]} />
             <CatModel position={[5, 0.2, 0]} />
             <RabbitModel position={new THREE.Vector3(7, 0, 0)} />
 
@@ -139,7 +138,8 @@ export function Scene(props) {
 
             {/* Yuka path following Steering Behaviour */}
             <Manager>
-                <Cone name="Cone"></Cone>
+                {/* <Cone name="Cone"></Cone> */}
+                <DogModel name="Cone" />
             </Manager>
 
         </>

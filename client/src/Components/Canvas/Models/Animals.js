@@ -2,6 +2,8 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import * as React from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { Vehicle } from 'yuka';
+import { useYuka } from "../useYuka";
 
 export function CatModel(props) {
     const { position } = props;
@@ -90,7 +92,7 @@ export function DogModel(props) {
     const { position } = props;
     const dogUrl = new URL('../Assets/Dog.glb', import.meta.url);
     const gltf = useLoader(GLTFLoader, dogUrl.href); // Carica il modello GLB
-    const modelRef = React.useRef();
+    const [modelRef] = useYuka({ type: Vehicle, ...props });
     const mixerRef = React.useRef();
 
     React.useEffect(() => {
@@ -107,9 +109,9 @@ export function DogModel(props) {
         })
 
         // Aggiorna la posizione del modello
-        if (modelRef.current) {
-            modelRef.current.position.set(position[0], position[1], position[2]);
-        }
+        // if (modelRef.current) {
+        //     modelRef.current.position.set(position.x, position.y, position.z);
+        // }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
