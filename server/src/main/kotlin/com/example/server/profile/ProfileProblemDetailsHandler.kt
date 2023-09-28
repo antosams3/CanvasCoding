@@ -1,8 +1,8 @@
-package com.example.server.user
+package com.example.server.profile
 
-import com.example.server.user.exceptions.InvalidUserDTOException
-import com.example.server.user.exceptions.UserAlreadyExistingException
-import com.example.server.user.exceptions.UserNotFoundException
+import com.example.server.profile.exceptions.InvalidProfileDTOException
+import com.example.server.profile.exceptions.ProfileAlreadyExistingException
+import com.example.server.profile.exceptions.ProfileNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -10,28 +10,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @RestControllerAdvice
-class UserProblemDetailsHandler: ResponseEntityExceptionHandler() {
+class ProfileProblemDetailsHandler: ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(InvalidUserDTOException::class)
-    fun handleInvalidUserDTO(e: InvalidUserDTOException): ProblemDetail{
+    @ExceptionHandler(InvalidProfileDTOException::class)
+    fun handleInvalidProfileDTO(e: InvalidProfileDTOException): ProblemDetail{
         val problem = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-        problem.title = "Invalid user body"
+        problem.title = "Invalid profile body"
         problem.detail = e.toString()
         return problem
     }
 
-    @ExceptionHandler(UserNotFoundException::class)
-    fun handleUserNotFound(e: UserNotFoundException): ProblemDetail{
+    @ExceptionHandler(ProfileNotFoundException::class)
+    fun handleProfileNotFound(e: ProfileNotFoundException): ProblemDetail{
         val problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND)
-        problem.title = "User not found"
+        problem.title = "Profile not found"
         problem.detail = e.message
         return problem
     }
 
-    @ExceptionHandler(UserAlreadyExistingException::class)
-    fun handleUserAlreadyExisting(e: UserAlreadyExistingException): ProblemDetail{
+    @ExceptionHandler(ProfileAlreadyExistingException::class)
+    fun handleProfileAlreadyExisting(e: ProfileAlreadyExistingException): ProblemDetail{
         val problem = ProblemDetail.forStatus(HttpStatus.CONFLICT)
-        problem.title = "User already existing"
+        problem.title = "Profile already existing"
         problem.detail = e.message
         return problem
     }
@@ -39,13 +39,13 @@ class UserProblemDetailsHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalState(e: IllegalStateException): ProblemDetail{
         val problem = ProblemDetail.forStatus(HttpStatus.CONFLICT)
-        problem.title = "User Type not existing"
+        problem.title = "Profile Type not existing"
         problem.detail = e.message
         return problem
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleUserBadFormatting(e: java.lang.IllegalArgumentException): ProblemDetail{
+    fun handleProfileBadFormatting(e: java.lang.IllegalArgumentException): ProblemDetail{
         val problem = ProblemDetail.forStatus(HttpStatus.CONFLICT)
         problem.title = "Request param not valid"
         problem.detail = e.message

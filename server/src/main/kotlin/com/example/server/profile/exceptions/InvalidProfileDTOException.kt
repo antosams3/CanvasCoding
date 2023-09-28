@@ -1,6 +1,6 @@
-package com.example.server.user.exceptions
+package com.example.server.profile.exceptions
 
-class InvalidUserDTOException(val messages: List<String?>) : RuntimeException() {
+class InvalidProfileDTOException(val messages: List<String?>) : RuntimeException() {
     override fun toString(): String {
         var errorMessage = ""
         for ((index,message) in messages.withIndex()){
