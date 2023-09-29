@@ -21,7 +21,7 @@ import Alert from '@mui/material/Alert';
 const defaultTheme = createTheme();
 
 export default function LoginForm(props) {
-  const {login, message, setMessage} = props;
+  const { login, message, setMessage } = props;
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -33,20 +33,20 @@ export default function LoginForm(props) {
     setPassword('');
     props.setMessage('');
     if (props.isloggedIn === true) {
-        navigate('/');
+      navigate('/');
     }
     // eslint-disable-next-line
-}, [props.isloggedIn, navigate])
+  }, [props.isloggedIn, navigate])
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
 
-    if(!form.checkValidity()){
-        event.stopPropagation();
-    }else{
-        const credentials = {username: email, password}
-        login(credentials);
+    if (!form.checkValidity()) {
+      event.stopPropagation();
+    } else {
+      const credentials = { email: email, password: password }
+      login(credentials);
     }
 
 
@@ -110,7 +110,12 @@ export default function LoginForm(props) {
                 onChange={ev => setPassword(ev.target.value)}
               />
               {message &&
-                <Alert severity={message.type} onClose={() => setMessage('')}>{message.msg}</Alert>
+                <Alert severity={message.severity} onClose={() => setMessage('')}>
+                  <Box>
+                    <Typography variant="h6" gutterBottom>{message.title}</Typography>
+                    <Typography variant="subtitle1">{message.content}</Typography>
+                  </Box>
+                </Alert>
               }
               <Button
                 type="submit"

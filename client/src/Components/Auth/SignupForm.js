@@ -11,20 +11,26 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-
+import { Alert } from '@mui/material';
 
 const defaultTheme = createTheme();
 
-export default function SignupForm() {
-    const navigate = useNavigate();
+export default function SignupForm(props) {
+  const {message, setMessage, signUp} = props;
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const credentials = ({
+      name: data.get('firstName'),
+      surname: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
+      course_id: data.get('course-id')
     });
+    signUp(credentials);
   };
 
   return (
@@ -100,7 +106,27 @@ export default function SignupForm() {
                   autoComplete="new-password"
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="course-id"
+                  name="course-id"
+                  required
+                  fullWidth
+                  type="number"
+                  id="course-id"
+                  label="Course ID"
+                  autoFocus
+                />
+              </Grid>
             </Grid>
+            {message &&
+                <Alert severity={message.severity} onClose={() => setMessage('')}>
+                  <Box>
+                    <Typography variant="h6" gutterBottom>{message.title}</Typography>
+                    <Typography variant="subtitle1">{message.content}</Typography>
+                  </Box>
+                </Alert>
+              }
             <Button
               type="submit"
               fullWidth
