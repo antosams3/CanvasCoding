@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -12,11 +11,12 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const defaultTheme = createTheme();
 
 export default function SignupForm(props) {
-  const {message, setMessage, signUp} = props;
+  const {message, setMessage, signUp, loading} = props;
 
   const navigate = useNavigate();
 
@@ -127,14 +127,15 @@ export default function SignupForm(props) {
                   </Box>
                 </Alert>
               }
-            <Button
+            <LoadingButton
+              loading = {loading}
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
-            </Button>
+            </LoadingButton>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link onClick={() => { navigate('/login') }} variant="body2">

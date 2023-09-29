@@ -21,10 +21,11 @@ const subpages = {
     Options: ['Autorun', 'Highlight code from changes', 'Canvas refresh'],
     Help: ['Guide', 'Examples'],
   };
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Logout'];
 
 
 function Navbar(props) {
+    const {user, handleLogout} = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [selectedPage, setSelectedPage] = React.useState(null);
@@ -192,9 +193,13 @@ function Navbar(props) {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    setting === "Logout"?
+                                    <MenuItem key={setting} onClick={()=>{handleCloseUserMenu(); handleLogout();}}>
                                         <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
+                                    </MenuItem>: 
+                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    <Typography textAlign="center">{setting}</Typography>
+                                </MenuItem>
                                 ))}
                             </Menu>
                         </Box>
