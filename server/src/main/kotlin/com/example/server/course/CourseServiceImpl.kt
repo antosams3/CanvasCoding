@@ -7,6 +7,7 @@ import com.example.server.profile.exceptions.ProfileNotFoundException
 import com.example.server.utils.ProfileType
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,6 +17,7 @@ class CourseServiceImpl(
     private val profileRepository: ProfileRepository
 ): CourseService {
 
+    @Secured("ROLE_TEACHER")
     override fun postCourse(email: String, courseDTO: CourseDTO): CourseDTO? {
         val user = profileRepository.findByEmail(email)
         if(user !== null){
@@ -29,6 +31,7 @@ class CourseServiceImpl(
         }
     }
 
+    @Secured("ROLE_TEACHER")
     override fun putCourse(email: String, courseDTO: CourseDTO): CourseDTO? {
         val user = profileRepository.findByEmail(email)
         if(user !== null){
@@ -53,6 +56,7 @@ class CourseServiceImpl(
         return course.toDTO()
     }
 
+    @Secured("ROLE_TEACHER")
     override fun deleteCourse(id: Int) {
         courseRepository.deleteById(id)
     }

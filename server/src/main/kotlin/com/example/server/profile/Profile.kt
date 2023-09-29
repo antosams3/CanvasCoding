@@ -13,13 +13,12 @@ class Profile(
     var email: String = "",
     var name: String = "",
     var surname : String = "",
-    var password: String = "",
     @Column(updatable = false, nullable = false)
     var type : ProfileType = ProfileType.STUDENT,
     @ManyToOne
     var course: Course? = null
 ): EntityBase<Int>()
 
-fun ProfileDTO.toEntity(course: Course?): Profile {
-    return Profile(email, name, surname, password, type, course = course)
+fun ProfileDTO.toEntity(type: ProfileType, course: Course?): Profile {
+    return Profile(email, name, surname, type = type, course = course)
 }
