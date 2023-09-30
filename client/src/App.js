@@ -20,7 +20,7 @@ function Root() {
   const [loggedIn, setLoggedIn] = useState(false);          /* Boolean user login status (true,false) */
   const [user, setUser] = useState(false);                  /* Logged user info */
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);            /* Api calls waiting animation */
 
   const navigate = useNavigate();
 
@@ -98,9 +98,9 @@ function Root() {
   }
 
   const handleLogout = async () => {
-    console.log("Logged out")
     setLoggedIn(false);
-    setUser({});
+    sessionStorage.removeItem("jwtToken");
+    setUser();
   }
 
 
@@ -108,7 +108,7 @@ function Root() {
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user}  ></Navbar>}>
         {/* Outlets */}
         <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} />} />
 
