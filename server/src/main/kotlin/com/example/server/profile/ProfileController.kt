@@ -2,6 +2,7 @@ package com.example.server.profile
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @CrossOrigin
@@ -9,15 +10,15 @@ class ProfileController (
     private val profileService: ProfileService
     ) {
 
-    @DeleteMapping("/API/profiles/{email}")
+    @DeleteMapping("/API/profiles")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteProfile(@PathVariable email: String){
-        profileService.deleteProfile(email)
+    fun deleteProfile(principal : Principal){
+        profileService.deleteProfile(principal.name)
     }
 
-    @GetMapping("/API/profiles/{email}")
-    fun getProfile(@PathVariable email: String) : ProfileDTO?{
-        return profileService.getProfile(email)
+    @GetMapping("/API/profile")
+    fun getProfile(principal : Principal) : ProfileDTO?{
+        return profileService.getProfile(principal.name)
     }
 
     @GetMapping("/API/profiles")

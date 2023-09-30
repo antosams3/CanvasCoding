@@ -1,5 +1,6 @@
 package com.example.server.authentication.signup
 
+import com.example.server.archive.ArchiveService
 import com.example.server.authentication.signup.exceptions.SignupNotAllowedException
 import com.example.server.profile.ProfileDTO
 import com.example.server.profile.ProfileService
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service
 @Service
 @Transactional
 class SignupServiceImpl(
-    private val profileService: ProfileService
+    private val profileService: ProfileService,
+    private val archiveService: ArchiveService
 ): SignupService {
     @Value("\${jwt.auth.converter.resource-id}")
     private var clientId: String? = null
@@ -79,6 +81,7 @@ class SignupServiceImpl(
 
                 if(profileType === ProfileType.STUDENT){
                     profileService.postStudent(profile)
+                    archiveService.postArchive(profile.email)
                 }else{
                     profileService.postTeacher(profile)
                 }
