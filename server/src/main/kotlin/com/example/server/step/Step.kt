@@ -7,16 +7,16 @@ import jakarta.persistence.ManyToOne
 
 @Entity
 class Step(
+    var action_menu: String,
+    var complete_check: String,
     var description : String,
     var dialogue: String,
-    var action_menu: String,
     var side_menu: String,
-    var check: String,
     var tip: String,
     @ManyToOne
     var level : Level
-): EntityBase<Int>()
+    ): EntityBase<Int>()
 
 fun StepDTO.toEntity(level: Level): Step{
-    return Step(description,dialogue,action_menu,side_menu,check,tip,level = level)
+    return Step(action_menu,complete_check,description,dialogue, side_menu, tip, level = level)
 }

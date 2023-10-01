@@ -43,18 +43,18 @@ class StepServiceImpl(
 
     @Secured("ROLE_TEACHER")
     override fun putStep(stepDTO: StepDTO): StepDTO? {
-        val level = levelRepository.findByIdOrNull(stepDTO.level_id)
+        val newlev = levelRepository.findByIdOrNull(stepDTO.level_id)
 
-        if(level !== null){
+        if(newlev !== null){
             val step = stepRepository.findByIdOrNull(stepDTO.id) ?: throw StepNotFoundException("Step not found")
             step.apply {
                 description = stepDTO.description
                 action_menu = stepDTO.action_menu
                 side_menu = stepDTO.side_menu
-                check = stepDTO.check
+                complete_check = stepDTO.complete_check
                 tip = stepDTO.tip
                 dialogue = stepDTO.dialogue
-                this.level = level
+                level = newlev
             }
             return step.toDTO()
         }else{
