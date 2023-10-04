@@ -21,7 +21,9 @@ function Root() {
   const [user, setUser] = useState(false);                  /* Logged user info */
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
   const [loading, setLoading] = useState(false);            /* Api calls waiting animation */
-
+  const [code, setCode] = useState("");                     // Code                                          
+  const [level, setLevel] = useState(false);                // Game level
+  const [step, setStep] = useState(false);                  // Game step
   const navigate = useNavigate();
 
   const handleMessage = (message) => {
@@ -70,6 +72,14 @@ function Root() {
       setUser(user);
       setLoggedIn(true);
       clearMessage();
+
+      const game_session = await API.getCurrentGameSession()
+      setCode(game_session.code)
+      const game_step = await API.getStepById(game_session.step_id)
+      setStep(game_step)
+      const game_level = await API.getLevelById(game_step.level_id)
+      setLevel(game_level);
+
       setLoading(false);
       navigate('/');
 
@@ -110,7 +120,7 @@ function Root() {
 
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user}  ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage loggedIn={loggedIn} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} />} />
 
       </Route>
 
