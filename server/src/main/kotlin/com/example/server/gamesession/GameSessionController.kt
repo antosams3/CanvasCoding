@@ -11,6 +11,7 @@ import java.security.Principal
 class GameSessionController(
     private val gameSessionService: GameSessionService
 ) {
+    /*
     @PostMapping("/API/game_session")
     fun postGameSession(@Valid @RequestBody gameSessionDTO: GameSessionDTO, br : BindingResult, principal : Principal): GameSessionDTO?{
         if (br.hasErrors()){
@@ -19,7 +20,7 @@ class GameSessionController(
             throw InvalidGameSessionDTOException(errMessages)
         }
         return gameSessionService.postGameSession(principal.name, gameSessionDTO)
-    }
+    }*/
 
     @GetMapping("/API/game_session/latest")
     fun getLatestGameSessionByStepId(principal : Principal): GameSessionDTO?{

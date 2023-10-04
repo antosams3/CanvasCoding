@@ -20,7 +20,6 @@ class GameSessionServiceImpl(
     private val stepRepository: StepRepository
 ): GameSessionService {
 
-    @Secured("ROLE_STUDENT")
     override fun postGameSession(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO? {
         val profile = profileRepository.findByEmail(email)
             ?: throw ProfileNotFoundException("Profile not found!")

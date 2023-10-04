@@ -2,6 +2,8 @@ package com.example.server.authentication.signup
 
 import com.example.server.archive.ArchiveService
 import com.example.server.authentication.signup.exceptions.SignupNotAllowedException
+import com.example.server.gamesession.GameSessionDTO
+import com.example.server.gamesession.GameSessionService
 import com.example.server.profile.ProfileDTO
 import com.example.server.profile.ProfileService
 import com.example.server.profile.exceptions.ProfileAlreadyExistingException
@@ -20,7 +22,8 @@ import org.springframework.stereotype.Service
 @Transactional
 class SignupServiceImpl(
     private val profileService: ProfileService,
-    private val archiveService: ArchiveService
+    private val archiveService: ArchiveService,
+    private val gameSessionService: GameSessionService
 ): SignupService {
     @Value("\${jwt.auth.converter.resource-id}")
     private var clientId: String? = null
@@ -80,8 +83,16 @@ class SignupServiceImpl(
                 val profile = ProfileDTO(signupRequestDTO.email, signupRequestDTO.name, signupRequestDTO.surname, profileType,signupRequestDTO.course_id)
 
                 if(profileType === ProfileType.STUDENT){
+                val session = GameSessionDTO(null,null,"public class Main{\n" +
+                        "    public static void main (String[] args) {\n" +
+                        "    \n" +
+                        "    \n" +
+                        "    \n" +
+                        "    }\n" +
+                        "}",1,null)
                     profileService.postStudent(profile)
                     archiveService.postArchive(profile.email)
+                    gameSessionService.postGameSession(signupRequestDTO.email,session)
                 }else{
                     profileService.postTeacher(profile)
                 }

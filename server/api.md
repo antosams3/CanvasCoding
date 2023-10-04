@@ -18,4 +18,18 @@
   * Request body: GameSessionDTO
   * Response: GameSessionDTO
 ### Get
+* **/API/game_session/latest**
+  * Authenticated: Yes 
+  * Response: GameSessionDTO
+  * Info: Returns the GameSession having the higher Step_id for the user authenticated
+* **/API/game_session/{step_id}**
+  * Authenticated: Yes
+  * Request param: step_id
+  * Response: GameSessionDTO
+  * Info: returns the GameSession having the specified step_id for the user authenticated 
+### Put
 * **/API/game_session**
+  * Authenticated: Yes
+  * Request: GameSessionDTO (id, code)
+  * Response: GameSessionDTO
+  * Info: modifies only the code of the current gameSession
