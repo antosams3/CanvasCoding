@@ -27,7 +27,7 @@ class WebSecurityConfig(private val jwtAuthConverter: JwtAuthConverter) {
         http.authorizeHttpRequests()
             // Profile endpoints
             .requestMatchers(HttpMethod.GET, "/API/profiles").hasRole(TEACHER)
-            .requestMatchers(HttpMethod.GET, "/API/profiles/{email}").authenticated()
+            .requestMatchers(HttpMethod.GET, "/API/profile").authenticated()
             .requestMatchers(HttpMethod.DELETE, "/API/profiles/{email}").hasRole(TEACHER)
 
             // Course
@@ -56,7 +56,7 @@ class WebSecurityConfig(private val jwtAuthConverter: JwtAuthConverter) {
             .requestMatchers(HttpMethod.GET, "/API/game_session/{step_id}").authenticated()
             .requestMatchers(HttpMethod.GET, "/API/game_session/latest").authenticated()
             .requestMatchers(HttpMethod.POST, "/API/game_session").hasRole(STUDENT)
-            .requestMatchers(HttpMethod.PUT, "/API/game_session").hasRole(STUDENT)
+            .requestMatchers(HttpMethod.PUT, "/API/game_session/code").hasRole(STUDENT)
 
             // Else
             .anyRequest().permitAll()

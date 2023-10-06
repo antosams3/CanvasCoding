@@ -32,7 +32,7 @@ class GameSessionController(
         return gameSessionService.getGameSessionByStepId(principal.name, step_id)
     }
 
-    @PutMapping("/API/game_session")
+    @PutMapping("/API/game_session/code")
     fun putGameSession(@Valid @RequestBody gameSessionDTO: GameSessionDTO, br : BindingResult, principal : Principal): GameSessionDTO?{
         if (br.hasErrors()){
             val errors = br.allErrors

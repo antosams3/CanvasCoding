@@ -49,13 +49,11 @@ class GameSessionServiceImpl(
         return session.toDTO()
     }
 
-
+    @Secured("ROLE_STUDENT")
     override fun putGameSession(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO? {
-        val profile = profileRepository.findByEmail(email)
+        profileRepository.findByEmail(email)
             ?: throw ProfileNotFoundException("Profile not found!")
-        val step = stepRepository.findByIdOrNull(gameSessionDTO.id)
-            ?: throw StepNotFoundException("Step not found!")
-        val session = gameSessionRepository.findGameSessionByStudent_IdAndStep_Id(profile.getId()!!, step.getId()!!)
+        val session = gameSessionRepository.findByIdOrNull(gameSessionDTO.id)
             ?: throw GameSessionNotFoundException("Game session not found!")
 
         session.apply {
