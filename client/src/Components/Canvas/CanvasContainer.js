@@ -6,7 +6,7 @@ import SideMenu from './Menus/SideMenu';
 import * as React from 'react';
 
 export default function CanvasContainer(props) {
-    const { setLoading, objects, setObjects, selectObj, setSelectObj } = props;
+    const { objects, setObjects, selectObj, setSelectObj } = props;
 
     const [mode, setMode] = React.useState(null);                 // Mode in: null, 'ADD', 'DEL', 'MOVE'
     const [addType, setAddType] = React.useState(null);           // AddType in: null, 'BOX', 'SPHERE'...
@@ -15,7 +15,7 @@ export default function CanvasContainer(props) {
     return (<Grid container >
         <Grid item xs={10}>
             <Box sx={{ flexGrow: 1 }}>
-                <Canvas3f mode={mode} setMode={setMode} selectObj={selectObj} setSelectObj={setSelectObj} setAddType={setAddType} addType={addType} FPView={FPView} setLoading={setLoading} objects={objects} setObjects={setObjects} />
+                <Canvas3f mode={mode} setMode={setMode} selectObj={selectObj} setSelectObj={setSelectObj} setAddType={setAddType} addType={addType} FPView={FPView} objects={objects} setObjects={setObjects} />
             </Box>
         </Grid>
         <Grid item xs={2}>

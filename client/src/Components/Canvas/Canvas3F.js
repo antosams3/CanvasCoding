@@ -8,20 +8,8 @@ import { Scene } from './UI/Scene';
 import { Floor } from "./UI/Floor";
 
 
-function Loader(props) {
-    const {setLoading} = props;
-    const cubeTextureLoader = new THREE.CubeTextureLoader();
+function Loader() {
     const { progress } = useProgress()
-
-    setTimeout(finish,1000)
-
-    function finish () {
-        props.scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
-        setLoading(false);              // Code Editor loading = false
-    }
-
-
-
 
     return (<Html center>
         <label htmlFor="progress-bar">Loading...</label>
@@ -31,15 +19,16 @@ function Loader(props) {
 
 
 export default function Canvas3f(props) {
-    let { selectObj, setSelectObj, FPView, mode, setMode, setLoading , objects, setObjects, setAddType, addType} = props;
+    let { selectObj, setSelectObj, FPView, mode, setMode , objects, setObjects, setAddType, addType} = props;
 
     const scene = new THREE.Scene();
-
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
 
     return (
         <div style={{ minWidth: '300px', maxWidth: '500px', height: '500px' }}>
             <Canvas scene={scene} >
-                <Suspense fallback={<Loader scene={scene} setLoading={setLoading} />}>
+                <Suspense fallback={<Loader />}>
                     {/* Mouse controls */}
                     {FPView ? <PointerLockControls /> : <OrbitControls />}
 

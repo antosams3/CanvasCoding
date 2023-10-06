@@ -19,6 +19,12 @@ export default function Homepage(props) {
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 
     const [annotations, setAnnotations] = React.useState([]);                       // Warnings and errors generated after compile 
 
+    setTimeout(finish,1000)
+
+    function finish () {
+        setLoading(false);              // Code Editor loading = false
+    }
+
     const handleClickDialog = (type, title, content) => {
         setDialog({
             type: type,                                                             // Type in: 1 (question), 2 (info)
@@ -70,7 +76,7 @@ export default function Homepage(props) {
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} setLoading={setLoading} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}
