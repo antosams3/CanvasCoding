@@ -10,8 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const {code, setCode, level} = props;
-    const [dialog, setDialog] = React.useState({});                                 // Dialog content
+    const {code, setCode, level, dialog, handleClickDialog} = props;
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
     const [output, setOutput] = React.useState(null);                               // Code console
@@ -25,13 +24,7 @@ export default function Homepage(props) {
         setLoading(false);              // Code Editor loading = false
     }
 
-    const handleClickDialog = (type, title, content) => {
-        setDialog({
-            type: type,                                                             // Type in: 1 (question), 2 (info)
-            title: title,
-            content: content
-        })
-    };
+
 
     React.useEffect(() => {
         if(!compiling){

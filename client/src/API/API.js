@@ -200,13 +200,52 @@ function getLevelById(id) {
     });
 }
 
+function putCode(code, game_session) {
+    // PUT /API/game_session/code
+    
+    return new Promise((resolve, reject) => {
+        fetch(new URL(`game_session/code`, API_URL), {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwtToken"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: game_session.id,
+                code: code,
+            })
+        }).then((response) => {
+            if (response.ok) {
+                response.json()
+                    .then((game_session) => {
+                        resolve(game_session);
+                    })
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    });
+            } else {
+                response.json()
+                    .then((message) => {
+                        reject(message);
+                    }) // error message in the response body
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    }); // something else
+            }
+        }).catch((err) => {
+            reject({error: err.toString()})
+        }); // connection errors
+    });
+}
+
 const API = {
     logIn,
     signUp,
     getProfile,
     getCurrentGameSession,
     getStepById,
-    getLevelById
+    getLevelById,
+    putCode
 }
 
 export default API;

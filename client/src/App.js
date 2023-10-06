@@ -23,17 +23,28 @@ function Root() {
   const [user, setUser] = useState(false);                  /* Logged user info */
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
   const [processing, setProcessing] = useState(false);      /* Api calls waiting animation */
-  const [code, setCode] = useState("");                     // Code                                          
+  const [code, setCode] = useState("");                     // Code  
+  const [gameSession, setGameSession] = useState();         // Game session                                        
   const [level, setLevel] = useState();                     // Game level
   const [step, setStep] = useState();                       // Game step
+  const [dialog, setDialog] = useState({});           // Dialog content
+
   const navigate = useNavigate();
 
+  const handleClickDialog = (type, title, content) => {
+    setDialog({
+        type: type,                                                             // Type in: 1 (question), 2 (info)
+        title: title,
+        content: content
+    })
+};
 
   useEffect(() => {
 
     init();
-
-  }, []);
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   const init = () => {
     if (token && jwt(token).exp > Math.floor(Date.now() / 1000)) {
@@ -88,9 +99,20 @@ function Root() {
     }
   }
 
+  const saveCode = async () => {
+    try{
+      await API.putCode(code,gameSession);
+      handleClickDialog(2, "Info", "Code saved successfully!");
+
+    }catch(err){
+      handleMessage({ severity: "error", content: err })
+    }
+  }
+
   const initGame = async () => {
     try {
       const game_session = await API.getCurrentGameSession()
+      setGameSession(game_session)
       setCode(game_session.code)
       const game_step = await API.getStepById(game_session.step_id)
       setStep(game_step)
@@ -129,9 +151,9 @@ function Root() {
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user}  ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user} saveCode={saveCode} handleClickDialog={handleClickDialog}  ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} />} />
 
       </Route>
 

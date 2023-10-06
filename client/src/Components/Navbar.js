@@ -16,16 +16,16 @@ import { Outlet } from "react-router-dom";
 
 const pages = ['File', 'View', 'Options', 'Help'];
 const subpages = {
-    File: ['New', 'Save', 'Undo', 'Redo', 'Import code', 'Export code'],
+    File: ['Save', 'Undo', 'Redo', 'Import code', 'Export code'],
     View: ['Font size', 'Color scheme', 'Show console', 'Show side menu', 'Show action menu', 'Show compile errors'],
     Options: ['Autorun', 'Highlight code from changes', 'Canvas refresh'],
     Help: ['Guide', 'Examples'],
-  };
+};
 const settings = ['Profile', 'Account', 'Logout'];
 
 
 function Navbar(props) {
-    const {user, handleLogout} = props;
+    const { user, handleLogout, saveCode } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [selectedPage, setSelectedPage] = React.useState(null);
@@ -39,11 +39,19 @@ function Navbar(props) {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
+    const handleCloseNavMenu = (setting) => {
+        switch (setting) {
+            case "Save": saveCode(); break;
+            default: break;
+        }
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (setting) => {
+        switch (setting) {
+            case "Logout": handleLogout(); break;
+            default: break;
+        }
         setAnchorElUser(null);
     };
 
@@ -157,7 +165,7 @@ function Navbar(props) {
                                 onClose={handleCloseNavMenu}
                             >
                                 {subpages[selectedPage]?.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                                    <MenuItem key={setting} onClick={() => handleCloseNavMenu(setting)}>
                                         <Typography textAlign="center">{setting}</Typography>
                                     </MenuItem>
                                 ))}
@@ -193,13 +201,10 @@ function Navbar(props) {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    setting === "Logout"?
-                                    <MenuItem key={setting} onClick={()=>{handleCloseUserMenu(); handleLogout();}}>
+                                    <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                                         <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>: 
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
+                                    </MenuItem>
+
                                 ))}
                             </Menu>
                         </Box>
