@@ -73,10 +73,10 @@ function signUp(credentials) {
         }); // connection errors
     });
 }
-function getProfile(email) {
+function getProfile() {
     // GET /API/profiles/{email}
     return new Promise((resolve, reject) => {
-        fetch(new URL(`profiles/${email}`, API_URL), {
+        fetch(new URL(`profile`, API_URL), {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem("jwtToken")

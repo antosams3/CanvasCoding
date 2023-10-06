@@ -10,7 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const {code, setCode} = props;
+    const {code, setCode, level} = props;
     const [dialog, setDialog] = React.useState({});                                 // Dialog content
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
@@ -84,7 +84,7 @@ export default function Homepage(props) {
                                 theme.palette.primary.main
                         }}
                     >
-                        <Footer handleClickDialog={handleClickDialog} />
+                        <Footer handleClickDialog={handleClickDialog} level={level} />
                     </Box>
                 </Grid>
             </Grid>

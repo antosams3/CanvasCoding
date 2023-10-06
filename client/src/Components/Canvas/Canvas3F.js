@@ -12,10 +12,17 @@ function Loader(props) {
     const {setLoading} = props;
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const { progress } = useProgress()
-    if (progress === 100) {
+
+    setTimeout(finish,1000)
+
+    function finish () {
         props.scene.background = cubeTextureLoader.load([stars, stars, stars, stars, stars, stars]);
         setLoading(false);              // Code Editor loading = false
     }
+
+
+
+
     return (<Html center>
         <label htmlFor="progress-bar">Loading...</label>
         <progress id="progress-bar" value={progress}></progress>

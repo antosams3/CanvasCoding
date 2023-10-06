@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import API from './API/API';
 import jwt from 'jwt-decode';
 
+const token = sessionStorage.getItem("jwtToken");
+
 function App() {
   return (
     <Router>
@@ -17,14 +19,42 @@ function App() {
 }
 
 function Root() {
-  const [loggedIn, setLoggedIn] = useState(false);          /* Boolean user login status (true,false) */
+  const [loggedIn, setLoggedIn] = useState(token && jwt(token).exp > Math.floor(Date.now() / 1000)? true : false);          /* Boolean user login status (true,false) */
   const [user, setUser] = useState(false);                  /* Logged user info */
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
-  const [loading, setLoading] = useState(false);            /* Api calls waiting animation */
+  const [processing, setProcessing] = useState(false);      /* Api calls waiting animation */
   const [code, setCode] = useState("");                     // Code                                          
-  const [level, setLevel] = useState(false);                // Game level
-  const [step, setStep] = useState(false);                  // Game step
+  const [level, setLevel] = useState();                     // Game level
+  const [step, setStep] = useState();                       // Game step
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+
+    init();
+
+  }, []);
+
+  const init = () => {
+    if (token && jwt(token).exp > Math.floor(Date.now() / 1000)) {
+      // Token not expired 
+      API.getProfile()
+        .then(user => {
+          setUser(user)
+          initGame();
+        })
+        .catch(err => handleMessage({ severity: "error", content: err }))
+
+    } else {
+      // User not logged (token not found)
+      setUser()
+      setLoggedIn(false)
+      // Token found but expired
+      if (token && jwt(token).exp <= Math.floor(Date.now() / 1000)) {
+        handleMessage({ severity: "warning", content: "Your session has expired, login again" })
+      }
+    }
+  }
 
   const handleMessage = (message) => {
     if (message.severity === "error") {
@@ -39,70 +69,51 @@ function Root() {
     setMessage({ severity: message.severity, title: message.title, content: message.content });
   }
 
-  const clearMessage = () => setMessage({});
-
-  useEffect(() => {
-
-    const init = () => {
-      const token = sessionStorage.getItem("jwtToken");
-      if (token && jwt(token).exp > Math.floor(Date.now() / 1000)) {
-        API.getProfile(jwt(token).email)
-          .then(user => {
-            setUser(user)
-            setLoggedIn(true)
-          })
-          .catch(err => handleMessage({ severity: "error", content: err }))
-      } else {
-        setUser()
-        setLoggedIn(false)
-        if (token && jwt(token).exp <= Math.floor(Date.now() / 1000)) {
-          handleMessage({ severity: "warning", content: "Your session has expired, login again" })
-        }
-      }
-    }
-
-    init();
-
-  }, []);
-
   const handleLogin = async (credentials) => {
     try {
-      setLoading(true);
+      setProcessing(true);
       const user = await API.logIn(credentials);
       setUser(user);
       setLoggedIn(true);
-      clearMessage();
 
+      await initGame();
+      setProcessing(false);
+      navigate('/');
+
+
+    } catch (err) {
+      setProcessing(false);
+      handleMessage({ severity: "error", content: err })
+      //setMessage({ msg: `${err.detail}!`, type: 'error' });
+    }
+  }
+
+  const initGame = async () => {
+    try {
       const game_session = await API.getCurrentGameSession()
       setCode(game_session.code)
       const game_step = await API.getStepById(game_session.step_id)
       setStep(game_step)
       const game_level = await API.getLevelById(game_step.level_id)
       setLevel(game_level);
-
-      setLoading(false);
-      navigate('/');
-
     } catch (err) {
-      setLoading(false);
       handleMessage({ severity: "error", content: err })
-      //setMessage({ msg: `${err.detail}!`, type: 'error' });
     }
   }
 
   const handleSignUp = async (credentials) => {
     try {
-      setLoading(true);
+      setProcessing(true);
       await API.signUp(credentials);
       handleMessage({
         severity: "success",
         title: "Successfully registered",
         content: "Login for accessing the platform"
       });
-      setLoading(false);
+      setProcessing(false);
 
     } catch (err) {
-      setLoading(false);
+      setProcessing(false);
       handleMessage({ severity: "error", content: err });
     }
   }
@@ -125,8 +136,8 @@ function Root() {
       </Route>
 
       {/* The following routes will NOT have the navbar */}
-      <Route path='/login' element={<LoginForm login={handleLogin} isloggedIn={loggedIn} message={message} setMessage={setMessage} loading={loading} />} />
-      <Route path='/signup' element={<SignupForm signUp={handleSignUp} message={message} setMessage={setMessage} loading={loading} />} />
+      <Route path='/login' element={<LoginForm login={handleLogin} isloggedIn={loggedIn} message={message} setMessage={setMessage} processing={processing} />} />
+      <Route path='/signup' element={<SignupForm signUp={handleSignUp} message={message} setMessage={setMessage} processing={processing} />} />
       <Route path='*' element={<><h1>Oh no! Page not found.</h1> <p>Return to our <Link to="/" >homepage</Link>. </p></>} />
     </Routes>
   );

@@ -9,9 +9,7 @@ import LevelSelector from './Level/LevelSelector';
 const defaultTheme = createTheme();
 
 export default function Footer(props) {
-    const {handleClickDialog} = props;
-
-    const level = { id: 7 };
+    const {handleClickDialog, level} = props;
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box

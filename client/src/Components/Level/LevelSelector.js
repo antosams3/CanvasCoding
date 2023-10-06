@@ -9,13 +9,16 @@ export default function LevelSelector(props) {
     const { level, handleClickDialog } = props;
     return (
         <Stack direction="row" spacing={1}>
-            <Tooltip title="Previous level" onClick={() => { handleClickDialog(1, "Warning", "By selecting the previous level, you will lose all the unsaved progress. Are you sure?") }}>
-                <IconButton aria-label="prev">
-                    <ArrowBackIcon />
-                </IconButton>
-            </Tooltip>
+            {level?.id !== 1 ?
+                <Tooltip title="Previous level" onClick={() => { handleClickDialog(1, "Warning", "By selecting the previous level, you will lose all the unsaved progress. Are you sure?") }}>
+                    <IconButton aria-label="prev">
+                        <ArrowBackIcon />
+                    </IconButton>
+                </Tooltip>
+                : ''}
+
             <Typography variant="body1" paddingTop={1}>
-                Level {level.id}
+                Level {level?.id}
             </Typography>
             <Tooltip title="Next level">
                 <IconButton aria-label="next">
