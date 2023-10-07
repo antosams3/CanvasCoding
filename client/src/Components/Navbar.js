@@ -21,11 +21,11 @@ const subpages = {
     Options: ['Autorun', 'Highlight code from changes', 'Canvas refresh'],
     Help: ['Guide', 'Examples'],
 };
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = ['Account', 'Logout'];
 
 
 function Navbar(props) {
-    const { user, saveCode, handleClickDialog } = props;
+    const { user, saveCode, showLogoutDialog, showUserInfo } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [selectedPage, setSelectedPage] = React.useState(null);
@@ -49,7 +49,8 @@ function Navbar(props) {
 
     const handleCloseUserMenu = (setting) => {
         switch (setting) {
-            case "Logout": handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost."); break;
+            case "Logout": showLogoutDialog(); break;
+            case "Account": showUserInfo(); break; 
             default: break;
         }
         setAnchorElUser(null);

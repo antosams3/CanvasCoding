@@ -19,7 +19,7 @@ function App() {
 }
 
 function Root() {
-  const [loggedIn, setLoggedIn] = useState(token && jwt(token).exp > Math.floor(Date.now() / 1000)? true : false);          /* Boolean user login status (true,false) */
+  const [loggedIn, setLoggedIn] = useState(token && jwt(token).exp > Math.floor(Date.now() / 1000) ? true : false);          /* Boolean user login status (true,false) */
   const [user, setUser] = useState(false);                  /* Logged user info */
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
   const [processing, setProcessing] = useState(false);      /* Api calls waiting animation */
@@ -34,18 +34,18 @@ function Root() {
 
   const handleClickDialog = (type, title, content) => {
     setDialog({
-        type: type,                                                             // Type in: 1 (question), 2 (info)
-        title: title,
-        content: content
+      type: type,                                                             // Type in: 1 (question), 2 (info)
+      title: title,
+      content: content
     })
-};
+  };
 
   useEffect(() => {
 
     init();
-  
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   const init = () => {
     if (token && jwt(token).exp > Math.floor(Date.now() / 1000)) {
@@ -84,7 +84,8 @@ function Root() {
   const handleLogin = async (credentials) => {
     try {
       setProcessing(true);
-      const user = await API.logIn(credentials);
+      await API.logIn(credentials);
+      const user = await API.getProfile();
       setUser(user);
       setLoggedIn(true);
 
@@ -101,11 +102,11 @@ function Root() {
   }
 
   const saveCode = async () => {
-    try{
-      await API.putCode(code,gameSession);
+    try {
+      await API.putCode(code, gameSession);
       handleClickDialog(2, "Info", "Code saved successfully!");
 
-    }catch(err){
+    } catch (err) {
       handleMessage({ severity: "error", content: err })
     }
   }
@@ -141,13 +142,13 @@ function Root() {
     }
   }
 
-  useEffect(()=>{
-    if(answer === true && dialog?.title === 'Are you leaving?'){
+  useEffect(() => {
+    if (answer === true && dialog?.title === 'Are you leaving?') {
       handleLogout();
     }
-  },[answer, dialog])
+  }, [answer, dialog])
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setLoggedIn(false);
     sessionStorage.removeItem("jwtToken");
     setUser();
@@ -159,14 +160,21 @@ function Root() {
     setGameSession();
   }
 
+  const showUserInfo = () => {
+    handleClickDialog(2, "Account", `Name: ${user?.name}  Surname: ${user?.surname} Email: ${user?.email} \n Level: ${level?.id}  Step:${step.id}`);
+  }
+
+  const showLogoutDialog = () => {
+    handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost.");
+  }
 
 
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} handleClickDialog={handleClickDialog} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer}  />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} />} />
 
       </Route>
 
