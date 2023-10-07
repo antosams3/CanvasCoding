@@ -7,6 +7,7 @@ import Homepage from './Components/Homepage';
 import { useNavigate } from 'react-router-dom';
 import API from './API/API';
 import jwt from 'jwt-decode';
+import { saveAs } from 'file-saver';
 
 const token = sessionStorage.getItem("jwtToken");
 
@@ -168,11 +169,18 @@ function Root() {
     handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost.");
   }
 
+  const handleExportFile = () =>{
+    handleClickDialog(2, "Code export", "Download will start immediately.");
+    const formattedData = code.replace(/\n/g, '\n\n');
+    const blob = new Blob([formattedData], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, 'exportedCode.txt');
+  }
+
 
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} ></Navbar>}>
         {/* Outlets */}
         <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} />} />
 

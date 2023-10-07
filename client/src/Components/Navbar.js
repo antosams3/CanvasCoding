@@ -25,7 +25,7 @@ const settings = ['Account', 'Logout'];
 
 
 function Navbar(props) {
-    const { user, saveCode, showLogoutDialog, showUserInfo } = props;
+    const { user, saveCode, showLogoutDialog, showUserInfo, handleExportFile } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [selectedPage, setSelectedPage] = React.useState(null);
@@ -42,6 +42,7 @@ function Navbar(props) {
     const handleCloseNavMenu = (setting) => {
         switch (setting) {
             case "Save": saveCode(); break;
+            case "Export code": handleExportFile(); break;
             default: break;
         }
         setAnchorElNav(null);
