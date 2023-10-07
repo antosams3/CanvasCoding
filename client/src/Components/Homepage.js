@@ -60,7 +60,7 @@ export default function Homepage(props) {
             <Grid container >
 
                 {/* Dialog */}
-                <CustomDialog dialog={dialog} setAnswer={setAnswer}></CustomDialog>
+                <CustomDialog dialog={dialog} setAnswer={setAnswer} setCode={setCode}></CustomDialog>
 
                 {/* Code and console */}
                 <Grid item xs={7}>

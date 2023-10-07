@@ -176,11 +176,14 @@ function Root() {
     saveAs(blob, 'exportedCode.txt');
   }
 
+  const handleImportFile = () =>{
+    handleClickDialog(3, "Import file", null);
+  }
+
 
   return (
     <Routes>
-
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
         {/* Outlets */}
         <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} />} />
 

@@ -6,13 +6,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
+import FileInput from './FileInput';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function CustomDialog(props) {
-    const { dialog, setAnswer } = props;
+    const { dialog, setAnswer, setCode } = props;
     const [open, setOpen] = React.useState(false);
 
     React.useEffect(() => {
@@ -29,7 +30,7 @@ export default function CustomDialog(props) {
         setAnswer(true);
         setOpen(false);
     }
-    const handleDecline = () =>{
+    const handleDecline = () => {
         setAnswer(false);
         setOpen(false);
     }
@@ -44,18 +45,25 @@ export default function CustomDialog(props) {
 
             <DialogTitle>{dialog?.title}</DialogTitle>
 
-            <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
-                    {dialog?.content}
-                </DialogContentText>
-            </DialogContent>
+            {dialog?.type === 3 ?
+                <DialogContent>
+                    <FileInput setCode={setCode} setOpen={setOpen} ></FileInput>
+                </DialogContent>
+                :
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        {dialog?.content}
+                    </DialogContentText>
+                </DialogContent>
+            }
+
             {/* Dialog with question */}
             {dialog?.type === 1 ?
                 <DialogActions>
                     <Button onClick={handleDecline}>Abort</Button>
                     <Button onClick={handleProceed}>Ok</Button>
                 </DialogActions> :
-            /* Dialog with close */
+                /* Dialog with close */
                 <DialogActions>
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>}
