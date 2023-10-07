@@ -27,7 +27,8 @@ function Root() {
   const [gameSession, setGameSession] = useState();         // Game session                                        
   const [level, setLevel] = useState();                     // Game level
   const [step, setStep] = useState();                       // Game step
-  const [dialog, setDialog] = useState({});           // Dialog content
+  const [dialog, setDialog] = useState({});                 // Dialog content
+  const [answer, setAnswer] = useState();                   // Dialog answer
 
   const navigate = useNavigate();
 
@@ -140,10 +141,22 @@ function Root() {
     }
   }
 
+  useEffect(()=>{
+    if(answer === true && dialog?.title === 'Are you leaving?'){
+      handleLogout();
+    }
+  },[answer, dialog])
+
   const handleLogout = async () => {
     setLoggedIn(false);
     sessionStorage.removeItem("jwtToken");
     setUser();
+    setDialog({});
+    setCode("");
+    setStep();
+    setLevel();
+    setAnswer();
+    setGameSession();
   }
 
 
@@ -151,9 +164,9 @@ function Root() {
   return (
     <Routes>
 
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar handleLogout={handleLogout} user={user} saveCode={saveCode} handleClickDialog={handleClickDialog}  ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} handleClickDialog={handleClickDialog} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer}  />} />
 
       </Route>
 

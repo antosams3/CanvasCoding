@@ -10,7 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const {code, setCode, level, dialog, handleClickDialog} = props;
+    const {code, setCode, level, dialog, handleClickDialog, setAnswer} = props;
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
     const [output, setOutput] = React.useState(null);                               // Code console
@@ -60,7 +60,7 @@ export default function Homepage(props) {
             <Grid container >
 
                 {/* Dialog */}
-                <CustomDialog dialog={dialog} ></CustomDialog>
+                <CustomDialog dialog={dialog} setAnswer={setAnswer}></CustomDialog>
 
                 {/* Code and console */}
                 <Grid item xs={7}>

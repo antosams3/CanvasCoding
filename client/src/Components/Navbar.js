@@ -16,7 +16,7 @@ import { Outlet } from "react-router-dom";
 
 const pages = ['File', 'View', 'Options', 'Help'];
 const subpages = {
-    File: ['Save', 'Undo', 'Redo', 'Import code', 'Export code'],
+    File: ['Save', 'Import code', 'Export code'],
     View: ['Font size', 'Color scheme', 'Show console', 'Show side menu', 'Show action menu', 'Show compile errors'],
     Options: ['Autorun', 'Highlight code from changes', 'Canvas refresh'],
     Help: ['Guide', 'Examples'],
@@ -25,7 +25,7 @@ const settings = ['Profile', 'Account', 'Logout'];
 
 
 function Navbar(props) {
-    const { user, handleLogout, saveCode } = props;
+    const { user, saveCode, handleClickDialog } = props;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [selectedPage, setSelectedPage] = React.useState(null);
@@ -49,7 +49,7 @@ function Navbar(props) {
 
     const handleCloseUserMenu = (setting) => {
         switch (setting) {
-            case "Logout": handleLogout(); break;
+            case "Logout": handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost."); break;
             default: break;
         }
         setAnchorElUser(null);

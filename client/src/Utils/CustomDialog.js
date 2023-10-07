@@ -12,18 +12,27 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function CustomDialog(props) {
-    const { dialog } = props;                                
+    const { dialog, setAnswer } = props;
     const [open, setOpen] = React.useState(false);
 
-    React.useEffect(()=>{
-        if(Object.keys(dialog).length){
+    React.useEffect(() => {
+        if (Object.keys(dialog).length) {
             setOpen(true);
         }
-    },[dialog])
+    }, [dialog])
 
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleProceed = () => {
+        setAnswer(true);
+        setOpen(false);
+    }
+    const handleDecline = () =>{
+        setAnswer(false);
+        setOpen(false);
+    }
 
     return (<>
         <Dialog
@@ -40,10 +49,13 @@ export default function CustomDialog(props) {
                     {dialog?.content}
                 </DialogContentText>
             </DialogContent>
-            {dialog?.type === 1 ? <DialogActions>
-                <Button onClick={handleClose}>Abort</Button>
-                <Button onClick={handleClose}>Ok</Button>
-            </DialogActions> :
+            {/* Dialog with question */}
+            {dialog?.type === 1 ?
+                <DialogActions>
+                    <Button onClick={handleDecline}>Abort</Button>
+                    <Button onClick={handleProceed}>Ok</Button>
+                </DialogActions> :
+            /* Dialog with close */
                 <DialogActions>
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>}
