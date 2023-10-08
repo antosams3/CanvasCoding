@@ -7,6 +7,7 @@ import { HighlightMesh } from "./Floor";
 import { printObject } from '../../../Utils/CanvasObjects';
 import { Manager } from '../useYuka';
 import { defaultValues } from '../../../Utils/defaults';
+import { findMaxId } from '../../../Utils/Functions';
 
 let intersectionsArray;                                                                     // Meshes intersected by mouse 
 const rayCaster = new THREE.Raycaster();                                                    // Mouse intersections manager 
@@ -19,6 +20,11 @@ export function Scene(props) {
     const [highlightPos, setHighlightPos] = React.useState(new THREE.Vector3(0.5, 1, 0.5)); // Tile highlighted coordinates
     const [overlap, setOverlap] = React.useState(false);                                    // Tiles overlapping object 
     const [index, setIndex] = React.useState(1);                                            // Objects index inside array
+
+    React.useEffect(()=> {
+        const maxId = findMaxId(objects)
+        setIndex(maxId + 1)
+    },[objects])
 
     React.useEffect(() => {
         if (mode === 'DEL' && selectObj) {                                                  // Checks if delete mode and object is selected (not null)
@@ -49,7 +55,7 @@ export function Scene(props) {
                 color: 'yellow'
             }
             setObjects([...objects, newobj]);                                               // Update objects array
-            setIndex(index + 1);                                                            // Update index
+            //setIndex(index + 1);                                                            // Update index
             setAddType(null);                                                                 // Deselect object type 
             setOverlap(true);                                                               // Position busy -> tile overlapped
 

@@ -25,7 +25,7 @@ export default function Homepage(props) {
     }
 
 
-
+    // Code sync with canvas
     React.useEffect(() => {
         if(!compiling){
             setCode(CanvasInterpreter(objects));
@@ -33,6 +33,7 @@ export default function Homepage(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [objects])
 
+    // Canvas compiling
     React.useEffect(() => {
         if(compiling){
             setObjects(CodeInterpreter(code));
@@ -55,6 +56,10 @@ export default function Homepage(props) {
         }
     };
 
+    const handleSync = () => {
+        setObjects(CodeInterpreter(code));
+    }
+
     return (
         <Box sx={{ position: 'relative', minHeight: '100vh' }}>
             <Grid container >
@@ -64,7 +69,7 @@ export default function Homepage(props) {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj} annotations={annotations}  />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj} annotations={annotations} handleSync={handleSync}  />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
