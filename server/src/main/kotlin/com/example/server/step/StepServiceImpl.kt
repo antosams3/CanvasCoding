@@ -28,7 +28,7 @@ class StepServiceImpl(
     override fun getStepsByLevelId(levelId: Int): List<StepDTO> {
         val level = levelRepository.findByIdOrNull(levelId)
         if(level != null){
-            return stepRepository.findStepsByLevel_Id(levelId).map { it.toDTO() }
+            return stepRepository.findStepsByLevel_IdOrderByIdAsc(levelId).map { it.toDTO() }
 
         }else{
             throw LevelNotFoundException("Level not found!")
