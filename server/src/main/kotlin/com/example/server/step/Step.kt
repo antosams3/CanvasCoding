@@ -7,12 +7,12 @@ import jakarta.persistence.ManyToOne
 
 @Entity
 class Step(
-    var action_menu: String,
-    var complete_check: String,
-    var description : String,
-    var dialogue: String,
-    var side_menu: String,
-    var tip: String,
+    var action_menu: String?,
+    var complete_check: String?,
+    var description : String?,
+    var dialogue: String?,
+    var side_menu: String?,
+    var tip: String?,
     @ManyToOne
     var level : Level
     ): EntityBase<Int>()

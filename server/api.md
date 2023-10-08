@@ -32,4 +32,11 @@
   * Authenticated: Yes
   * Request: GameSessionDTO (id, code)
   * Response: GameSessionDTO
-  * Info: modifies only the code of the current gameSession
+  * Info: modifies the code of the current gameSession
+## STEP
+### GET
+* **/API/steps/{level_id}**
+  * Authenticated: Yes
+  * Request param: level_id
+  * Response: List<StepDTO>
+  * Info: returns the list of steps associated to a given level
