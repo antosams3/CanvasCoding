@@ -31,6 +31,7 @@ function Root() {
   const [levelSteps, setLevelSteps] = useState([]);         // Game level steps
   const [dialog, setDialog] = useState({});                 // Dialog content
   const [answer, setAnswer] = useState();                   // Dialog answer
+  const [actionMenu, setActionMenu] = useState({});         // Action menu
 
   const navigate = useNavigate();
 
@@ -120,6 +121,10 @@ function Root() {
       setCode(game_session.code)
       const game_step = await API.getStepById(game_session?.step_id)
       setStep(game_step)
+      setActionMenu({
+        dialogue: game_step?.dialogue,
+        action_menu: game_step?.action_menu
+      })
       const game_level = await API.getLevelById(game_step?.level_id)
       setLevel(game_level);
       const level_steps = await API.getStepsByLevelId(game_level.id);
@@ -155,7 +160,7 @@ function Root() {
           default: break;
       }
     }
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer, dialog])
 
   const handleLogout = () => {
@@ -167,6 +172,7 @@ function Root() {
     setStep();
     setLevel();
     setAnswer();
+    setActionMenu({});
     setLevelSteps([]);
     setGameSession();
   }
@@ -212,7 +218,7 @@ function Root() {
     <Routes>
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} />} />
 
       </Route>
 

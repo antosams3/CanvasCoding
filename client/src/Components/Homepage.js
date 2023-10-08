@@ -10,7 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const {code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps} = props;
+    const {code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps, actionMenu} = props;
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
     const [output, setOutput] = React.useState(null);                               // Code console
@@ -74,7 +74,7 @@ export default function Homepage(props) {
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} actionMenu={actionMenu} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}
