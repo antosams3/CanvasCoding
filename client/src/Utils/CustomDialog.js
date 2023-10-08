@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
 import FileInput from './FileInput';
+import { Typography } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -51,9 +52,7 @@ export default function CustomDialog(props) {
                 </DialogContent>
                 :
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        {dialog?.content}
-                    </DialogContentText>
+                    <Typography dangerouslySetInnerHTML={{ __html: dialog?.content?.replace(/\n/g, '<br />') }} />
                 </DialogContent>
             }
 

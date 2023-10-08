@@ -9,3 +9,7 @@ export function findMaxId(arr) {
 
     return parseInt(maxId);
 }
+
+export function rimuoviPuntoEVirgola(testo){
+    return testo.replace(/;/g, '\n');
+}

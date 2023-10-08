@@ -28,6 +28,7 @@ function Root() {
   const [gameSession, setGameSession] = useState();         // Game session                                        
   const [level, setLevel] = useState();                     // Game level
   const [step, setStep] = useState();                       // Game step
+  const [levelSteps, setLevelSteps] = useState([]);         // Game level steps
   const [dialog, setDialog] = useState({});                 // Dialog content
   const [answer, setAnswer] = useState();                   // Dialog answer
 
@@ -117,10 +118,13 @@ function Root() {
       const game_session = await API.getCurrentGameSession()
       setGameSession(game_session)
       setCode(game_session.code)
-      const game_step = await API.getStepById(game_session.step_id)
+      const game_step = await API.getStepById(game_session?.step_id)
       setStep(game_step)
-      const game_level = await API.getLevelById(game_step.level_id)
+      const game_level = await API.getLevelById(game_step?.level_id)
       setLevel(game_level);
+      const level_steps = await API.getStepsByLevelId(game_level.id);
+      setLevelSteps(level_steps);
+
     } catch (err) {
       handleMessage({ severity: "error", content: err })
     }
@@ -144,9 +148,14 @@ function Root() {
   }
 
   useEffect(() => {
-    if (answer === true && dialog?.title === 'Are you leaving?') {
-      handleLogout();
+    if (answer === true ) {
+      switch(dialog?.title){
+          case "Are you leaving?": handleLogout(); break;
+          case "Restart level?": initGame(); break;
+          default: break;
+      }
     }
+    
   }, [answer, dialog])
 
   const handleLogout = () => {
@@ -158,6 +167,7 @@ function Root() {
     setStep();
     setLevel();
     setAnswer();
+    setLevelSteps([]);
     setGameSession();
   }
 
@@ -169,15 +179,32 @@ function Root() {
     handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost.");
   }
 
-  const handleExportFile = () =>{
+  const handleExportFile = () => {
     handleClickDialog(2, "Code export", "Download will start immediately.");
     const formattedData = code.replace(/\n/g, '\n\n');
     const blob = new Blob([formattedData], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, 'exportedCode.txt');
   }
 
-  const handleImportFile = () =>{
+  const handleImportFile = () => {
     handleClickDialog(3, "Import file", null);
+  }
+
+  const showLevelMission = () => {
+    handleClickDialog(2, "Level info", level?.description);
+  }
+
+  const showLevelSteps = () => {
+    var steps_description = "";
+    levelSteps.forEach(levelstep => {
+      if(levelstep.description === step.description){
+        steps_description = steps_description + levelstep.description + " (CURRENT) \n"
+      }else{
+        steps_description = steps_description + levelstep.description + "\n"
+      }
+    })
+    handleClickDialog(2, "Level steps", steps_description);
+
   }
 
 
@@ -185,7 +212,7 @@ function Root() {
     <Routes>
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} />} />
 
       </Route>
 
