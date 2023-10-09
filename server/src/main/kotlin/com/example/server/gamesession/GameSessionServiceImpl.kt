@@ -8,6 +8,7 @@ import com.example.server.step.exceptions.StepNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
@@ -41,6 +42,7 @@ class GameSessionServiceImpl(
         }
     }
 
+    @PreAuthorize("#email == authentication.principal.claims['email']")
     override fun getGameSessionByStepId(email: String, step_id: Int): GameSessionDTO? {
         val profile = profileRepository.findByEmail(email)
             ?: throw ProfileNotFoundException("Profile not found!")
@@ -60,6 +62,25 @@ class GameSessionServiceImpl(
             code = gameSessionDTO.code
         }
         return session.toDTO()
+    }
+
+    @PreAuthorize("#email == authentication.principal.claims['email']")
+    override fun putNextStep(email: String): GameSessionDTO? {
+        val profile = profileRepository.findByEmail(email)
+            ?: throw ProfileNotFoundException("Profile not found!")
+        val sessions = gameSessionRepository.findGameSessionsByStudent_IdOrderByStep_IdDesc(profile.getId()!!)
+
+        if(sessions.isNotEmpty()){
+            val currentSessionDTO = sessions[0].toDTO()
+            val nextStep = currentSessionDTO.step_id?.let { stepRepository.findByIdOrNull(currentSessionDTO.step_id + 1) } ?: throw StepNotFoundException("Next step not found")
+            sessions[0].apply {
+                step = nextStep
+            }
+            return sessions[0].toDTO()
+        }else{
+            throw GameSessionNotFoundException("Game session not found!")
+        }
+
     }
 
 
