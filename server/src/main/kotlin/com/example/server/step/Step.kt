@@ -12,11 +12,12 @@ class Step(
     var description : String?,
     var dialogue: String?,
     var side_menu: String?,
+    var number: Int?,
     var tip: String?,
     @ManyToOne
     var level : Level
     ): EntityBase<Int>()
 
 fun StepDTO.toEntity(level: Level): Step{
-    return Step(action_menu,complete_check,description,dialogue, side_menu, tip, level = level)
+    return Step(action_menu,complete_check,description,dialogue, side_menu, number, tip, level = level)
 }

@@ -8,11 +8,12 @@ data class StepDTO(
     val dialogue: String?,
     val side_menu: String?,
     val tip: String?,
+    var number: Int?,
     val level_id: Int?,
 
 
     )
 
 fun Step.toDTO() : StepDTO{
-    return StepDTO(getId(),action_menu,complete_check,description,dialogue,side_menu,tip,level.getId())
+    return StepDTO(getId(),action_menu,complete_check,description,dialogue,side_menu,tip,number,level.getId())
 }
