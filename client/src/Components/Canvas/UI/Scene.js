@@ -129,14 +129,14 @@ export function Scene(props) {
             {(mode === 'ADD' || mode === 'MOVE') ? <HighlightMesh position={highlightPos} overlap={overlap} /> : ''}
 
             {/* Fixed objects */}
-            <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} size={[2, 2, 2]} color={'orange'} />
+            {/* <Box position={[-1.2, 0, 0]} mode={mode} object={-3} setSelectObj={setSelectObj} size={[2, 2, 2]} color={'orange'} />
             <Box position={[1.2, 0, 0]} mode={mode} object={-2} setSelectObj={setSelectObj} color={'green'} />
             <Sphere position={[-2, 2, 0]} mode={mode} object={-1} setSelectObj={setSelectObj} size={[2, 50, 50]} color={'blue'} />
-            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'} />
+            <Sphere position={[8, 5, 0]} mode={mode} object={0} setSelectObj={setSelectObj} size={[1, 10, 10]} color={'white'} /> */}
 
             {/* Fixed Models (Rabbit, Cat) */}
-            <CatModel position={[5, 0.2, 0]} />
-            <RabbitModel position={new THREE.Vector3(7, 0, 0)} />
+            {/* <CatModel position={[5, 0.2, 0]} />
+            <RabbitModel position={new THREE.Vector3(7, 0, 0)} /> */}
 
 
             {/* User movable objects  */}

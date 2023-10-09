@@ -16,6 +16,9 @@ export default function ActionMenu(props){
     return (
       <Paper elevation={2} sx={{ backgroundColor: '#ededed', borderRadius: '4px', color: 'white', height: '100px', overflowY: 'auto', padding: '10px', position: 'relative' }}>
         <Typography variant="subtitle1" sx={titleStyle}>
+          {"Step "+actionMenu?.stepNumber}
+        </Typography>
+        <Typography variant="subtitle1" color="#000000">
           {actionMenu?.dialogue}
         </Typography>
       </Paper>

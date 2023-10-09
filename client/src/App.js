@@ -116,19 +116,23 @@ function Root() {
 
   const initGame = async () => {
     try {
-      const game_session = await API.getCurrentGameSession()
+      const game_session = await API.getCurrentGameSession()                    // Retrieve current game session
       setGameSession(game_session)
       setCode(game_session.code)
-      const game_step = await API.getStepById(game_session?.step_id)
+      const game_step = await API.getStepById(game_session?.step_id)            // Retrieve Step details
       setStep(game_step)
+
+      const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
+      setLevel(game_level);
+      const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
+      setLevelSteps(level_steps);
+
       setActionMenu({
+        stepNumber: game_step?.number,
         dialogue: game_step?.dialogue,
         action_menu: game_step?.action_menu
       })
-      const game_level = await API.getLevelById(game_step?.level_id)
-      setLevel(game_level);
-      const level_steps = await API.getStepsByLevelId(game_level.id);
-      setLevelSteps(level_steps);
+
 
     } catch (err) {
       handleMessage({ severity: "error", content: err })
@@ -153,11 +157,11 @@ function Root() {
   }
 
   useEffect(() => {
-    if (answer === true ) {
-      switch(dialog?.title){
-          case "Are you leaving?": handleLogout(); break;
-          case "Restart level?": initGame(); break;
-          default: break;
+    if (answer === true) {
+      switch (dialog?.title) {
+        case "Are you leaving?": handleLogout(); break;
+        case "Restart level?": initGame(); break;
+        default: break;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,22 +207,26 @@ function Root() {
   const showLevelSteps = () => {
     var steps_description = "";
     levelSteps.forEach(levelstep => {
-      if(levelstep.description === step.description){
-        steps_description = steps_description + levelstep.description + " (CURRENT) \n"
-      }else{
-        steps_description = steps_description + levelstep.description + "\n"
+      steps_description += levelstep.number + ") " + levelstep.description;
+      if (levelstep.description === step.description) {
+        steps_description += " (CURRENT) \n"
+      } else {
+        steps_description += "\n"
       }
     })
     handleClickDialog(2, "Level steps", steps_description);
 
   }
 
+  const showStepTips = () =>{
+    handleClickDialog(2, "Some tips", step.tip);
+  }
 
   return (
     <Routes>
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} />} />
 
       </Route>
 
