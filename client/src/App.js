@@ -9,6 +9,10 @@ import API from './API/API';
 import jwt from 'jwt-decode';
 import { saveAs } from 'file-saver';
 import gameProgressionChecker from './Utils/GameProgressionChecker';
+import { Typography, Box, Icon, List, ListItem } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import SupportIcon from '@mui/icons-material/Support';
 
 const token = sessionStorage.getItem("jwtToken");
 
@@ -26,10 +30,10 @@ function Root() {
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
   const [processing, setProcessing] = useState(false);      /* Api calls waiting animation */
   const [code, setCode] = useState("");                     // Code  
-  const [gameSession, setGameSession] = useState();         // Game session                                        
-  const [level, setLevel] = useState();                     // Game level
-  const [step, setStep] = useState();                       // Game step
-  const [levelSteps, setLevelSteps] = useState([]);         // Game level steps
+  const [gameSession, setGameSession] = useState(null);         // Game session                                        
+  const [level, setLevel] = useState(null);                     // Game level
+  const [step, setStep] = useState(null);                       // Game step
+  const [levelSteps, setLevelSteps] = useState(null);         // Game level steps
   const [dialog, setDialog] = useState({});                 // Dialog content
   const [answer, setAnswer] = useState();                   // Dialog answer
   const [actionMenu, setActionMenu] = useState({});         // Action menu
@@ -38,11 +42,19 @@ function Root() {
 
   const handleClickDialog = (type, title, content) => {
     setDialog({
-      type: type,                                                             // Type in: 1 (question), 2 (info)
+      type: type,                                                             // Type in: 1 (question), 2 (info), 3 (upload), 4 (structured content)
       title: title,
       content: content
     })
   };
+
+  useEffect(() => {
+
+    if(loggedIn === true && levelSteps !== null){
+      showWelcomeLevel()
+    }
+
+  }, [levelSteps]);
 
   useEffect(() => {
 
@@ -96,7 +108,6 @@ function Root() {
       await initGame();
       setProcessing(false);
       navigate('/');
-
 
     } catch (err) {
       setProcessing(false);
@@ -224,17 +235,46 @@ function Root() {
     handleClickDialog(2, "Level info", level?.description);
   }
 
+  const showWelcomeLevel = () => {
+
+    const structuredContent = 
+    <Box>
+      <Typography variant="body1">
+        <Icon component={InfoIcon} sx={{ fontSize: 20, marginRight: 1}} />
+        {level?.description}
+      </Typography>
+      <Typography variant="body1" marginTop={1}>
+        <Icon component={ListAltIcon} sx={{ fontSize: 20, marginRight: 1 }} />
+        {"This level has the following steps: "}
+      </Typography>
+      {getLevelSteps()}
+      <Typography variant="body1" marginTop={2}>
+        <Icon component={SupportIcon} sx={{ fontSize: 20, marginRight: 1 }} />
+        {"If you have any doubts, you can access the suggestions by clicking the lifebuoy icon. Also, don't forget that you can always count on your professor!"}
+      </Typography>
+    </Box>
+    if(level?.id !== null){
+      handleClickDialog(4, `Level ${level?.id}`, structuredContent);
+    }
+  }
+
+  const getLevelSteps = () =>{
+    return (
+      <List>
+        {levelSteps.map((item, index) => (
+          <ListItem key={index}>
+            <Typography variant="body1" fontWeight={item.description === step.description? "bold": ""}>
+              {`${index + 1}. ${item.description}`} 
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+    );
+  }
+
   const showLevelSteps = () => {
-    var steps_description = "";
-    levelSteps.forEach(levelstep => {
-      steps_description += levelstep.number + ") " + levelstep.description;
-      if (levelstep.description === step.description) {
-        steps_description += " (CURRENT) \n"
-      } else {
-        steps_description += "\n"
-      }
-    })
-    handleClickDialog(2, "Level steps", steps_description);
+
+    handleClickDialog(4, "Level steps", getLevelSteps());
 
   }
 

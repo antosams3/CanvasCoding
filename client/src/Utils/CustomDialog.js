@@ -2,7 +2,6 @@ import * as React from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Button from '@mui/material/Button';
@@ -50,10 +49,16 @@ export default function CustomDialog(props) {
                 <DialogContent>
                     <FileInput setCode={setCode} setOpen={setOpen} ></FileInput>
                 </DialogContent>
-                :
+                : ''}
+            {dialog?.type === 1 || dialog?.type === 2 ?
                 <DialogContent>
                     <Typography dangerouslySetInnerHTML={{ __html: dialog?.content?.replace(/\n/g, '<br />') }} />
-                </DialogContent>
+                </DialogContent> : ''
+            }
+            {dialog?.type === 4 ?
+                <DialogContent>
+                    {dialog?.content}
+                </DialogContent> : ''
             }
 
             {/* Dialog with question */}
