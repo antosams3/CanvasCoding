@@ -41,4 +41,9 @@ class GameSessionController(
         }
         return gameSessionService.putGameSession(principal.name, gameSessionDTO)
     }
+
+    @PutMapping("/API/game_session/next")
+    fun nextStep(principal : Principal): GameSessionDTO?{
+        return gameSessionService.putNextStep(principal.name)
+    }
 }
