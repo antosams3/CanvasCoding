@@ -65,7 +65,7 @@ class GameSessionServiceImpl(
     }
 
     @PreAuthorize("#email == authentication.principal.claims['email']")
-    override fun putNextStep(email: String): GameSessionDTO? {
+    override fun putNextStep(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO? {
         val profile = profileRepository.findByEmail(email)
             ?: throw ProfileNotFoundException("Profile not found!")
         val sessions = gameSessionRepository.findGameSessionsByStudent_IdOrderByStep_IdDesc(profile.getId()!!)
@@ -75,6 +75,7 @@ class GameSessionServiceImpl(
             val nextStep = currentSessionDTO.step_id?.let { stepRepository.findByIdOrNull(currentSessionDTO.step_id + 1) } ?: throw StepNotFoundException("Next step not found")
             sessions[0].apply {
                 step = nextStep
+                code = gameSessionDTO.code
             }
             return sessions[0].toDTO()
         }else{

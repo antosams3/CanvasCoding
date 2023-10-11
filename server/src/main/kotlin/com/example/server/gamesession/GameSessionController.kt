@@ -43,7 +43,12 @@ class GameSessionController(
     }
 
     @PutMapping("/API/game_session/next")
-    fun nextStep(principal : Principal): GameSessionDTO?{
-        return gameSessionService.putNextStep(principal.name)
+    fun nextStep(@Valid @RequestBody gameSessionDTO: GameSessionDTO, br : BindingResult, principal : Principal): GameSessionDTO?{
+        if (br.hasErrors()){
+            val errors = br.allErrors
+            val errMessages = errors.map { it.defaultMessage }
+            throw InvalidGameSessionDTOException(errMessages)
+        }
+        return gameSessionService.putNextStep(principal.name, gameSessionDTO)
     }
 }
