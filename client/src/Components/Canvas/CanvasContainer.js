@@ -7,11 +7,21 @@ import * as React from 'react';
 import ActionMenu from "./Menus/ActionMenu";
 
 export default function CanvasContainer(props) {
-    const { objects, setObjects, selectObj, setSelectObj, actionMenu } = props;
+    const { objects, setObjects, selectObj, setSelectObj, actionMenu, handleProgressionChecker } = props;
 
     const [mode, setMode] = React.useState(null);                 // Mode in: null, 'ADD', 'DEL', 'MOVE'
     const [addType, setAddType] = React.useState(null);           // AddType in: null, 'BOX', 'SPHERE'...
     const [FPView, setFPView] = React.useState(false);
+    
+    React.useEffect(() => {
+        if (addType) {
+            handleProgressionChecker(addType, null, null)
+        }
+        if (objects.length > 0){
+            handleProgressionChecker(null, null, objects);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addType, objects])
 
     return (<Grid container >
         <Grid item xs={10}>

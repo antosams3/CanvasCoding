@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import API from './API/API';
 import jwt from 'jwt-decode';
 import { saveAs } from 'file-saver';
+import gameProgressionChecker from './Utils/GameProgressionChecker';
 
 const token = sessionStorage.getItem("jwtToken");
 
@@ -181,6 +182,28 @@ function Root() {
     setGameSession();
   }
 
+  const handleProgressionChecker = async (addType,selectObj, objects) =>{
+    if(!processing){
+      const nextGameSession = await gameProgressionChecker(addType,selectObj,objects,code,step,levelSteps,handleMessage);
+      if(nextGameSession){
+        setGameSession(nextGameSession)
+        const game_step = await API.getStepById(nextGameSession?.step_id)            // Retrieve Step details
+        setStep(game_step)
+  
+        const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
+        setLevel(game_level);
+        const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
+        setLevelSteps(level_steps);
+  
+        setActionMenu({
+          stepNumber: game_step?.number,
+          dialogue: game_step?.dialogue,
+          action_menu: game_step?.action_menu
+        })
+      }
+    }
+  }
+
   const showUserInfo = () => {
     handleClickDialog(2, "Account", `Name: ${user?.name}  Surname: ${user?.surname} Email: ${user?.email} \n Level: ${level?.id}  Step:${step.id}`);
   }
@@ -226,7 +249,7 @@ function Root() {
     <Routes>
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} handleProgressionChecker={handleProgressionChecker} />} />
 
       </Route>
 

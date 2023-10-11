@@ -10,7 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const {code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps, actionMenu, showStepTips} = props;
+    const { code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps, actionMenu, showStepTips, handleProgressionChecker } = props;
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
     const [output, setOutput] = React.useState(null);                               // Code console
@@ -18,16 +18,25 @@ export default function Homepage(props) {
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 
     const [annotations, setAnnotations] = React.useState([]);                       // Warnings and errors generated after compile 
 
-    setTimeout(finish,1000)
+    setTimeout(finish, 1000)
 
-    function finish () {
+    function finish() {
         setLoading(false);              // Code Editor loading = false
     }
 
+    React.useEffect(() => {
+        // Imposta l'overflow del corpo del documento su 'hidden' quando il componente è montato
+        document.body.style.overflow = 'hidden';
+    
+        // Pulisci l'effetto quando il componente è smontato
+        return () => {
+          document.body.style.overflow = 'visible';
+        };
+      }, []);
 
     // Code sync with canvas
     React.useEffect(() => {
-        if(!compiling){
+        if (!compiling) {
             setCode(CanvasInterpreter(objects));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +44,7 @@ export default function Homepage(props) {
 
     // Canvas compiling
     React.useEffect(() => {
-        if(compiling){
+        if (compiling) {
             setObjects(CodeInterpreter(code));
         }
     }, [compiling, code]);
@@ -69,12 +78,12 @@ export default function Homepage(props) {
 
                 {/* Code and console */}
                 <Grid item xs={7}>
-                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj} annotations={annotations} handleSync={handleSync}  />
+                    <CodeContainer code={code} setCode={setCode} output={output} compiling={compiling} handleCompile={handleCompile} loading={loading} selectObj={selectObj} annotations={annotations} handleSync={handleSync} />
                 </Grid>
 
                 {/* Canvas, side and action menu */}
                 <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column', position: 'relative', height: '100%' }}>
-                    <CanvasContainer setCode={setCode} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} actionMenu={actionMenu} ></CanvasContainer>
+                    <CanvasContainer setCode={setCode} objects={objects} setObjects={setObjects} selectObj={selectObj} setSelectObj={setSelectObj} actionMenu={actionMenu} handleProgressionChecker={handleProgressionChecker} ></CanvasContainer>
                 </Grid>
 
                 {/* Footer */}
