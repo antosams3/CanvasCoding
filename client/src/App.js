@@ -199,7 +199,7 @@ function Root() {
 
   const handlePreviousLevel = async () => {
     try {
-      const game_session = await API.getPreviousLevel(step.id)
+      const game_session = await API.getPreviousLevel(step.id);
       setGameSession(game_session)
       setCode(game_session.code)
       const game_step = await API.getStepById(game_session?.step_id)            // Retrieve Step details

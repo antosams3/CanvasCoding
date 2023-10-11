@@ -311,14 +311,11 @@ function putNextLevel(code,stepId) {
 function getPreviousLevel(stepId) {
     // GET /API/game_session/previous
     return new Promise((resolve, reject) => {
-        fetch(new URL(`game_session/previous`, API_URL), {
+        fetch(new URL(`game_session/previous/${stepId}`, API_URL), {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem("jwtToken")
-            },
-            body: JSON.stringify({
-                step_id: stepId
-            })
+            }
         }).then((response) => {
             if (response.ok) {
                 response.json()
