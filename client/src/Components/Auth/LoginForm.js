@@ -13,7 +13,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 const defaultTheme = createTheme();
 
 export default function LoginForm(props) {
-  const { login, message, setMessage, loading } = props;
+  const { handleLogin, message, setMessage, loading, isloggedIn } = props;
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -23,12 +23,12 @@ export default function LoginForm(props) {
   useEffect(() => {
     setEmail('');
     setPassword('');
-    props.setMessage('');
-    if (props.isloggedIn === true) {
+    setMessage('');
+    if (isloggedIn === true) {
       navigate('/');
     }
     // eslint-disable-next-line
-  }, [props.isloggedIn, navigate])
+  }, [isloggedIn, navigate])
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -38,7 +38,7 @@ export default function LoginForm(props) {
       event.stopPropagation();
     } else {
       const credentials = { email: email, password: password }
-      login(credentials);
+      handleLogin(credentials);
     }
 
 
@@ -102,10 +102,10 @@ export default function LoginForm(props) {
                 onChange={ev => setPassword(ev.target.value)}
               />
               {message &&
-                <Alert severity={message.severity} onClose={() => setMessage('')}>
+                <Alert severity={message?.severity} onClose={() => setMessage('')}>
                   <Box>
-                    <Typography variant="h6" gutterBottom>{message.title}</Typography>
-                    <Typography variant="subtitle1">{message.content}</Typography>
+                    <Typography variant="subtitle1" gutterBottom>{message?.title}</Typography>
+                    <Typography variant="subtitle2">{message?.content}</Typography>
                   </Box>
                 </Alert>
               }

@@ -182,19 +182,22 @@ function Root() {
     setGameSession();
   }
 
-  const handleProgressionChecker = async (addType,selectObj, objects) =>{
-    if(!processing){
-      const nextGameSession = await gameProgressionChecker(addType,selectObj,objects,code,step,levelSteps,handleMessage);
-      if(nextGameSession){
+  const handleProgressionChecker = async (addType, selectObj, objects, counter) => {
+    if (!processing) {
+      const nextGameSession = await gameProgressionChecker(addType, selectObj, objects, counter, code, step, levelSteps, handleMessage);
+      if (nextGameSession) {
         setGameSession(nextGameSession)
-        const game_step = await API.getStepById(nextGameSession?.step_id)            // Retrieve Step details
+        const game_step = await API.getStepById(nextGameSession?.step_id)         // Retrieve Step details
         setStep(game_step)
-  
-        const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
-        setLevel(game_level);
-        const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
-        setLevelSteps(level_steps);
-  
+
+        if (game_step.level_id !== level.id) {                                        // Check level changed
+          handleClickDialog(2, "Level completed", "Congratulations! You have completed the level " + level.id);
+          const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
+          setLevel(game_level);
+          const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
+          setLevelSteps(level_steps);
+        }
+
         setActionMenu({
           stepNumber: game_step?.number,
           dialogue: game_step?.dialogue,
@@ -208,9 +211,6 @@ function Root() {
     handleClickDialog(2, "Account", `Name: ${user?.name}  Surname: ${user?.surname} Email: ${user?.email} \n Level: ${level?.id}  Step:${step.id}`);
   }
 
-  const showLogoutDialog = () => {
-    handleClickDialog(1, "Are you leaving?", "All unsaved changes will be lost.");
-  }
 
   const handleExportFile = () => {
     handleClickDialog(2, "Code export", "Download will start immediately.");
@@ -219,9 +219,6 @@ function Root() {
     saveAs(blob, 'exportedCode.txt');
   }
 
-  const handleImportFile = () => {
-    handleClickDialog(3, "Import file", null);
-  }
 
   const showLevelMission = () => {
     handleClickDialog(2, "Level info", level?.description);
@@ -241,20 +238,20 @@ function Root() {
 
   }
 
-  const showStepTips = () =>{
+  const showStepTips = () => {
     handleClickDialog(2, "Some tips", step.tip);
   }
 
   return (
     <Routes>
-      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} showLogoutDialog={showLogoutDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} handleImportFile={handleImportFile} ></Navbar>}>
+      <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} handleClickDialog={handleClickDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} ></Navbar>}>
         {/* Outlets */}
         <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} handleProgressionChecker={handleProgressionChecker} />} />
 
       </Route>
 
       {/* The following routes will NOT have the navbar */}
-      <Route path='/login' element={<LoginForm login={handleLogin} isloggedIn={loggedIn} message={message} setMessage={setMessage} processing={processing} />} />
+      <Route path='/login' element={<LoginForm handleLogin={handleLogin} isloggedIn={loggedIn} message={message} setMessage={setMessage} processing={processing} />} />
       <Route path='/signup' element={<SignupForm signUp={handleSignUp} message={message} setMessage={setMessage} processing={processing} />} />
       <Route path='*' element={<><h1>Oh no! Page not found.</h1> <p>Return to our <Link to="/" >homepage</Link>. </p></>} />
     </Routes>

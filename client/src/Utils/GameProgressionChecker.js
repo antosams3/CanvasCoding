@@ -1,6 +1,6 @@
 import API from "../API/API"
 
-export default async function gameProgressionChecker(addType, selectObj, objects, code, currentStep, levelSteps, handleMessage) {
+export default async function gameProgressionChecker(addType, selectObj, objects, counter, code, currentStep, levelSteps, handleMessage) {
     try {
         console.log(currentStep.id);
         console.log(objects);
@@ -19,7 +19,10 @@ export default async function gameProgressionChecker(addType, selectObj, objects
                 }
                 break;
             case 3:
-
+                if (counter >= 5){
+                    console.log("Step 3 completed");
+                    return await API.putNextLevel(code);
+                }
                 break;
             default: break;
         }

@@ -17,6 +17,7 @@ export default function Homepage(props) {
     const [compiling, setCompiling] = React.useState(false);                        // Compiling state 
     const [loading, setLoading] = React.useState(true);                             // Initial loading state 
     const [annotations, setAnnotations] = React.useState([]);                       // Warnings and errors generated after compile 
+    const [counter, setCounter] = React.useState(0);                                // Sync and compile press counter 
 
     setTimeout(finish, 1000)
 
@@ -27,12 +28,12 @@ export default function Homepage(props) {
     React.useEffect(() => {
         // Imposta l'overflow del corpo del documento su 'hidden' quando il componente è montato
         document.body.style.overflow = 'hidden';
-    
+
         // Pulisci l'effetto quando il componente è smontato
         return () => {
-          document.body.style.overflow = 'visible';
+            document.body.style.overflow = 'visible';
         };
-      }, []);
+    }, []);
 
     // Code sync with canvas
     React.useEffect(() => {
@@ -49,6 +50,13 @@ export default function Homepage(props) {
         }
     }, [compiling, code]);
 
+    // Canvas compiling
+    React.useEffect(() => {
+
+        handleProgressionChecker(null, null, null, counter);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [counter]);
+
     const handleCompile = async () => {
         try {
             setCompiling(true);
@@ -56,6 +64,7 @@ export default function Homepage(props) {
             const data = await CompilerAPI.checkStatus(token);
             setAnnotations(evaluateAnnotations(data));                                      // Extract error, warnings and info from compiler result    
             setOutput(data);
+            setCounter(counter + 1);
         } catch (err) {
             console.error("API Compiling error:", err);
             setOutput(err);
@@ -66,6 +75,7 @@ export default function Homepage(props) {
     };
 
     const handleSync = () => {
+        setCounter(counter + 1);
         setObjects(CodeInterpreter(code));
     }
 

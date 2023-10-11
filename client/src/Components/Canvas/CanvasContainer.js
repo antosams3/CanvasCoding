@@ -12,13 +12,13 @@ export default function CanvasContainer(props) {
     const [mode, setMode] = React.useState(null);                 // Mode in: null, 'ADD', 'DEL', 'MOVE'
     const [addType, setAddType] = React.useState(null);           // AddType in: null, 'BOX', 'SPHERE'...
     const [FPView, setFPView] = React.useState(false);
-    
+
     React.useEffect(() => {
         if (addType) {
-            handleProgressionChecker(addType, null, null)
+            handleProgressionChecker(addType, null, null, null)
         }
-        if (objects.length > 0){
-            handleProgressionChecker(null, null, objects);
+        if (objects.length > 0) {
+            handleProgressionChecker(null, null, objects, null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addType, objects])
