@@ -2,9 +2,7 @@ import API from "../API/API"
 
 export default async function gameProgressionChecker(addType, selectObj, objects, counter, code, currentStep, levelSteps, handleMessage) {
     try {
-        console.log(currentStep.id);
-        console.log(objects);
-        switch (currentStep.id) {
+        switch (currentStep?.id) {
             case 1:
             // Check if addType === BOX, SPHERE ...
                 if (addType !== null) {                    

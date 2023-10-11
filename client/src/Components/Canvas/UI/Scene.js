@@ -21,10 +21,10 @@ export function Scene(props) {
     const [overlap, setOverlap] = React.useState(false);                                    // Tiles overlapping object 
     const [index, setIndex] = React.useState(1);                                            // Objects index inside array
 
-    React.useEffect(()=> {
+    React.useEffect(() => {
         const maxId = findMaxId(objects)
         setIndex(maxId + 1)
-    },[objects])
+    }, [objects])
 
     React.useEffect(() => {
         if (mode === 'DEL' && selectObj) {                                                  // Checks if delete mode and object is selected (not null)
@@ -58,7 +58,7 @@ export function Scene(props) {
             //setIndex(index + 1);                                                            // Update index
             setAddType(null);                                                                 // Deselect object type 
             setOverlap(true);                                                               // Position busy -> tile overlapped
-
+            setMode(null);                                                                  // Exit addMode
         }
 
         if (mode === 'MOVE' && selectObj && !overlap) {                 // Checks if MOVE mode and selectedObj and tile's not overlapped

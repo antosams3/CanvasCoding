@@ -43,6 +43,7 @@ export default function SideMenu(props) {
         <FormControlLabel
             control={
                 <Switch
+                    color="secondary"
                     disabled={selectObj? true : false}
                     checked={addSwitchValue}
                     onChange={handleAddSwitchChange}
