@@ -55,8 +55,9 @@ class WebSecurityConfig(private val jwtAuthConverter: JwtAuthConverter) {
             // Game session
             .requestMatchers(HttpMethod.GET, "/API/game_session/{step_id}").authenticated()
             .requestMatchers(HttpMethod.GET, "/API/game_session/latest").authenticated()
-            .requestMatchers(HttpMethod.POST, "/API/game_session").hasRole(STUDENT)
+            .requestMatchers(HttpMethod.PUT, "/API/game_session/next").hasRole(STUDENT)
             .requestMatchers(HttpMethod.PUT, "/API/game_session/code").hasRole(STUDENT)
+            .requestMatchers(HttpMethod.GET, "/API/game_session/previous").hasRole(STUDENT)
 
             // Else
             .anyRequest().permitAll()

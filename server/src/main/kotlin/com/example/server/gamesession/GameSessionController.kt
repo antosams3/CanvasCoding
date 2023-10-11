@@ -32,6 +32,11 @@ class GameSessionController(
         return gameSessionService.getGameSessionByStepId(principal.name, step_id)
     }
 
+    @GetMapping("/API/game_session/previous")
+    fun getPreviousLevel(@Valid @RequestBody gameSessionDTO: GameSessionDTO, br : BindingResult, principal : Principal): GameSessionDTO?{
+        return gameSessionService.getPreviousLevel(principal.name,gameSessionDTO)
+    }
+
     @PutMapping("/API/game_session/code")
     fun putGameSession(@Valid @RequestBody gameSessionDTO: GameSessionDTO, br : BindingResult, principal : Principal): GameSessionDTO?{
         if (br.hasErrors()){

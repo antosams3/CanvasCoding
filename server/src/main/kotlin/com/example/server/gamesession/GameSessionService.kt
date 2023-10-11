@@ -6,4 +6,5 @@ interface GameSessionService {
     fun getGameSessionByStepId(email: String, step_id: Int): GameSessionDTO?
     fun putGameSession(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO?
     fun putNextStep(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO?
+    fun getPreviousLevel(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO?
 }

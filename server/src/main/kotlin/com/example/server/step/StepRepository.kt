@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface StepRepository: JpaRepository<Step, Int> {
     fun findStepsByLevel_IdOrderByIdAsc(level_id: Int): List<Step>
+    fun findStepByLevelIdOrderByNumberAsc(level_id: Int): Step
 }
