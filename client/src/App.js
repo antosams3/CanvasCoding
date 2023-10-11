@@ -35,7 +35,7 @@ function Root() {
   const [step, setStep] = useState(null);                       // Game step
   const [levelSteps, setLevelSteps] = useState(null);         // Game level steps
   const [dialog, setDialog] = useState({});                 // Dialog content
-  const [answer, setAnswer] = useState();                   // Dialog answer
+  const [answer, setAnswer] = useState(false);                   // Dialog answer
   const [actionMenu, setActionMenu] = useState({});         // Action menu
 
   const navigate = useNavigate();
@@ -50,11 +50,24 @@ function Root() {
 
   useEffect(() => {
 
-    if(loggedIn === true && levelSteps !== null){
+    if (loggedIn === true && levelSteps !== null) {
       showWelcomeLevel()
     }
 
   }, [levelSteps]);
+
+  useEffect(() => {
+    if (answer === true) {
+      switch (dialog?.title) {
+        case "Are you leaving?": handleLogout(); break;
+        case "Restart level?": initGame(); break;
+        case "Previous level?": handlePreviousLevel(); break;
+        default: break;
+      }
+      setAnswer(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answer, dialog])
 
   useEffect(() => {
 
@@ -168,16 +181,7 @@ function Root() {
     }
   }
 
-  useEffect(() => {
-    if (answer === true) {
-      switch (dialog?.title) {
-        case "Are you leaving?": handleLogout(); break;
-        case "Restart level?": initGame(); break;
-        default: break;
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answer, dialog])
+
 
   const handleLogout = () => {
     setLoggedIn(false);
@@ -191,6 +195,30 @@ function Root() {
     setActionMenu({});
     setLevelSteps([]);
     setGameSession();
+  }
+
+  const handlePreviousLevel = async () => {
+    try {
+      const game_session = await API.getPreviousLevel(step.id)
+      setGameSession(game_session)
+      setCode(game_session.code)
+      const game_step = await API.getStepById(game_session?.step_id)            // Retrieve Step details
+      setStep(game_step)
+
+      const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
+      setLevel(game_level);
+      const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
+      setLevelSteps(level_steps);
+
+      setActionMenu({
+        stepNumber: gameSession?.number,
+        dialogue: gameSession?.dialogue,
+        action_menu: gameSession?.action_menu
+      })
+
+    } catch (err) {
+      handleMessage({ severity: "error", content: err })
+    }
   }
 
   const handleProgressionChecker = async (addType, selectObj, objects, counter) => {
@@ -237,34 +265,34 @@ function Root() {
 
   const showWelcomeLevel = () => {
 
-    const structuredContent = 
-    <Box>
-      <Typography variant="body1">
-        <Icon component={InfoIcon} sx={{ fontSize: 20, marginRight: 1}} />
-        {level?.description}
-      </Typography>
-      <Typography variant="body1" marginTop={1}>
-        <Icon component={ListAltIcon} sx={{ fontSize: 20, marginRight: 1 }} />
-        {"This level has the following steps: "}
-      </Typography>
-      {getLevelSteps()}
-      <Typography variant="body1" marginTop={2}>
-        <Icon component={SupportIcon} sx={{ fontSize: 20, marginRight: 1 }} />
-        {"If you have any doubts, you can access the suggestions by clicking the lifebuoy icon. Also, don't forget that you can always count on your professor!"}
-      </Typography>
-    </Box>
-    if(level?.id !== null){
+    const structuredContent =
+      <Box>
+        <Typography variant="body1">
+          <Icon component={InfoIcon} sx={{ fontSize: 20, marginRight: 1 }} />
+          {level?.description}
+        </Typography>
+        <Typography variant="body1" marginTop={1}>
+          <Icon component={ListAltIcon} sx={{ fontSize: 20, marginRight: 1 }} />
+          {"This level has the following steps: "}
+        </Typography>
+        {getLevelSteps()}
+        <Typography variant="body1" marginTop={2}>
+          <Icon component={SupportIcon} sx={{ fontSize: 20, marginRight: 1 }} />
+          {"If you have any doubts, you can access the suggestions by clicking the lifebuoy icon. Also, don't forget that you can always count on your professor!"}
+        </Typography>
+      </Box>
+    if (level?.id !== null) {
       handleClickDialog(4, `Level ${level?.id}`, structuredContent);
     }
   }
 
-  const getLevelSteps = () =>{
+  const getLevelSteps = () => {
     return (
       <List>
         {levelSteps.map((item, index) => (
           <ListItem key={index}>
-            <Typography variant="body1" fontWeight={item.description === step.description? "bold": ""}>
-              {`${index + 1}. ${item.description}`} 
+            <Typography variant="body1" fontWeight={item.description === step.description ? "bold" : ""}>
+              {`${index + 1}. ${item.description}`}
             </Typography>
           </ListItem>
         ))}

@@ -270,7 +270,7 @@ function getStepsByLevelId(level_id) {
     });
 }
 
-function putNextLevel(code) {
+function putNextLevel(code,stepId) {
     // PUT /API/game_session/next
     
     return new Promise((resolve, reject) => {
@@ -281,13 +281,49 @@ function putNextLevel(code) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                code: code
+                code: code,
+                step_id: stepId
             })
         }).then((response) => {
             if (response.ok) {
                 response.json()
                     .then((game_session) => {
                         resolve(game_session);
+                    })
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    });
+            } else {
+                response.json()
+                    .then((message) => {
+                        reject(message);
+                    }) // error message in the response body
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    }); // something else
+            }
+        }).catch((err) => {
+            reject({error: err.toString()})
+        }); // connection errors
+    });
+}
+
+function getPreviousLevel(stepId) {
+    // GET /API/game_session/previous
+    return new Promise((resolve, reject) => {
+        fetch(new URL(`game_session/previous`, API_URL), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwtToken")
+            },
+            body: JSON.stringify({
+                step_id: stepId
+            })
+        }).then((response) => {
+            if (response.ok) {
+                response.json()
+                    .then((gameSession) => {
+                        resolve(gameSession);
                     })
                     .catch(() => {
                         reject({error: "Cannot parse server response."})
@@ -316,7 +352,8 @@ const API = {
     getLevelById,
     putCode,
     getStepsByLevelId,
-    putNextLevel
+    putNextLevel,
+    getPreviousLevel
 }
 
 export default API;

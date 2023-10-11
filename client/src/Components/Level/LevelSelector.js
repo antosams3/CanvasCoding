@@ -10,7 +10,7 @@ export default function LevelSelector(props) {
     return (
         <Stack direction="row" spacing={1}>
             {level?.id !== 1 ?
-                <Tooltip title="Previous level" onClick={() => { handleClickDialog(1, "Warning", "By selecting the previous level, you will lose all the unsaved progress. Are you sure?") }}>
+                <Tooltip title="Previous level" onClick={() => { handleClickDialog(1, "Previous level?", "All the unsaved progress will be discarded. Are you sure?") }}>
                     <IconButton aria-label="prev">
                         <ArrowBackIcon />
                     </IconButton>

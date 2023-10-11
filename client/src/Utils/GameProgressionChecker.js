@@ -7,19 +7,19 @@ export default async function gameProgressionChecker(addType, selectObj, objects
             // Check if addType === BOX, SPHERE ...
                 if (addType !== null) {                    
                     console.log("Step 1 completed");
-                    return await API.putNextLevel(code);
+                    return await API.putNextLevel(code, currentStep.id);
                 }
                 break;
             case 2:
                 if (objects.length > 0){
                     console.log("Step 2 completed");
-                    return await API.putNextLevel(code);
+                    return await API.putNextLevel(code, currentStep.id);
                 }
                 break;
             case 3:
                 if (counter >= 5){
                     console.log("Step 3 completed");
-                    return await API.putNextLevel(code);
+                    return await API.putNextLevel(code, currentStep.id);
                 }
                 break;
             default: break;
