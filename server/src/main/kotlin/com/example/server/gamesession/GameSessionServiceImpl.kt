@@ -99,24 +99,24 @@ class GameSessionServiceImpl(
     }
 
     @PreAuthorize("#email == authentication.principal.claims['email']")
-    override fun getPreviousLevel(email: String, gameSessionDTO: GameSessionDTO): GameSessionDTO? {
+    override fun getPreviousLevel(email: String, step_id: Int): GameSessionDTO? {
         // gameSessionDTO contains only actual step_id
         val profile = profileRepository.findByEmail(email)
             ?: throw ProfileNotFoundException("Profile not found!")
 
-        if(gameSessionDTO.step_id !== null){
+        if(step_id !== null){
             // Check existing actual gameSession
-            gameSessionRepository.findGameSessionByStudent_IdAndStep_Id(profile.getId()!!, gameSessionDTO.step_id)
+            gameSessionRepository.findGameSessionByStudent_IdAndStep_Id(profile.getId()!!, step_id)
                 ?: throw GameSessionNotFoundException("GameSession not found")
             // Retrieve current step and level
-            val currentStepDTO = stepRepository.findByIdOrNull(gameSessionDTO.step_id)?.toDTO()
+            val currentStepDTO = stepRepository.findByIdOrNull(step_id)?.toDTO()
                 ?: throw StepNotFoundException("Step not found")
             val previousLevel = currentStepDTO.level_id?.minus(1)
 
             // Check previous level
             if(previousLevel != 0){
                 // Retrieve previous step
-                val previousStep = stepRepository.findStepByLevelIdOrderByNumberAsc(previousLevel!!).toDTO()
+                val previousStep = stepRepository.findStepsByLevel_IdOrderByIdAsc(previousLevel!!)[0].toDTO()
                 if(previousStep.id !== null){
                     // Retrieve previous gameSession
                     return gameSessionRepository.findGameSessionByStudent_IdAndStep_Id(profile.getId()!!,previousStep.id)!!.toDTO()
