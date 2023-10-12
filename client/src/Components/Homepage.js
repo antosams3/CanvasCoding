@@ -10,7 +10,7 @@ import { CanvasInterpreter, CodeInterpreter } from '../Utils/Interpreter';
 import { evaluateAnnotations } from '../Utils/CodeConsoleUtils';
 
 export default function Homepage(props) {
-    const { code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps, actionMenu, showStepTips, handleProgressionChecker } = props;
+    const { code, setCode, level, dialog, handleClickDialog, setAnswer, showLevelMission, showLevelSteps, actionMenu, showStepTips, handleProgressionChecker, disabled } = props;
     const [objects, setObjects] = React.useState([]);                               // Canvas objects 
     const [selectObj, setSelectObj] = React.useState(null);                         // Selected object in canvas Ex. {id: ... type: ..} or null
     const [output, setOutput] = React.useState(null);                               // Code console
@@ -107,7 +107,7 @@ export default function Homepage(props) {
                                 theme.palette.primary.main
                         }}
                     >
-                        <Footer handleClickDialog={handleClickDialog} showLevelMission={showLevelMission} level={level} showLevelSteps={showLevelSteps} showStepTips={showStepTips} />
+                        <Footer handleClickDialog={handleClickDialog} showLevelMission={showLevelMission} level={level} showLevelSteps={showLevelSteps} showStepTips={showStepTips} disabled={disabled} />
                     </Box>
                 </Grid>
             </Grid>

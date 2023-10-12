@@ -340,6 +340,38 @@ function getPreviousLevel(stepId) {
     });
 }
 
+function getNextLevel(stepId) {
+    // GET /API/game_session/next
+    return new Promise((resolve, reject) => {
+        fetch(new URL(`game_session/next/${stepId}`, API_URL), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("jwtToken")
+            }
+        }).then((response) => {
+            if (response.ok) {
+                response.json()
+                    .then((gameSession) => {
+                        resolve(gameSession);
+                    })
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    });
+            } else {
+                response.json()
+                    .then((message) => {
+                        reject(message);
+                    }) // error message in the response body
+                    .catch(() => {
+                        reject({error: "Cannot parse server response."})
+                    }); // something else
+            }
+        }).catch((err) => {
+            reject({error: err.toString()})
+        }); // connection errors
+    });
+}
+
 const API = {
     logIn,
     signUp,
@@ -350,7 +382,8 @@ const API = {
     putCode,
     getStepsByLevelId,
     putNextLevel,
-    getPreviousLevel
+    getPreviousLevel,
+    getNextLevel
 }
 
 export default API;

@@ -30,13 +30,15 @@ function Root() {
   const [message, setMessage] = useState('');               /* Messages structure: severity, title, content */
   const [processing, setProcessing] = useState(false);      /* Api calls waiting animation */
   const [code, setCode] = useState("");                     // Code  
-  const [gameSession, setGameSession] = useState(null);         // Game session                                        
-  const [level, setLevel] = useState(null);                     // Game level
-  const [step, setStep] = useState(null);                       // Game step
-  const [levelSteps, setLevelSteps] = useState(null);         // Game level steps
+  const [gameSession, setGameSession] = useState(null);     // Game session  
+  const [level, setLevel] = useState(null);                 // Game level
+  const [latestLevel, setLatestLevel] = useState(null);     // Game latest level
+  const [step, setStep] = useState(null);                   // Game step
+  const [levelSteps, setLevelSteps] = useState(null);       // Game level steps
   const [dialog, setDialog] = useState({});                 // Dialog content
-  const [answer, setAnswer] = useState(false);                   // Dialog answer
+  const [answer, setAnswer] = useState(false);              // Dialog answer
   const [actionMenu, setActionMenu] = useState({});         // Action menu
+  const [disabled, setDisabled] = useState(false);          // Level selector 
 
   const navigate = useNavigate();
 
@@ -50,10 +52,23 @@ function Root() {
 
   useEffect(() => {
 
+    if (level !== null && latestLevel !== null ){
+
+        if(level.id < latestLevel.id){
+          setDisabled(false);
+        }else{
+          setDisabled(true);
+        }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level, latestLevel]);
+
+  useEffect(() => {
+
     if (loggedIn === true && levelSteps !== null) {
       showWelcomeLevel()
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelSteps]);
 
   useEffect(() => {
@@ -61,7 +76,8 @@ function Root() {
       switch (dialog?.title) {
         case "Are you leaving?": handleLogout(); break;
         case "Restart level?": initGame(); break;
-        case "Previous level?": handlePreviousLevel(); break;
+        case "Previous level?": handleChangeLevel(true); break;
+        case "Next level?": handleChangeLevel(false); break;
         default: break;
       }
       setAnswer(false)
@@ -141,22 +157,20 @@ function Root() {
 
   const initGame = async () => {
     try {
-      const game_session = await API.getCurrentGameSession()                    // Retrieve current game session
-      setGameSession(game_session)
-      setCode(game_session.code)
-      const game_step = await API.getStepById(game_session?.step_id)            // Retrieve Step details
-      setStep(game_step)
+      const game_session = await API.getCurrentGameSession();                    // Retrieve current game session
+      setGameSession(game_session);
+      setCode(game_session.code);
+      const game_step = await API.getStepById(game_session?.step_id);            // Retrieve Step details
+      setStep(game_step);
 
       const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
       setLevel(game_level);
+      setLatestLevel(game_level);
       const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
       setLevelSteps(level_steps);
 
-      setActionMenu({
-        stepNumber: game_step?.number,
-        dialogue: game_step?.dialogue,
-        action_menu: game_step?.action_menu
-      })
+      updateActionMenu(game_step);
+
 
 
     } catch (err) {
@@ -197,9 +211,14 @@ function Root() {
     setGameSession();
   }
 
-  const handlePreviousLevel = async () => {
+  const handleChangeLevel = async (cond) => {
     try {
-      const game_session = await API.getPreviousLevel(step.id);
+      let game_session;
+      if(cond === true){
+        game_session = await API.getPreviousLevel(step.id);
+      }else{
+        game_session = await API.getNextLevel(step.id);
+      } 
       setGameSession(game_session)
       setCode(game_session.code)
       const game_step = await API.getStepById(game_session?.step_id)            // Retrieve Step details
@@ -210,11 +229,7 @@ function Root() {
       const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
       setLevelSteps(level_steps);
 
-      setActionMenu({
-        stepNumber: gameSession?.number,
-        dialogue: gameSession?.dialogue,
-        action_menu: gameSession?.action_menu
-      })
+      updateActionMenu(game_step);
 
     } catch (err) {
       handleMessage({ severity: "error", content: err })
@@ -230,20 +245,24 @@ function Root() {
         setStep(game_step)
 
         if (game_step.level_id !== level.id) {                                        // Check level changed
-          handleClickDialog(2, "Level completed", "Congratulations! You have completed the level " + level.id);
           const game_level = await API.getLevelById(game_step?.level_id);           // Retrieve level details
           setLevel(game_level);
           const level_steps = await API.getStepsByLevelId(game_level.id);           // Retrieve level steps 
           setLevelSteps(level_steps);
         }
 
-        setActionMenu({
-          stepNumber: game_step?.number,
-          dialogue: game_step?.dialogue,
-          action_menu: game_step?.action_menu
-        })
+        updateActionMenu(game_step);
+
       }
     }
+  }
+
+  const updateActionMenu = (game_step) => {
+    setActionMenu({
+      stepNumber: game_step?.number,
+      dialogue: game_step?.dialogue,
+      action_menu: game_step?.action_menu
+    })
   }
 
   const showUserInfo = () => {
@@ -301,9 +320,7 @@ function Root() {
   }
 
   const showLevelSteps = () => {
-
     handleClickDialog(4, "Level steps", getLevelSteps());
-
   }
 
   const showStepTips = () => {
@@ -314,7 +331,7 @@ function Root() {
     <Routes>
       <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Navbar user={user} saveCode={saveCode} handleClickDialog={handleClickDialog} showUserInfo={showUserInfo} handleExportFile={handleExportFile} ></Navbar>}>
         {/* Outlets */}
-        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} handleProgressionChecker={handleProgressionChecker} />} />
+        <Route path='/' element={!loggedIn ? <Navigate replace to='/login' /> : <Homepage code={code} setCode={setCode} level={level} disabled={disabled} step={step} dialog={dialog} handleClickDialog={handleClickDialog} setDialog={setDialog} setAnswer={setAnswer} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} actionMenu={actionMenu} showStepTips={showStepTips} handleProgressionChecker={handleProgressionChecker} />} />
 
       </Route>
 

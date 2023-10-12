@@ -10,7 +10,7 @@ import SupportIcon from '@mui/icons-material/Support';
 const defaultTheme = createTheme();
 
 export default function Footer(props) {
-    const { handleClickDialog, level, showLevelMission, showLevelSteps, showStepTips } = props;
+    const { handleClickDialog, level, showLevelMission, showLevelSteps, showStepTips, disabled } = props;
     return (
         <ThemeProvider theme={defaultTheme}>
             <Box
@@ -28,7 +28,7 @@ export default function Footer(props) {
                         <LevelActions handleClickDialog={handleClickDialog} showLevelMission={showLevelMission} showLevelSteps={showLevelSteps} />
                     </Grid>
                     <Grid item >
-                        <LevelSelector handleClickDialog={handleClickDialog} level={level} />
+                        <LevelSelector handleClickDialog={handleClickDialog} level={level} disabled={disabled} />
                     </Grid>
                     <Grid item >
                             <Tooltip title="Tips">

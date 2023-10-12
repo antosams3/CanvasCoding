@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
 export default function LevelSelector(props) {
-    const { level, handleClickDialog } = props;
+    const { level, handleClickDialog, disabled } = props;
     return (
         <Stack direction="row" spacing={1}>
             {level?.id !== 1 ?
@@ -20,8 +20,8 @@ export default function LevelSelector(props) {
             <Typography variant="body1" paddingTop={1}>
                 Level {level?.id}
             </Typography>
-            <Tooltip title="Next level">
-                <IconButton aria-label="next">
+            <Tooltip title="Next level" onClick={() => { handleClickDialog(1, "Next level?", "All the unsaved progress will be discarded. Are you sure?") }}>
+                <IconButton aria-label="next" disabled={disabled}>
                     <ArrowForwardIcon />
                 </IconButton>
             </Tooltip>
