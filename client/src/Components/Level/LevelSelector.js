@@ -20,11 +20,14 @@ export default function LevelSelector(props) {
             <Typography variant="body1" paddingTop={1}>
                 Level {level?.id}
             </Typography>
+            <span>
             <Tooltip title="Next level" onClick={() => { handleClickDialog(1, "Next level?", "All the unsaved progress will be discarded. Are you sure?") }}>
                 <IconButton aria-label="next" disabled={disabled}>
                     <ArrowForwardIcon />
                 </IconButton>
             </Tooltip>
+            </span>
+            
         </Stack>
     );
 }

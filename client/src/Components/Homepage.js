@@ -26,10 +26,10 @@ export default function Homepage(props) {
     }
 
     React.useEffect(() => {
-        // Imposta l'overflow del corpo del documento su 'hidden' quando il componente è montato
+        // Imposta l'overflow del body del documento su 'hidden' quando il componente è montato
         document.body.style.overflow = 'hidden';
 
-        // Pulisci l'effetto quando il componente è smontato
+        // Rimuovi l'effetto quando il componente è smontato
         return () => {
             document.body.style.overflow = 'visible';
         };
@@ -37,7 +37,7 @@ export default function Homepage(props) {
 
     // Code sync with canvas
     React.useEffect(() => {
-        if (!compiling) {
+        if (!compiling && loading === false) {
             setCode(CanvasInterpreter(objects));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,12 +48,18 @@ export default function Homepage(props) {
         if (compiling) {
             setObjects(CodeInterpreter(code));
         }
+        if (loading) {
+            handleSync();
+        }
     }, [compiling, code]);
 
-    // Canvas compiling
+    // Level progression
     React.useEffect(() => {
 
         handleProgressionChecker(null, null, null, counter);
+        if(counter >= 5){
+            setCounter(0);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [counter]);
 

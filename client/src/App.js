@@ -52,9 +52,9 @@ function Root() {
 
   useEffect(() => {
 
-    if (level !== null && latestLevel !== null ){
+    if (level?.id !== null && latestLevel?.id !== null && loggedIn === true){
 
-        if(level.id < latestLevel.id){
+        if(level?.id < latestLevel?.id){
           setDisabled(false);
         }else{
           setDisabled(true);

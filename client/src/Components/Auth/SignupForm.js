@@ -16,7 +16,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 const defaultTheme = createTheme();
 
 export default function SignupForm(props) {
-  const {message, setMessage, signUp, loading} = props;
+  const {message, setMessage, signUp, processing} = props;
 
   const navigate = useNavigate();
 
@@ -128,7 +128,7 @@ export default function SignupForm(props) {
                 </Alert>
               }
             <LoadingButton
-              loading = {loading}
+              loading = {processing}
               type="submit"
               fullWidth
               variant="contained"
